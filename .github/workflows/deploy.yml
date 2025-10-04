@@ -54,6 +54,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: voting-lambda
+          path: ./voting-lambda
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
