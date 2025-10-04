@@ -25,10 +25,10 @@ class Program
     {
         return what switch
         {
-            "api_id" => Environment.GetEnvironmentVariable("ApiId"),
-            "api_hash" => Environment.GetEnvironmentVariable("ApiHash"),
-            "phone_number" => Environment.GetEnvironmentVariable("PhoneNumber"),
-            "password" => Environment.GetEnvironmentVariable("Password"),
+            "api_id" => Environment.GetEnvironmentVariable("API_ID"),
+            "api_hash" => Environment.GetEnvironmentVariable("API_HASH"),
+            "phone_number" => Environment.GetEnvironmentVariable("PHONE_NUMBER"),
+            "password" => Environment.GetEnvironmentVariable("PASSWORD"),
             _ => null
         };
     }

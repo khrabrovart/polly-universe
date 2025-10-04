@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using PollyUniverse.Shared.AWS;
 using PollyUniverse.Voting.Func.Repositories;
 using WTelegram;
@@ -37,23 +35,26 @@ public class TelegramService : ITelegramService
 
     public async Task<Client> InitializeClient(string clientId)
     {
-        var sessionMetadata = await _sessionMetadataRepository.Get(clientId);
-
-        if (sessionMetadata == null)
-        {
-            throw new Exception($"No session metadata found for ClientId: {clientId}");
-        }
-
-        var remoteSessionFileKey = $"{SessionBucketPrefix}/{clientId}.session";
-
-        var sessionFileDownloaded = await _s3Client.Download(
+        var downloadSessionFileTask = _s3Client.Download(
             _config.S3Bucket,
-            remoteSessionFileKey,
+            $"{SessionBucketPrefix}/{clientId}.session",
             _localSessionFilePath);
+
+        var getSessionMetadataTask = _sessionMetadataRepository.Get(clientId);
+
+        await Task.WhenAll(downloadSessionFileTask, getSessionMetadataTask);
+
+        var sessionFileDownloaded = downloadSessionFileTask.Result;
+        var sessionMetadata = getSessionMetadataTask.Result;
 
         if (!sessionFileDownloaded)
         {
             throw new Exception($"Failed to download session file from S3: {clientId}");
+        }
+
+        if (sessionMetadata == null)
+        {
+            throw new Exception($"No session metadata found for ClientId: {clientId}");
         }
 
         return await CreateClientAndLogin(

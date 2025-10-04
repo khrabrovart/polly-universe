@@ -1,5 +1,4 @@
 using Amazon.DynamoDBv2.Model;
-using Microsoft.Extensions.Options;
 using PollyUniverse.Shared.AWS;
 using PollyUniverse.Voting.Func.Models;
 

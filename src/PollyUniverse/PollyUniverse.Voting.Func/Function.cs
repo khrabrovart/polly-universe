@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Amazon.Lambda.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +13,7 @@ using PollyUniverse.Voting.Func.Services;
 namespace PollyUniverse.Voting.Func;
 
 [JsonSerializable(typeof(LambdaRequest))]
-public partial class LambdaRequestJsonContext : JsonSerializerContext {}
+public partial class LambdaRequestJsonContext : JsonSerializerContext { }
 
 public class Function
 {
@@ -28,7 +27,7 @@ public class Function
 
         var services = new ServiceCollection();
 
-        services.AddSingleton(() => new FunctionConfig
+        services.AddSingleton(new FunctionConfig
         {
             SessionMetadataTable = configuration["SESSION_METADATA_TABLE"],
             VotingProfilesTable = configuration["VOTING_PROFILES_TABLE"],
@@ -38,8 +37,10 @@ public class Function
 
         services.AddLogging(builder =>
         {
-            builder.AddConsole();
+            builder.ClearProviders();
             builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
+            builder.AddFilter("Amazon", Microsoft.Extensions.Logging.LogLevel.Warning);
+            builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
         });
 
         services.AddSharedServices();
@@ -66,7 +67,7 @@ public class Function
                 throw new ArgumentNullException(nameof(request), "Lambda request cannot be null");
             }
 
-            logger.LogInformation("Received event: {Event}", JsonSerializer.Serialize(request));
+            logger.LogInformation("Processing request for ProfileId: {ProfileId}", request.ProfileId);
 
             await handler.Handle(request);
         }
