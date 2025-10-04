@@ -34,14 +34,10 @@ jobs:
       - name: Publish
         run: |
           docker run --rm -v $(pwd):/workspace -w /workspace \
-            public.ecr.aws/amazonlinux/amazonlinux:2023 \
+            mcr.microsoft.com/dotnet/sdk:8.0-jammy \
             bash -c "
-              yum update -y && \
-              yum install -y tar gzip findutils curl && \
-              curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --install-dir /usr/share/dotnet && \
-              ln -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet && \
-              export PATH=/usr/share/dotnet:\$PATH && \
-              dotnet --version && \
+              apt-get update && \
+              apt-get install -y clang zlib1g-dev && \
               dotnet publish PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --runtime linux-x64 --self-contained --output ./publish
             "
 
