@@ -9,8 +9,8 @@ resource "aws_dynamodb_table" "voting_profiles" {
   }
 }
 
-resource "aws_dynamodb_table" "telegram_client_data" {
-  name         = "${local.app_name}-telegram-client-data"
+resource "aws_dynamodb_table" "session_metadata" {
+  name         = "${local.app_name}-session-metadata"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "Id"
 
