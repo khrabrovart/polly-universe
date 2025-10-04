@@ -61,7 +61,7 @@ resource "aws_iam_policy" "voting_lambda_policy" {
         ]
         Resource = [
           aws_dynamodb_table.voting_profiles.arn,
-          aws_dynamodb_table.telegram_client_data.arn
+          aws_dynamodb_table.session_metadata.arn
         ]
       },
       {
