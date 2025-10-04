@@ -17,10 +17,10 @@ public class TelegramClientDataRepository : ITelegramClientDataRepository
 
     public TelegramClientDataRepository(
         IDynamoDbClient dynamoDbClient,
-        IOptions<FunctionConfig> config)
+        FunctionConfig config)
     {
         _dynamoDbClient = dynamoDbClient;
-        _config = config.Value;
+        _config = config;
     }
 
     public async Task<TelegramClientData> Get(string clientId)

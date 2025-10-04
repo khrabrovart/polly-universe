@@ -17,10 +17,10 @@ public class VotingProfileRepository : IVotingProfileRepository
 
     public VotingProfileRepository(
         IDynamoDbClient dynamoDbClient,
-        IOptions<FunctionConfig> config)
+        FunctionConfig config)
     {
         _dynamoDbClient = dynamoDbClient;
-        _config = config.Value;
+        _config = config;
     }
 
     public async Task<VotingProfile> Get(string profileId)
