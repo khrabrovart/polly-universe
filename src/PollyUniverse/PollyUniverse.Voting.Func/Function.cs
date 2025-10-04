@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Amazon.DynamoDBv2;
 using Amazon.Lambda.Core;
-using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PollyUniverse.Shared;
+using PollyUniverse.Voting.Func.Repositories;
+using PollyUniverse.Voting.Func.Services;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -34,12 +35,13 @@ public class Function
             builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
         });
 
-        services.AddDefaultAWSOptions(configuration.GetAWSOptions());
+        services.AddSharedServices();
 
         services
-            .AddAWSService<IAmazonDynamoDB>()
-            .AddAWSService<IAmazonS3>()
             .AddTransient<IEventHandler, EventHandler>()
+            .AddTransient<ITelegramService, TelegramService>()
+            .AddTransient<ITelegramClientDataRepository, TelegramClientDataRepository>()
+            .AddTransient<IVotingProfileRepository, VotingProfileRepository>()
             ;
 
         ServiceProvider = services.BuildServiceProvider();

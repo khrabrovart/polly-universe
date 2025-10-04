@@ -23,13 +23,13 @@ class Program
 
     private static string Config(string what)
     {
-        switch (what)
+        return what switch
         {
-            case "api_id": return Environment.GetEnvironmentVariable("ApiId");
-            case "api_hash": return Environment.GetEnvironmentVariable("ApiHash");
-            case "phone_number": return Environment.GetEnvironmentVariable("PhoneNumber");
-            case "password": return Environment.GetEnvironmentVariable("Password");
-            default: return null;
-        }
+            "api_id" => Environment.GetEnvironmentVariable("ApiId"),
+            "api_hash" => Environment.GetEnvironmentVariable("ApiHash"),
+            "phone_number" => Environment.GetEnvironmentVariable("PhoneNumber"),
+            "password" => Environment.GetEnvironmentVariable("Password"),
+            _ => null
+        };
     }
 }
