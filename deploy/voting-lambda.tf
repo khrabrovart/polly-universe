@@ -9,7 +9,7 @@ resource "aws_lambda_function" "voting_lambda" {
   function_name = "${local.app_name}-voting"
   role          = aws_iam_role.voting_lambda_role.arn
   handler       = "bootstrap"
-  runtime       = "provided.al2"
+  runtime       = "provided.al2023"
   timeout       = 300
   memory_size   = 256
   architectures = ["x86_64"]
