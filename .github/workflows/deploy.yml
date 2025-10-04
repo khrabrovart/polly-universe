@@ -23,7 +23,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Restore
         run: dotnet restore PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj
@@ -32,7 +32,7 @@ jobs:
         run: dotnet build PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --output ./publish --no-build
+        run: dotnet publish PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --runtime linux-arm64 --self-contained false --output ./publish
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

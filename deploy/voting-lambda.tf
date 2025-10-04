@@ -1,6 +1,6 @@
 data "archive_file" "voting_lambda_zip" {
   type        = "zip"
-  source_dir  = "../voting-lambda"
+  source_dir  = "./voting-lambda"
   output_path = "voting-lambda.zip"
 }
 
