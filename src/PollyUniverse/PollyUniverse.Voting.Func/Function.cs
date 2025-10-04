@@ -38,6 +38,7 @@ public class Function
         services.AddLogging(builder =>
         {
             builder.ClearProviders();
+            builder.AddConsole();
             builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
             builder.AddFilter("Amazon", Microsoft.Extensions.Logging.LogLevel.Warning);
             builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
