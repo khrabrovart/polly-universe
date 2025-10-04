@@ -11,7 +11,7 @@ resource "aws_lambda_function" "voting_lambda" {
   handler       = "PollyUniverse.Voting.Func::PollyUniverse.Voting.Func.Function::HandleEvent"
   runtime       = "dotnet8"
   timeout       = 300
-  memory_size   = 256
+  memory_size   = 1024
   architectures = ["arm64"]
 
   source_code_hash = data.archive_file.voting_lambda_zip.output_base64sha256
