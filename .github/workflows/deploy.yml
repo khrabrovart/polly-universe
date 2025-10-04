@@ -32,7 +32,7 @@ jobs:
         run: dotnet build PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --output ./publish -r linux-x64 --self-contained true
+        run: dotnet publish PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --output ./publish
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

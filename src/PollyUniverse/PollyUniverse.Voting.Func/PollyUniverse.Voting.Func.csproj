@@ -5,9 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <AWSProjectType>Lambda</AWSProjectType>
-        <PublishAot>true</PublishAot>
-        <InvariantGlobalization>true</InvariantGlobalization>
-        <PublishTrimmed>true</PublishTrimmed>
     </PropertyGroup>
 
     <ItemGroup>
