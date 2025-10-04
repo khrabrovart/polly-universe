@@ -2,7 +2,7 @@ namespace PollyUniverse.Voting.Func;
 
 public class FunctionConfig
 {
-    public string TelegramClientDataTable { get; set; }
+    public string SessionMetadataTable { get; set; }
 
     public string VotingProfilesTable { get; set; }
 

@@ -28,7 +28,13 @@ public class Function
 
         var services = new ServiceCollection();
 
-        services.Configure<FunctionConfig>(configuration.GetSection("Voting"));
+        services.AddSingleton(() => new FunctionConfig
+        {
+            SessionMetadataTable = configuration["SESSION_METADATA_TABLE"],
+            VotingProfilesTable = configuration["VOTING_PROFILES_TABLE"],
+            S3Bucket = configuration["S3_BUCKET"],
+            IsDev = configuration["IS_DEV"] == "true"
+        });
 
         services.AddLogging(builder =>
         {
@@ -41,7 +47,7 @@ public class Function
         services
             .AddTransient<IEventHandler, EventHandler>()
             .AddTransient<ITelegramService, TelegramService>()
-            .AddTransient<ITelegramClientDataRepository, TelegramClientDataRepository>()
+            .AddTransient<ISessionMetadataRepository, SessionMetadataRepository>()
             .AddTransient<IVotingProfileRepository, VotingProfileRepository>()
             ;
 

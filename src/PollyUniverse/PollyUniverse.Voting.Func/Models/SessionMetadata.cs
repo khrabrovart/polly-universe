@@ -1,6 +1,6 @@
 namespace PollyUniverse.Voting.Func.Models;
 
-public class TelegramClientData
+public class SessionMetadata
 {
     public string Id { get; set; }
 

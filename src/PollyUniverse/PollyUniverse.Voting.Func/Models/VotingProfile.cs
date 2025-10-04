@@ -4,5 +4,5 @@ public class VotingProfile
 {
     public string Id { get; set; }
 
-    public string TelegramClientId { get; set; }
+    public string SessionId { get; set; }
 }

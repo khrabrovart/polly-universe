@@ -5,36 +5,36 @@ using PollyUniverse.Voting.Func.Models;
 
 namespace PollyUniverse.Voting.Func.Repositories;
 
-public interface ITelegramClientDataRepository
+public interface ISessionMetadataRepository
 {
-    Task<TelegramClientData> Get(string clientId);
+    Task<SessionMetadata> Get(string clientId);
 }
 
-public class TelegramClientDataRepository : ITelegramClientDataRepository
+public class SessionMetadataRepository : ISessionMetadataRepository
 {
     private readonly IDynamoDbClient _dynamoDbClient;
     private readonly FunctionConfig _config;
 
-    public TelegramClientDataRepository(
+    public SessionMetadataRepository(
         IDynamoDbClient dynamoDbClient,
-        IOptions<FunctionConfig> config)
+        FunctionConfig config)
     {
         _dynamoDbClient = dynamoDbClient;
-        _config = config.Value;
+        _config = config;
     }
 
-    public async Task<TelegramClientData> Get(string clientId)
+    public async Task<SessionMetadata> Get(string clientId)
     {
         var key = new Dictionary<string, AttributeValue>
         {
             { "Id", new AttributeValue { S = clientId } }
         };
 
-        var item = await _dynamoDbClient.Get(_config.TelegramClientDataTable, key);
+        var item = await _dynamoDbClient.Get(_config.SessionMetadataTable, key);
 
         return item == null
             ? null
-            : new TelegramClientData
+            : new SessionMetadata
             {
                 Id = item["Id"].S,
                 ApiId = int.Parse(item["ApiId"].N),

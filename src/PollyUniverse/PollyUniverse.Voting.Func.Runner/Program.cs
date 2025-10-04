@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using dotenv.net;
+﻿using dotenv.net;
 using PollyUniverse.Voting.Func.Models;
 
 namespace PollyUniverse.Voting.Func.Runner;
@@ -12,14 +11,12 @@ class Program
 
         var function = new Function();
 
-        var evt = new LambdaRequest
+        var request = new LambdaRequest
         {
             ProfileId = "your_profile_id"
         };
 
-        var input = JsonSerializer.Serialize(evt, LambdaRequestJsonContext.Default.LambdaRequest);
-
-        await function.HandleEvent(input, null);
+        await function.HandleEvent(request, null);
     }
 
 

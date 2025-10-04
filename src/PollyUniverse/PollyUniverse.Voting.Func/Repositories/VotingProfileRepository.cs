@@ -17,10 +17,10 @@ public class VotingProfileRepository : IVotingProfileRepository
 
     public VotingProfileRepository(
         IDynamoDbClient dynamoDbClient,
-        IOptions<FunctionConfig> config)
+        FunctionConfig config)
     {
         _dynamoDbClient = dynamoDbClient;
-        _config = config.Value;
+        _config = config;
     }
 
     public async Task<VotingProfile> Get(string profileId)
@@ -37,7 +37,7 @@ public class VotingProfileRepository : IVotingProfileRepository
             : new VotingProfile
             {
                 Id = item["Id"].S,
-                TelegramClientId = item["TelegramClientId"].S
+                SessionId = item["SessionId"].S
             };
     }
 }

@@ -15,20 +15,19 @@ public class TelegramService : ITelegramService
 {
     private const string SessionBucketPrefix = "sessions";
 
-    private readonly ITelegramClientDataRepository _telegramClientDataRepository;
+    private readonly ISessionMetadataRepository _sessionMetadataRepository;
     private readonly IS3Client _s3Client;
     private readonly FunctionConfig _config;
     private readonly string _localSessionFilePath = "/tmp/default.session";
 
     public TelegramService(
-        ITelegramClientDataRepository telegramClientDataRepository,
+        ISessionMetadataRepository sessionMetadataRepository,
         IS3Client s3Client,
-        ILogger<TelegramService> logger,
-        IOptions<FunctionConfig> config)
+        FunctionConfig config)
     {
-        _telegramClientDataRepository = telegramClientDataRepository;
+        _sessionMetadataRepository = sessionMetadataRepository;
         _s3Client = s3Client;
-        _config = config.Value;
+        _config = config;
 
         if (_config.IsDev)
         {
@@ -38,11 +37,11 @@ public class TelegramService : ITelegramService
 
     public async Task<Client> InitializeClient(string clientId)
     {
-        var clientData = await _telegramClientDataRepository.Get(clientId);
+        var sessionMetadata = await _sessionMetadataRepository.Get(clientId);
 
-        if (clientData == null)
+        if (sessionMetadata == null)
         {
-            throw new Exception($"No Telegram client data found for ClientId: {clientId}");
+            throw new Exception($"No session metadata found for ClientId: {clientId}");
         }
 
         var remoteSessionFileKey = $"{SessionBucketPrefix}/{clientId}.session";
@@ -59,9 +58,9 @@ public class TelegramService : ITelegramService
 
         return await CreateClientAndLogin(
             _localSessionFilePath,
-            clientData.ApiId,
-            clientData.ApiHash,
-            clientData.PhoneNumber);
+            sessionMetadata.ApiId,
+            sessionMetadata.ApiHash,
+            sessionMetadata.PhoneNumber);
     }
 
     private static async Task<Client> CreateClientAndLogin(string sessionFilePath, int apiId, string apiHash, string phoneNumber)
