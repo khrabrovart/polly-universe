@@ -10,6 +10,7 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <PublishAot>true</PublishAot>
         <StripSymbols>true</StripSymbols>
+        <AssemblyName>bootstrap</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
