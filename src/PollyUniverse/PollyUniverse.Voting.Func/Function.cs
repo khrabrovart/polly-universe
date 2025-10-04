@@ -48,23 +48,21 @@ public class Function
         ServiceProvider = services.BuildServiceProvider();
     }
 
-    public async Task HandleEvent(string input, ILambdaContext context)
+    public async Task HandleEvent(LambdaRequest request, ILambdaContext context)
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
 
         try
         {
-            var evt = JsonSerializer.Deserialize(input, LambdaRequestJsonContext.Default.LambdaRequest);
-
-            if (evt == null)
+            if (request == null)
             {
-                throw new JsonException("Failed to deserialize event object");
+                throw new ArgumentNullException(nameof(request), "Lambda request cannot be null");
             }
 
-            logger.LogInformation("Received event: {Event}", JsonSerializer.Serialize(evt));
+            logger.LogInformation("Received event: {Event}", JsonSerializer.Serialize(request));
 
-            await handler.Handle(evt);
+            await handler.Handle(request);
         }
         catch (Exception ex)
         {
