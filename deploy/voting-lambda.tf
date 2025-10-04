@@ -12,7 +12,7 @@ resource "aws_lambda_function" "voting_lambda" {
   runtime       = "provided.al2"
   timeout       = 300
   memory_size   = 256
-  architectures = ["x86_64"]
+  architectures = ["arm64"]
 
   source_code_hash = data.archive_file.voting_lambda_zip.output_base64sha256
 
