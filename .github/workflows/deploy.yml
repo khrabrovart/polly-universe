@@ -8,6 +8,39 @@ permissions:
   id-token: write
 
 jobs:
+  build:
+    name: 'Build'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./src/PollyUniverse
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj
+
+      - name: Build
+        run: dotnet build PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish PollyUniverse.Voting.Func/PollyUniverse.Voting.Func.csproj --configuration Release --output ./publish --no-build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: voting-lambda
+          path: ./src/PollyUniverse/publish/
+          retention-days: 1
+
   plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
@@ -51,7 +84,7 @@ jobs:
     name: 'Terraform Apply'
     runs-on: ubuntu-latest
     environment: production
-    needs: plan
+    needs: [build, plan]
 
     defaults:
       run:
@@ -60,6 +93,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: voting-lambda
+          path: ./voting-lambda
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
