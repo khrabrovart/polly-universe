@@ -14,11 +14,11 @@ public interface ITelegramService
 public class TelegramService : ITelegramService
 {
     private const string SessionBucketPrefix = "sessions";
-    private const string LocalSessionFilePath = "/tmp/default.session";
 
     private readonly ITelegramClientDataRepository _telegramClientDataRepository;
     private readonly IS3Client _s3Client;
     private readonly FunctionConfig _config;
+    private readonly string _localSessionFilePath = "/tmp/default.session";
 
     public TelegramService(
         ITelegramClientDataRepository telegramClientDataRepository,
@@ -29,6 +29,11 @@ public class TelegramService : ITelegramService
         _telegramClientDataRepository = telegramClientDataRepository;
         _s3Client = s3Client;
         _config = config.Value;
+
+        if (_config.IsDev)
+        {
+            _localSessionFilePath = "./tmp/default.session";
+        }
     }
 
     public async Task<Client> InitializeClient(string clientId)
@@ -40,12 +45,12 @@ public class TelegramService : ITelegramService
             throw new Exception($"No Telegram client data found for ClientId: {clientId}");
         }
 
-        var remoteSessionFileKey = $"{SessionBucketPrefix}/{clientId}";
+        var remoteSessionFileKey = $"{SessionBucketPrefix}/{clientId}.session";
 
         var sessionFileDownloaded = await _s3Client.Download(
-            _config.SessionsBucket,
+            _config.S3Bucket,
             remoteSessionFileKey,
-            LocalSessionFilePath);
+            _localSessionFilePath);
 
         if (!sessionFileDownloaded)
         {
@@ -53,7 +58,7 @@ public class TelegramService : ITelegramService
         }
 
         return await CreateClientAndLogin(
-            LocalSessionFilePath,
+            _localSessionFilePath,
             clientData.ApiId,
             clientData.ApiHash,
             clientData.PhoneNumber);
@@ -74,12 +79,10 @@ public class TelegramService : ITelegramService
         });
 
         var client = new Client(configFunc, sessionStream);
-
         var user = await client.LoginUserIfNeeded(reloginOnFailedResume: false);
 
         return user == null
             ? throw new Exception("Failed to initialize Telegram client, session is not valid")
             : client;
-
     }
 }

@@ -30,7 +30,7 @@ public class TelegramClientDataRepository : ITelegramClientDataRepository
             { "Id", new AttributeValue { S = clientId } }
         };
 
-        var item = await _dynamoDbClient.Get(_config.TelegramClientsDataTable, key);
+        var item = await _dynamoDbClient.Get(_config.TelegramClientDataTable, key);
 
         return item == null
             ? null

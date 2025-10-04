@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared;
+using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
 
@@ -12,8 +13,8 @@ using PollyUniverse.Voting.Func.Services;
 
 namespace PollyUniverse.Voting.Func;
 
-[JsonSerializable(typeof(SchedulerEvent))]
-public partial class SchedulerEventJsonContext : JsonSerializerContext {}
+[JsonSerializable(typeof(LambdaRequest))]
+public partial class LambdaRequestJsonContext : JsonSerializerContext {}
 
 public class Function
 {
@@ -54,7 +55,7 @@ public class Function
 
         try
         {
-            var evt = JsonSerializer.Deserialize(input, SchedulerEventJsonContext.Default.SchedulerEvent);
+            var evt = JsonSerializer.Deserialize(input, LambdaRequestJsonContext.Default.LambdaRequest);
 
             if (evt == null)
             {
