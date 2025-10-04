@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared.AWS;
 using PollyUniverse.Voting.Func.Repositories;
 using WTelegram;
@@ -16,16 +17,19 @@ public class TelegramService : ITelegramService
     private readonly ISessionMetadataRepository _sessionMetadataRepository;
     private readonly IS3Client _s3Client;
     private readonly FunctionConfig _config;
+    private readonly ILogger<TelegramService> _logger;
     private readonly string _localSessionFilePath = "/tmp/default.session";
 
     public TelegramService(
         ISessionMetadataRepository sessionMetadataRepository,
         IS3Client s3Client,
-        FunctionConfig config)
+        FunctionConfig config,
+        ILogger<TelegramService> logger)
     {
         _sessionMetadataRepository = sessionMetadataRepository;
         _s3Client = s3Client;
         _config = config;
+        _logger = logger;
 
         if (_config.IsDev)
         {
@@ -35,6 +39,8 @@ public class TelegramService : ITelegramService
 
     public async Task<Client> InitializeClient(string clientId)
     {
+        _logger.LogInformation("Getting session file and metadata for ClientId: {ClientId}", clientId);
+
         var downloadSessionFileTask = _s3Client.Download(
             _config.S3Bucket,
             $"{SessionBucketPrefix}/{clientId}.session",
@@ -56,6 +62,8 @@ public class TelegramService : ITelegramService
         {
             throw new Exception($"No session metadata found for ClientId: {clientId}");
         }
+
+        _logger.LogInformation("Creating Telegram client for ClientId: {ClientId}", clientId);
 
         return await CreateClientAndLogin(
             _localSessionFilePath,

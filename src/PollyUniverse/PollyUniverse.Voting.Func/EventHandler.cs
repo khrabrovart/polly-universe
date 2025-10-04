@@ -41,6 +41,6 @@ public class EventHandler : IEventHandler
 
         var client = await _telegramService.InitializeClient(profile.SessionId);
 
-        _logger.LogInformation("Logged in as {User}", client.User.username);
+        _logger.LogInformation("Logged in successfully as {User}", client.User);
     }
 }
