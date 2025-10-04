@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.Func", "PollyUniverse.Voting.Func\PollyUniverse.Voting.Func.csproj", "{63B0905F-6985-4714-91B2-B7F071CF5292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.Func.Runner", "PollyUniverse.Voting.Func.Runner\PollyUniverse.Voting.Func.Runner.csproj", "{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.SessionInit", "PollyUniverse.Voting.SessionInit\PollyUniverse.Voting.SessionInit.csproj", "{B7D54A17-7437-43E0-A3C1-9EA06F644787}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63B0905F-6985-4714-91B2-B7F071CF5292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63B0905F-6985-4714-91B2-B7F071CF5292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63B0905F-6985-4714-91B2-B7F071CF5292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63B0905F-6985-4714-91B2-B7F071CF5292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7D54A17-7437-43E0-A3C1-9EA06F644787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7D54A17-7437-43E0-A3C1-9EA06F644787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7D54A17-7437-43E0-A3C1-9EA06F644787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7D54A17-7437-43E0-A3C1-9EA06F644787}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
