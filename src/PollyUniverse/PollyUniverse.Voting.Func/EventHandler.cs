@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
@@ -21,12 +22,12 @@ public class EventHandler : IEventHandler
         IVotingProfileRepository votingProfileRepository,
         ITelegramService telegramService,
         ILogger<EventHandler> logger,
-        FunctionConfig config)
+        IOptions<FunctionConfig> config)
     {
         _votingProfileRepository = votingProfileRepository;
         _telegramService = telegramService;
         _logger = logger;
-        _config = config;
+        _config = config.Value;
     }
 
     public async Task Handle(LambdaRequest evt)

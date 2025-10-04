@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PollyUniverse.Shared.AWS;
 using PollyUniverse.Voting.Func.Repositories;
 using WTelegram;
@@ -21,11 +23,12 @@ public class TelegramService : ITelegramService
     public TelegramService(
         ITelegramClientDataRepository telegramClientDataRepository,
         IS3Client s3Client,
-        FunctionConfig config)
+        ILogger<TelegramService> logger,
+        IOptions<FunctionConfig> config)
     {
         _telegramClientDataRepository = telegramClientDataRepository;
         _s3Client = s3Client;
-        _config = config;
+        _config = config.Value;
 
         if (_config.IsDev)
         {

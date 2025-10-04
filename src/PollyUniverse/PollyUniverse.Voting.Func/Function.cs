@@ -1,18 +1,15 @@
-﻿using System.Text.Json.Serialization;
-using Amazon.Lambda.Annotations;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Amazon.Lambda.Core;
-using Amazon.Lambda.Serialization.SystemTextJson;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared;
-using PollyUniverse.Voting.Func;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
 
-[assembly: LambdaGlobalProperties(GenerateMain = true)]
-[assembly: LambdaSerializer(typeof(SourceGeneratorLambdaJsonSerializer<LambdaRequestJsonContext>))]
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
 namespace PollyUniverse.Voting.Func;
 
@@ -31,13 +28,7 @@ public class Function
 
         var services = new ServiceCollection();
 
-        services.AddSingleton(() => new FunctionConfig
-        {
-            TelegramClientDataTable = configuration["TELEGRAM_CLIENT_DATA_TABLE"],
-            VotingProfilesTable = configuration["VOTING_PROFILES_TABLE"],
-            S3Bucket = configuration["S3_BUCKET"],
-            IsDev = bool.TryParse(configuration["IS_DEV"], out var isDev) && isDev
-        });
+        services.Configure<FunctionConfig>(configuration.GetSection("Voting"));
 
         services.AddLogging(builder =>
         {
@@ -57,7 +48,6 @@ public class Function
         ServiceProvider = services.BuildServiceProvider();
     }
 
-    [LambdaFunction]
     public async Task HandleEvent(LambdaRequest request, ILambdaContext context)
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
@@ -69,6 +59,8 @@ public class Function
             {
                 throw new ArgumentNullException(nameof(request), "Lambda request cannot be null");
             }
+
+            logger.LogInformation("Received event: {Event}", JsonSerializer.Serialize(request));
 
             await handler.Handle(request);
         }
