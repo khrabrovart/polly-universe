@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "polly_universe" {
-  bucket = "polly-universe"
+  bucket = local.app_name
 }
 
 resource "aws_s3_bucket_versioning" "polly_universe" {
