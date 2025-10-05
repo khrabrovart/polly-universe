@@ -22,14 +22,10 @@ public class TelegramService : ITelegramService
     {
         _logger.LogInformation("Creating Telegram client");
 
-        return await CreateClientAndLogin(
-            sessionFilePath,
-            sessionMetadata.ApiId,
-            sessionMetadata.ApiHash,
-            sessionMetadata.PhoneNumber);
+        return await CreateClientAndLogin(sessionFilePath, sessionMetadata.ApiHash, sessionMetadata.PhoneNumber);
     }
 
-    private static async Task<Client> CreateClientAndLogin(string sessionFilePath, int apiId, string apiHash, string phoneNumber)
+    private static async Task<Client> CreateClientAndLogin(string sessionFilePath, string apiHash, string phoneNumber)
     {
         Helpers.Log = (_, _) => { };
 
@@ -37,7 +33,6 @@ public class TelegramService : ITelegramService
 
         var configFunc = new Func<string, string>(what => what switch
         {
-            "api_id" => apiId.ToString(),
             "api_hash" => apiHash,
             "phone_number" => phoneNumber,
             _ => null

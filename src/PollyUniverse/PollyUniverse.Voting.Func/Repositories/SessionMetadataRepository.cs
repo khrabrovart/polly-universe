@@ -36,7 +36,6 @@ public class SessionMetadataRepository : ISessionMetadataRepository
             : new SessionMetadata
             {
                 Id = item["Id"].S,
-                ApiId = int.Parse(item["ApiId"].N),
                 ApiHash = item["ApiHash"].S,
                 PhoneNumber = item["PhoneNumber"].S
             };
