@@ -12,8 +12,8 @@ using PollyUniverse.Voting.Func.Services;
 
 namespace PollyUniverse.Voting.Func;
 
-[JsonSerializable(typeof(LambdaRequest))]
-public partial class LambdaRequestJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(VotingRequest))]
+internal partial class LambdaRequestJsonContext : JsonSerializerContext { }
 
 public class Function
 {
@@ -48,7 +48,10 @@ public class Function
 
         services
             .AddTransient<IEventHandler, EventHandler>()
+
             .AddTransient<ITelegramService, TelegramService>()
+            .AddTransient<ISessionService, SessionService>()
+
             .AddTransient<ISessionMetadataRepository, SessionMetadataRepository>()
             .AddTransient<IVotingProfileRepository, VotingProfileRepository>()
             ;
@@ -56,7 +59,7 @@ public class Function
         ServiceProvider = services.BuildServiceProvider();
     }
 
-    public async Task HandleEvent(LambdaRequest request, ILambdaContext context)
+    public async Task HandleEvent(VotingRequest request, ILambdaContext context)
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
@@ -65,16 +68,19 @@ public class Function
         {
             if (request == null)
             {
-                throw new ArgumentNullException(nameof(request), "Lambda request cannot be null");
+                throw new ArgumentNullException(nameof(request), "Voting request cannot be null");
             }
 
-            logger.LogInformation("Processing request for ProfileId: {ProfileId}", request.ProfileId);
+            logger.LogInformation(
+                "Processing request for SessionId: {SessionId}, VotingProfileId: {ProfileId}",
+                request.SessionId,
+                request.VotingProfileId);
 
             await handler.Handle(request);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error while processing event");
+            logger.LogError(ex, "Error while processing voting request");
         }
     }
 }

@@ -1,72 +1,29 @@
 using Microsoft.Extensions.Logging;
-using PollyUniverse.Shared.AWS;
-using PollyUniverse.Voting.Func.Repositories;
+using PollyUniverse.Voting.Func.Models;
 using WTelegram;
 
 namespace PollyUniverse.Voting.Func.Services;
 
 public interface ITelegramService
 {
-    Task<Client> InitializeClient(string clientId);
+    Task<Client> InitializeClient(string sessionFilePath, SessionMetadata sessionMetadata);
 }
 
 public class TelegramService : ITelegramService
 {
-    private const string SessionBucketPrefix = "sessions";
-
-    private readonly ISessionMetadataRepository _sessionMetadataRepository;
-    private readonly IS3Client _s3Client;
-    private readonly FunctionConfig _config;
     private readonly ILogger<TelegramService> _logger;
-    private readonly string _localSessionFilePath = "/tmp/default.session";
 
-    public TelegramService(
-        ISessionMetadataRepository sessionMetadataRepository,
-        IS3Client s3Client,
-        FunctionConfig config,
-        ILogger<TelegramService> logger)
+    public TelegramService(ILogger<TelegramService> logger)
     {
-        _sessionMetadataRepository = sessionMetadataRepository;
-        _s3Client = s3Client;
-        _config = config;
         _logger = logger;
-
-        if (_config.IsDev)
-        {
-            _localSessionFilePath = "./tmp/default.session";
-        }
     }
 
-    public async Task<Client> InitializeClient(string clientId)
+    public async Task<Client> InitializeClient(string sessionFilePath, SessionMetadata sessionMetadata)
     {
-        _logger.LogInformation("Getting session file and metadata for ClientId: {ClientId}", clientId);
-
-        var downloadSessionFileTask = _s3Client.Download(
-            _config.S3Bucket,
-            $"{SessionBucketPrefix}/{clientId}.session",
-            _localSessionFilePath);
-
-        var getSessionMetadataTask = _sessionMetadataRepository.Get(clientId);
-
-        await Task.WhenAll(downloadSessionFileTask, getSessionMetadataTask);
-
-        var sessionFileDownloaded = downloadSessionFileTask.Result;
-        var sessionMetadata = getSessionMetadataTask.Result;
-
-        if (!sessionFileDownloaded)
-        {
-            throw new Exception($"Failed to download session file from S3: {clientId}");
-        }
-
-        if (sessionMetadata == null)
-        {
-            throw new Exception($"No session metadata found for ClientId: {clientId}");
-        }
-
-        _logger.LogInformation("Creating Telegram client for ClientId: {ClientId}", clientId);
+        _logger.LogInformation("Creating Telegram client");
 
         return await CreateClientAndLogin(
-            _localSessionFilePath,
+            sessionFilePath,
             sessionMetadata.ApiId,
             sessionMetadata.ApiHash,
             sessionMetadata.PhoneNumber);

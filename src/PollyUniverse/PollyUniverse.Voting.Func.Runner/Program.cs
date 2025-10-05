@@ -11,9 +11,10 @@ class Program
 
         var function = new Function();
 
-        var request = new LambdaRequest
+        var request = new VotingRequest
         {
-            ProfileId = "your_profile_id"
+            SessionId = "your_session_id",
+            VotingProfileId = "your_profile_id"
         };
 
         await function.HandleEvent(request, null);
