@@ -10,6 +10,8 @@ public interface ISessionService
 public class SessionService : ISessionService
 {
     private const string SessionBucketPrefix = "sessions";
+    private const string LocalSessionFileName = "default";
+
     private readonly IS3Client _s3Client;
     private readonly FunctionConfig _config;
     private readonly string _localSessionFilePath;
@@ -20,7 +22,7 @@ public class SessionService : ISessionService
         _config = config;
 
         var localFolder = _config.IsDev ? "./tmp" : "/tmp";
-        _localSessionFilePath = $"{localFolder}/default.session";
+        _localSessionFilePath = $"{localFolder}/{LocalSessionFileName}.session";
     }
 
     public async Task<string> DownloadSessionFile(string sessionId)
