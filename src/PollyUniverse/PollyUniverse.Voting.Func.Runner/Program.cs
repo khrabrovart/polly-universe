@@ -7,14 +7,14 @@ class Program
 {
     public static async Task Main(string[] args)
     {
-        DotEnv.Load();
+        DotEnv.Load(options: new DotEnvOptions(envFilePaths: ["dev.env"]));
 
         var function = new Function();
 
         var request = new VotingRequest
         {
-            SessionId = "your_session_id",
-            VotingProfileId = "your_profile_id"
+            SessionId = Environment.GetEnvironmentVariable("DEV__SESSION_ID")!,
+            VotingProfileId = Environment.GetEnvironmentVariable("DEV__VOTING_PROFILE_ID")!
         };
 
         await function.HandleEvent(request, null);
