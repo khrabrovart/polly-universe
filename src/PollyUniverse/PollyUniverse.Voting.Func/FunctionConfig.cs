@@ -11,7 +11,7 @@ public class FunctionConfig
         VotingProfilesTable = config.GetOrThrow("VOTING_PROFILES_TABLE");
         S3Bucket = config.GetOrThrow("S3_BUCKET");
         PollWaitingMinutes = int.Parse(config.GetOrThrow("POLL_WAITING_MINUTES"));
-        IsDev = bool.Parse(config.GetOrThrow("DEV:ENABLED"));
+        IsDev = bool.TryParse(config["DEV:ENABLED"], out var isDev) && isDev;
     }
 
     public string SessionMetadataTable { get; set; }
