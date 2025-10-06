@@ -2,18 +2,18 @@ using Microsoft.Extensions.Logging;
 using PollyUniverse.Voting.Func.Models;
 using WTelegram;
 
-namespace PollyUniverse.Voting.Func.Services;
+namespace PollyUniverse.Voting.Func.Services.Telegram;
 
-public interface ITelegramService
+public interface ITelegramClientService
 {
     Task<Client> InitializeClient(string sessionFilePath, SessionMetadata sessionMetadata);
 }
 
-public class TelegramService : ITelegramService
+public class TelegramClientService : ITelegramClientService
 {
-    private readonly ILogger<TelegramService> _logger;
+    private readonly ILogger<TelegramClientService> _logger;
 
-    public TelegramService(ILogger<TelegramService> logger)
+    public TelegramClientService(ILogger<TelegramClientService> logger)
     {
         _logger = logger;
     }

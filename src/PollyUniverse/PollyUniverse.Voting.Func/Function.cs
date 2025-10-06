@@ -4,9 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared;
+using PollyUniverse.Shared.Extensions;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
+using PollyUniverse.Voting.Func.Services.Telegram;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -27,13 +29,7 @@ public class Function
 
         var services = new ServiceCollection();
 
-        services.AddSingleton(new FunctionConfig
-        {
-            SessionMetadataTable = configuration["SESSION_METADATA_TABLE"],
-            VotingProfilesTable = configuration["VOTING_PROFILES_TABLE"],
-            S3Bucket = configuration["S3_BUCKET"],
-            IsDev = configuration["IS_DEV"] == "true"
-        });
+        services.AddSingleton(new FunctionConfig(configuration));
 
         services.AddLogging(builder =>
         {
@@ -49,8 +45,11 @@ public class Function
         services
             .AddTransient<IEventHandler, EventHandler>()
 
-            .AddTransient<ITelegramService, TelegramService>()
+            .AddTransient<ITelegramClientService, TelegramClientService>()
             .AddTransient<ISessionService, SessionService>()
+            .AddTransient<ITelegramPeerService, TelegramPeerService>()
+            .AddTransient<ITelegramPollService, TelegramPollService>()
+            .AddTransient<ITelegramVoteService, TelegramVoteService>()
 
             .AddTransient<ISessionMetadataRepository, SessionMetadataRepository>()
             .AddTransient<IVotingProfileRepository, VotingProfileRepository>()

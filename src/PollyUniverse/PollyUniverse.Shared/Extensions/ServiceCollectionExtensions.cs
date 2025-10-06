@@ -3,7 +3,7 @@ using Amazon.S3;
 using Microsoft.Extensions.DependencyInjection;
 using PollyUniverse.Shared.AWS;
 
-namespace PollyUniverse.Shared;
+namespace PollyUniverse.Shared.Extensions;
 
 public static class ServiceCollectionExtensions
 {

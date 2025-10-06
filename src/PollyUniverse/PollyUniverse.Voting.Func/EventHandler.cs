@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
+using PollyUniverse.Voting.Func.Services.Telegram;
 
 namespace PollyUniverse.Voting.Func;
 
@@ -15,20 +16,29 @@ public class EventHandler : IEventHandler
     private readonly ISessionService _sessionService;
     private readonly ISessionMetadataRepository _sessionMetadataRepository;
     private readonly IVotingProfileRepository _votingProfileRepository;
-    private readonly ITelegramService _telegramService;
+    private readonly ITelegramClientService _telegramClientService;
+    private readonly ITelegramPeerService _telegramPeerService;
+    private readonly ITelegramPollService _telegramPollService;
+    private readonly ITelegramVoteService _telegramVoteService;
     private readonly ILogger<EventHandler> _logger;
 
     public EventHandler(
         ISessionService sessionService,
         ISessionMetadataRepository sessionMetadataRepository,
         IVotingProfileRepository votingProfileRepository,
-        ITelegramService telegramService,
+        ITelegramClientService telegramClientService,
+        ITelegramPeerService telegramPeerService,
+        ITelegramPollService telegramPollService,
+        ITelegramVoteService telegramVoteService,
         ILogger<EventHandler> logger)
     {
         _sessionService = sessionService;
         _sessionMetadataRepository = sessionMetadataRepository;
         _votingProfileRepository = votingProfileRepository;
-        _telegramService = telegramService;
+        _telegramClientService = telegramClientService;
+        _telegramPeerService = telegramPeerService;
+        _telegramPollService = telegramPollService;
+        _telegramVoteService = telegramVoteService;
         _logger = logger;
     }
 
@@ -64,10 +74,43 @@ public class EventHandler : IEventHandler
             throw new Exception($"No voting profile found: {request.VotingProfileId}");
         }
 
-        _logger.LogInformation("Initializing Telegram client for SessionId: {SessionId}", votingProfile.SessionId);
+        if (request.SessionId != votingProfile.SessionId)
+        {
+            throw new Exception($"Voting profile session ID does not match request session ID: {request.VotingProfileId}");
+        }
 
-        var client = await _telegramService.InitializeClient(sessionFilePath, sessionMetadata);
+        _logger.LogInformation("Initializing Telegram client for SessionId: {SessionId}", request.SessionId);
+
+        var client = await _telegramClientService.InitializeClient(sessionFilePath, sessionMetadata);
 
         _logger.LogInformation("Logged in successfully as {User}", client.User);
+        _logger.LogInformation("Waiting for poll message for SessionId: {SessionId}", request.SessionId);
+
+        var inputPeerTask = _telegramPeerService.GetInputPeer(client, votingProfile.Poll.PeerId);
+        var pollMessageTask = _telegramPollService.WaitForPollMessage(client, votingProfile.Poll);
+
+        await Task.WhenAll(inputPeerTask, pollMessageTask);
+
+        var inputPeer = inputPeerTask.Result;
+        var pollMessage = pollMessageTask.Result;
+
+        if (inputPeer == null)
+        {
+            throw new Exception($"No input peer found: {votingProfile.Poll.PeerId}");
+        }
+
+        if (pollMessage == null)
+        {
+            throw new Exception("No poll message received within the waiting period");
+        }
+
+        _logger.LogInformation("Received poll message with MessageId: {MessageId}", pollMessage.MessageId);
+
+        var voted = await _telegramVoteService.Vote(client, inputPeer, pollMessage, votingProfile.Vote);
+
+        if (!voted)
+        {
+            throw new Exception($"Failed to vote on poll message: {pollMessage.MessageId}");
+        }
     }
 }
