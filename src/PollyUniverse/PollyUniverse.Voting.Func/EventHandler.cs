@@ -86,18 +86,14 @@ public class EventHandler : IEventHandler
         _logger.LogInformation("Logged in successfully as {User}", client.User);
         _logger.LogInformation("Waiting for poll message for SessionId: {SessionId}", request.SessionId);
 
-        var inputPeerTask = _telegramPeerService.GetInputPeer(client, votingProfile.Poll.PeerId);
-        var pollMessageTask = _telegramPollService.WaitForPollMessage(client, votingProfile.Poll);
-
-        await Task.WhenAll(inputPeerTask, pollMessageTask);
-
-        var inputPeer = inputPeerTask.Result;
-        var pollMessage = pollMessageTask.Result;
+        var inputPeer = await _telegramPeerService.GetInputPeer(client, votingProfile.Poll.PeerId);
 
         if (inputPeer == null)
         {
             throw new Exception($"No input peer found: {votingProfile.Poll.PeerId}");
         }
+
+        var pollMessage = await _telegramPollService.WaitForPollMessage(client, votingProfile.Poll);
 
         if (pollMessage == null)
         {
