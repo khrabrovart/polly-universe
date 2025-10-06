@@ -18,10 +18,14 @@ resource "aws_lambda_function" "voting_lambda" {
 
   environment {
     variables = {
-      SESSION_METADATA_TABLE = aws_dynamodb_table.session_metadata.name
-      VOTING_PROFILES_TABLE  = aws_dynamodb_table.voting_profiles.name
-      S3_BUCKET              = aws_s3_bucket.polly_universe.bucket
-      POLL_WAITING_MINUTES   = var.poll_waiting_minutes
+      SESSION_METADATA_TABLE          = aws_dynamodb_table.session_metadata.name
+      VOTING_PROFILES_TABLE           = aws_dynamodb_table.voting_profiles.name
+      S3_BUCKET                       = aws_s3_bucket.polly_universe.bucket
+      POLL_WAITING_MINUTES            = var.poll_waiting_minutes
+      BOT_TOKEN_PARAMETER             = aws_ssm_parameter.bot_token.name
+      NOTIFICATIONS_PEER_ID_PARAMETER = aws_ssm_parameter.notifications_peer_id.name
+      OPENAI_API_KEY_PARAMETER        = aws_ssm_parameter.openai_api_key.name
+      OPENAI_MODEL                    = var.openai_model
     }
   }
 

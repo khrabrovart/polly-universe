@@ -10,9 +10,11 @@ public interface ITelegramPeerService
 
 public class TelegramPeerService : ITelegramPeerService
 {
+    private Messages_Chats _chats;
+
     public async Task<InputPeer> GetInputPeer(Client telegramClient, long peerId)
     {
-        var allChats = await telegramClient.Messages_GetAllChats();
-        return allChats.chats[peerId].ToInputPeer();
+        _chats ??= await telegramClient.Messages_GetAllChats();
+        return _chats.chats.GetValueOrDefault(peerId);
     }
 }

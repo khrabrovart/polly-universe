@@ -43,16 +43,16 @@ public class Function
         services.AddSharedServices();
 
         services
-            .AddTransient<IEventHandler, EventHandler>()
+            .AddSingleton<IEventHandler, EventHandler>()
 
-            .AddTransient<ITelegramClientService, TelegramClientService>()
-            .AddTransient<ISessionService, SessionService>()
-            .AddTransient<ITelegramPeerService, TelegramPeerService>()
-            .AddTransient<ITelegramPollService, TelegramPollService>()
-            .AddTransient<ITelegramVoteService, TelegramVoteService>()
+            .AddSingleton<ITelegramClientService, TelegramClientService>()
+            .AddSingleton<ISessionService, SessionService>()
+            .AddSingleton<ITelegramPeerService, TelegramPeerService>()
+            .AddSingleton<ITelegramPollService, TelegramPollService>()
+            .AddSingleton<ITelegramVoteService, TelegramVoteService>()
 
-            .AddTransient<ISessionMetadataRepository, SessionMetadataRepository>()
-            .AddTransient<IVotingProfileRepository, VotingProfileRepository>()
+            .AddSingleton<ISessionMetadataRepository, SessionMetadataRepository>()
+            .AddSingleton<IVotingProfileRepository, VotingProfileRepository>()
             ;
 
         ServiceProvider = services.BuildServiceProvider();
