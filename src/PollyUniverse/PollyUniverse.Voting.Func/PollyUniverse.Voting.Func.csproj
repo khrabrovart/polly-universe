@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PollyUniverse.Shared.Aws\PollyUniverse.Shared.Aws.csproj" />
+      <ProjectReference Include="..\PollyUniverse.Shared.OpenAI\PollyUniverse.Shared.OpenAI.csproj" />
       <ProjectReference Include="..\PollyUniverse.Shared\PollyUniverse.Shared.csproj" />
     </ItemGroup>
 

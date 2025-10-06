@@ -21,6 +21,7 @@ public class EventHandler : IEventHandler
     private readonly ITelegramPollService _telegramPollService;
     private readonly ITelegramVoteService _telegramVoteService;
     private readonly ILogger<EventHandler> _logger;
+    private readonly FunctionConfig _config;
 
     public EventHandler(
         ISessionService sessionService,
@@ -30,7 +31,8 @@ public class EventHandler : IEventHandler
         ITelegramPeerService telegramPeerService,
         ITelegramPollService telegramPollService,
         ITelegramVoteService telegramVoteService,
-        ILogger<EventHandler> logger)
+        ILogger<EventHandler> logger,
+        FunctionConfig config)
     {
         _sessionService = sessionService;
         _sessionMetadataRepository = sessionMetadataRepository;
@@ -40,6 +42,7 @@ public class EventHandler : IEventHandler
         _telegramPollService = telegramPollService;
         _telegramVoteService = telegramVoteService;
         _logger = logger;
+        _config = config;
     }
 
     public async Task Handle(VotingRequest request)
@@ -93,7 +96,10 @@ public class EventHandler : IEventHandler
             throw new Exception($"No input peer found: {votingProfile.Poll.PeerId}");
         }
 
-        var pollMessage = await _telegramPollService.WaitForPollMessage(client, votingProfile.Poll);
+        var pollMessage = await _telegramPollService.WaitForPollMessage(
+            client,
+            votingProfile.Poll,
+            TimeSpan.FromMinutes(_config.PollWaitingMinutes));
 
         if (pollMessage == null)
         {

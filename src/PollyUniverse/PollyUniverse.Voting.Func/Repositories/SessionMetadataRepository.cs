@@ -1,5 +1,5 @@
 using Amazon.DynamoDBv2.Model;
-using PollyUniverse.Shared.AWS;
+using PollyUniverse.Shared.Aws.Services;
 using PollyUniverse.Voting.Func.Models;
 
 namespace PollyUniverse.Voting.Func.Repositories;
@@ -11,14 +11,14 @@ public interface ISessionMetadataRepository
 
 public class SessionMetadataRepository : ISessionMetadataRepository
 {
-    private readonly IDynamoDbClient _dynamoDbClient;
+    private readonly IDynamoDbService _dynamoDbService;
     private readonly FunctionConfig _config;
 
     public SessionMetadataRepository(
-        IDynamoDbClient dynamoDbClient,
+        IDynamoDbService dynamoDbService,
         FunctionConfig config)
     {
-        _dynamoDbClient = dynamoDbClient;
+        _dynamoDbService = dynamoDbService;
         _config = config;
     }
 
@@ -29,7 +29,7 @@ public class SessionMetadataRepository : ISessionMetadataRepository
             { "Id", new AttributeValue { S = clientId } }
         };
 
-        var item = await _dynamoDbClient.Get(_config.SessionMetadataTable, key);
+        var item = await _dynamoDbService.Get(_config.SessionMetadataTable, key);
 
         return item == null
             ? null

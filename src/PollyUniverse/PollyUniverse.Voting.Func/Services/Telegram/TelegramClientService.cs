@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using PollyUniverse.Voting.Func.Models;
 using WTelegram;
 
@@ -11,17 +10,8 @@ public interface ITelegramClientService
 
 public class TelegramClientService : ITelegramClientService
 {
-    private readonly ILogger<TelegramClientService> _logger;
-
-    public TelegramClientService(ILogger<TelegramClientService> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<Client> InitializeClient(string sessionFilePath, SessionMetadata sessionMetadata)
     {
-        _logger.LogInformation("Creating Telegram client");
-
         return await CreateClientAndLogin(sessionFilePath, sessionMetadata.ApiHash, sessionMetadata.PhoneNumber);
     }
 

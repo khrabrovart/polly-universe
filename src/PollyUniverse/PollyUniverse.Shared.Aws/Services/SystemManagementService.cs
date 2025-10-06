@@ -1,18 +1,18 @@
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 
-namespace PollyUniverse.Shared.AWS;
+namespace PollyUniverse.Shared.Aws.Services;
 
-public interface ISsmClient
+public interface ISystemManagementService
 {
     Task<string> GetParameter(string name);
 }
 
-public class SsmClient : ISsmClient
+public class SystemManagementService : ISystemManagementService
 {
     private readonly IAmazonSimpleSystemsManagement _ssmClient;
 
-    public SsmClient(IAmazonSimpleSystemsManagement ssmClient)
+    public SystemManagementService(IAmazonSimpleSystemsManagement ssmClient)
     {
         _ssmClient = ssmClient;
     }

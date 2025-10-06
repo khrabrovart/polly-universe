@@ -4,7 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared;
-using PollyUniverse.Shared.Extensions;
+using PollyUniverse.Shared.Aws;
+using PollyUniverse.Shared.Aws.Extensions;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
@@ -40,7 +41,7 @@ public class Function
             builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
         });
 
-        services.AddSharedServices();
+        services.AddAwsServices();
 
         services
             .AddSingleton<IEventHandler, EventHandler>()

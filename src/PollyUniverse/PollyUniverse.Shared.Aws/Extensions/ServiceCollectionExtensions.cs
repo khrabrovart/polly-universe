@@ -2,22 +2,22 @@ using Amazon.DynamoDBv2;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.Extensions.DependencyInjection;
-using PollyUniverse.Shared.AWS;
+using PollyUniverse.Shared.Aws.Services;
 
-namespace PollyUniverse.Shared.Extensions;
+namespace PollyUniverse.Shared.Aws.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddSharedServices(this IServiceCollection services)
+    public static void AddAwsServices(this IServiceCollection services)
     {
         services
             .AddAWSService<IAmazonDynamoDB>()
             .AddAWSService<IAmazonS3>()
             .AddAWSService<IAmazonSimpleSystemsManagement>()
 
-            .AddSingleton<IS3Client, S3Client>()
-            .AddSingleton<IDynamoDbClient, DynamoDbClient>()
-            .AddSingleton<ISsmClient, SsmClient>()
+            .AddSingleton<IS3Service, S3Service>()
+            .AddSingleton<IDynamoDbService, DynamoDbService>()
+            .AddSingleton<ISystemManagementService, SystemManagementService>()
             ;
     }
 }

@@ -6,19 +6,18 @@ namespace PollyUniverse.Voting.Func.Services.Telegram;
 
 public interface ITelegramPollService
 {
-    Task<PollMessage> WaitForPollMessage(Client telegramClient, VotingProfilePoll pollDescriptor);
+    Task<PollMessage> WaitForPollMessage(
+        Client telegramClient,
+        VotingProfilePoll pollDescriptor,
+        TimeSpan timeout);
 }
 
 public class TelegramPollService : ITelegramPollService
 {
-    private readonly FunctionConfig _config;
-
-    public TelegramPollService(FunctionConfig config)
-    {
-        _config = config;
-    }
-
-    public async Task<PollMessage> WaitForPollMessage(Client telegramClient, VotingProfilePoll pollDescriptor)
+    public async Task<PollMessage> WaitForPollMessage(
+        Client telegramClient,
+        VotingProfilePoll pollDescriptor,
+        TimeSpan timeout)
     {
         var tcs = new TaskCompletionSource<PollMessage>();
 
@@ -30,7 +29,7 @@ public class TelegramPollService : ITelegramPollService
 
         telegramClient.OnUpdates += handler;
 
-        var timeoutTask = Task.Delay(TimeSpan.FromMinutes(_config.PollWaitingMinutes));
+        var timeoutTask = Task.Delay(timeout);
         var pollTask = tcs.Task;
         var completedTask = await Task.WhenAny(pollTask, timeoutTask);
 
@@ -39,7 +38,10 @@ public class TelegramPollService : ITelegramPollService
         return completedTask == pollTask ? pollTask.Result : null;
     }
 
-    private static void FindPollMessage(VotingProfilePoll pollDescriptor, UpdatesBase updatesBase, TaskCompletionSource<PollMessage> tcs)
+    private static void FindPollMessage(
+        VotingProfilePoll pollDescriptor,
+        UpdatesBase updatesBase,
+        TaskCompletionSource<PollMessage> tcs)
     {
         foreach (var update in updatesBase.UpdateList)
         {

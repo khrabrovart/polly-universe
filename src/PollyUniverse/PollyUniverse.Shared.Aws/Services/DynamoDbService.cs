@@ -1,18 +1,18 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 
-namespace PollyUniverse.Shared.AWS;
+namespace PollyUniverse.Shared.Aws.Services;
 
-public interface IDynamoDbClient
+public interface IDynamoDbService
 {
     Task<Dictionary<string, AttributeValue>> Get(string tableName, Dictionary<string, AttributeValue> key);
 }
 
-public class DynamoDbClient : IDynamoDbClient
+public class DynamoDbService : IDynamoDbService
 {
     private readonly IAmazonDynamoDB _dynamoDbClient;
 
-    public DynamoDbClient(IAmazonDynamoDB dynamoDbClient)
+    public DynamoDbService(IAmazonDynamoDB dynamoDbClient)
     {
         _dynamoDbClient = dynamoDbClient;
     }

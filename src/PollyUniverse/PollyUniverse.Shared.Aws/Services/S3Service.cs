@@ -2,19 +2,19 @@ using System.Net;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace PollyUniverse.Shared.AWS;
+namespace PollyUniverse.Shared.Aws.Services;
 
-public interface IS3Client
+public interface IS3Service
 {
     Task<bool> Download(string bucketName, string objectKey, string filePath);
     Task<bool> Put(string bucketName, string objectKey, byte[] data);
 }
 
-public class S3Client : IS3Client
+public class S3Service : IS3Service
 {
     private readonly IAmazonS3 _s3Client;
 
-    public S3Client(IAmazonS3 s3Client)
+    public S3Service(IAmazonS3 s3Client)
     {
         _s3Client = s3Client;
     }

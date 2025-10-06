@@ -1,5 +1,5 @@
 using Amazon.DynamoDBv2.Model;
-using PollyUniverse.Shared.AWS;
+using PollyUniverse.Shared.Aws.Services;
 using PollyUniverse.Voting.Func.Models;
 
 namespace PollyUniverse.Voting.Func.Repositories;
@@ -11,14 +11,14 @@ public interface IVotingProfileRepository
 
 public class VotingProfileRepository : IVotingProfileRepository
 {
-    private readonly IDynamoDbClient _dynamoDbClient;
+    private readonly IDynamoDbService _dynamoDbService;
     private readonly FunctionConfig _config;
 
     public VotingProfileRepository(
-        IDynamoDbClient dynamoDbClient,
+        IDynamoDbService dynamoDbService,
         FunctionConfig config)
     {
-        _dynamoDbClient = dynamoDbClient;
+        _dynamoDbService = dynamoDbService;
         _config = config;
     }
 
@@ -29,7 +29,7 @@ public class VotingProfileRepository : IVotingProfileRepository
             { "Id", new AttributeValue { S = profileId } }
         };
 
-        var item = await _dynamoDbClient.Get(_config.VotingProfilesTable, key);
+        var item = await _dynamoDbService.Get(_config.VotingProfilesTable, key);
 
         return item == null
             ? null
