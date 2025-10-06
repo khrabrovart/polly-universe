@@ -21,11 +21,11 @@ public class TelegramVoteService : ITelegramVoteService
         PollMessage pollMessage,
         VotingProfileVote voteDescriptor)
     {
-        var update = await telegramClient.Messages_SendVote(
+        var updates = await telegramClient.Messages_SendVote(
             inputPeer,
             pollMessage.MessageId,
             pollMessage.Options[voteDescriptor.Index]);
 
-        return update.UpdateList[0] is UpdateMessagePoll;
+        return updates.UpdateList[0] is UpdateMessagePoll;
     }
 }

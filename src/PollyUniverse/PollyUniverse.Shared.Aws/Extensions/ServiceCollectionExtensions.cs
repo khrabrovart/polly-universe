@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
 
             .AddSingleton<IS3Service, S3Service>()
             .AddSingleton<IDynamoDbService, DynamoDbService>()
-            .AddSingleton<ISystemManagementService, SystemManagementService>()
+            .AddSingleton<ISystemsManagementService, SystemsManagementService>()
             ;
     }
 }

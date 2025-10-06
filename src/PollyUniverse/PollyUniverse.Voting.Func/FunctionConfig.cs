@@ -11,6 +11,11 @@ public class FunctionConfig
         VotingProfilesTable = config.GetOrThrow("VOTING_PROFILES_TABLE");
         S3Bucket = config.GetOrThrow("S3_BUCKET");
         PollWaitingMinutes = int.Parse(config.GetOrThrow("POLL_WAITING_MINUTES"));
+        BotTokenParameter = config.GetOrThrow("BOT_TOKEN_PARAMETER");
+        NotificationsPeerIdParameter = config.GetOrThrow("NOTIFICATIONS_PEER_ID_PARAMETER");
+        OpenAIApiKeyParameter = config.GetOrThrow("OPENAI_API_KEY_PARAMETER");
+        OpenAIModel = config.GetOrThrow("OPENAI_MODEL");
+
         IsDev = bool.TryParse(config["DEV:ENABLED"], out var isDev) && isDev;
     }
 
@@ -21,6 +26,14 @@ public class FunctionConfig
     public string S3Bucket { get; set; }
 
     public int PollWaitingMinutes { get; set; }
+
+    public string BotTokenParameter { get; set; }
+
+    public string NotificationsPeerIdParameter { get; set; }
+
+    public string OpenAIApiKeyParameter { get; set; }
+
+    public string OpenAIModel { get; set; }
 
     public bool IsDev { get; set; }
 }

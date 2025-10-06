@@ -1,22 +1,18 @@
-﻿using System.Text.Json.Serialization;
-using Amazon.Lambda.Core;
+﻿using Amazon.Lambda.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PollyUniverse.Shared;
-using PollyUniverse.Shared.Aws;
 using PollyUniverse.Shared.Aws.Extensions;
+using PollyUniverse.Shared.OpenAI.Extensions;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
+using PollyUniverse.Voting.Func.Services.Files;
 using PollyUniverse.Voting.Func.Services.Telegram;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
 namespace PollyUniverse.Voting.Func;
-
-[JsonSerializable(typeof(VotingRequest))]
-internal partial class LambdaRequestJsonContext : JsonSerializerContext { }
 
 public class Function
 {
@@ -29,8 +25,9 @@ public class Function
             .Build();
 
         var services = new ServiceCollection();
+        var functionConfig = new FunctionConfig(configuration);
 
-        services.AddSingleton(new FunctionConfig(configuration));
+        services.AddSingleton(functionConfig);
 
         services.AddLogging(builder =>
         {
@@ -42,15 +39,21 @@ public class Function
         });
 
         services.AddAwsServices();
+        services.AddOpenAIServices();
 
         services
             .AddSingleton<IEventHandler, EventHandler>()
 
+            .AddSingleton<IPromptFileService, PromptFileService>()
+            .AddSingleton<ISessionFileService, SessionFileService>()
+
             .AddSingleton<ITelegramClientService, TelegramClientService>()
-            .AddSingleton<ISessionService, SessionService>()
+            .AddSingleton<ITelegramMessageService, TelegramMessageService>()
             .AddSingleton<ITelegramPeerService, TelegramPeerService>()
             .AddSingleton<ITelegramPollService, TelegramPollService>()
             .AddSingleton<ITelegramVoteService, TelegramVoteService>()
+
+            .AddSingleton<IMessageCompositionService, MessageCompositionService>()
 
             .AddSingleton<ISessionMetadataRepository, SessionMetadataRepository>()
             .AddSingleton<IVotingProfileRepository, VotingProfileRepository>()
