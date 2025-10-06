@@ -35,6 +35,6 @@ public class MessageCompositionService : IMessageCompositionService
     private static string ApplyParameters(string prompt, Dictionary<string, string> parameters)
     {
         return parameters
-            .Aggregate(prompt, (current, param) => current.Replace($"{{{{{param.Key}}}}}", param.Value));
+            .Aggregate(prompt, (current, param) => current.Replace($"<%{param.Key}%>", param.Value));
     }
 }
