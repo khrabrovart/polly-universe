@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared.Aws.Extensions;
 using PollyUniverse.Shared.OpenAI.Extensions;
+using PollyUniverse.Shared.TelegramBot.Extensions;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Repositories;
 using PollyUniverse.Voting.Func.Services;
@@ -41,6 +42,7 @@ public class Function
 
         services.AddAwsServices();
         services.AddOpenAIServices();
+        services.AddTelegramBotServices();
 
         services
             .AddSingleton<IEventHandler, EventHandler>()

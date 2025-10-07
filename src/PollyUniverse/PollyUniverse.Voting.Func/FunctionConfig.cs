@@ -17,6 +17,8 @@ public class FunctionConfig
         OpenAIModel = config.GetOrThrow("OPENAI_MODEL");
 
         IsDev = bool.TryParse(config["DEV:ENABLED"], out var isDev) && isDev;
+        UseLocalPrompts = bool.TryParse(config["DEV:USE_LOCAL_PROMPTS"], out var useLocalPrompts) && useLocalPrompts;
+        FakeVotingResult = config["DEV:FAKE_VOTING_RESULT"];
     }
 
     public string SessionMetadataTable { get; set; }
@@ -35,5 +37,13 @@ public class FunctionConfig
 
     public string OpenAIModel { get; set; }
 
+    #region Development Settings
+
     public bool IsDev { get; set; }
+
+    public bool UseLocalPrompts { get; set; }
+
+    public string FakeVotingResult { get; set; }
+
+    #endregion
 }

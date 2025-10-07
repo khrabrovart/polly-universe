@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared.Aws.Services;
+using PollyUniverse.Shared.TelegramBot.Services;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Services.Telegram;
 using WTelegram;
@@ -8,40 +9,54 @@ namespace PollyUniverse.Voting.Func.Services;
 
 public interface INotificationService
 {
-    Task SendNotification(Client telegramClient, NotificationRequest notificationRequest);
+    Task SendNotification(Client telegramClient, VotingResult votingResult);
 }
 
 public class NotificationService : INotificationService
 {
     private readonly ISystemsManagementService _systemsManagementService;
-    private readonly ITelegramMessageService _telegramMessageService;
     private readonly ITelegramPeerService _telegramPeerService;
     private readonly IMessageCompositionService _messageCompositionService;
     private readonly IPromptService _promptService;
+    private readonly ITelegramBotService _telegramBotService;
     private readonly ILogger<NotificationService> _logger;
     private readonly FunctionConfig _config;
 
+    private readonly Dictionary<VotingResult, string> _votingResultPrompts = new()
+    {
+        { VotingResult.Success, "prompt_success" },
+        { VotingResult.PollNotFound, "prompt_poll_not_found" },
+        { VotingResult.VoteFailed, "prompt_vote_failed" }
+    };
+
     public NotificationService(
         ISystemsManagementService systemsManagementService,
-        ITelegramMessageService telegramMessageService,
         ITelegramPeerService telegramPeerService,
         IMessageCompositionService messageCompositionService,
         IPromptService promptService,
+        ITelegramBotService telegramBotService,
         ILogger<NotificationService> logger,
         FunctionConfig config)
     {
         _systemsManagementService = systemsManagementService;
-        _telegramMessageService = telegramMessageService;
         _telegramPeerService = telegramPeerService;
         _messageCompositionService = messageCompositionService;
         _promptService = promptService;
+        _telegramBotService = telegramBotService;
         _logger = logger;
         _config = config;
     }
 
-    public async Task SendNotification(Client telegramClient, NotificationRequest notificationRequest)
+    public async Task SendNotification(Client telegramClient, VotingResult votingResult)
     {
-        var promptTask = _promptService.GetFullPrompt("success");
+        var promptId = _votingResultPrompts.GetValueOrDefault(votingResult);
+
+        if (string.IsNullOrEmpty(promptId))
+        {
+            throw new Exception($"No prompt ID found for voting result: {votingResult}");
+        }
+
+        var promptTask = _promptService.GetFullPrompt(promptId);
         var ssmParametersTask = _systemsManagementService.GetParameters(
             _config.OpenAIApiKeyParameter,
             _config.BotTokenParameter,
@@ -87,7 +102,8 @@ public class NotificationService : INotificationService
 
         _logger.LogInformation("Sending notification message");
 
-        var messageSent = await _telegramMessageService.SendMessage(telegramClient, notificationsInputPeer, message);
+        var peerId = long.Parse($"-100{notificationsInputPeer.ID}");
+        var messageSent = await _telegramBotService.SendMessage(botToken, peerId, message);
 
         if (!messageSent)
         {

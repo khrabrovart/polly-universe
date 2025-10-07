@@ -39,10 +39,8 @@ public class EventHandler : IEventHandler
 
         var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
         var telegramClient = await _sessionService.InitializeTelegramClientWithSession(votingProfile.Session.Id);
-
-        await _votingService.WaitForPollAndVote(telegramClient, votingProfile);
-
-        await _notificationService.SendNotification(telegramClient, new NotificationRequest());
+        var votingResult = await _votingService.WaitForPollAndVote(telegramClient, votingProfile);
+        await _notificationService.SendNotification(telegramClient, votingResult);
 
         _logger.LogInformation(
             "Completed voting request for VotingProfileId: {VotingProfileId}",

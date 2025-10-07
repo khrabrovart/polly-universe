@@ -7,7 +7,7 @@ namespace PollyUniverse.Voting.Func.Services;
 
 public interface IVotingService
 {
-    Task WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile);
+    Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile);
 }
 
 public class VotingService : IVotingService
@@ -32,8 +32,14 @@ public class VotingService : IVotingService
         _config = config;
     }
 
-    public async Task WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile)
+    public async Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile)
     {
+        if (TryGetFakeResult(_config.FakeVotingResult, out var fakeResult))
+        {
+            _logger.LogInformation("Using fake voting result: {Result}", fakeResult);
+            return fakeResult;
+        }
+
         var votingInputPeer = await _telegramPeerService.GetInputPeer(telegramClient, votingProfile.Poll.PeerId);
 
         if (votingInputPeer == null)
@@ -50,16 +56,26 @@ public class VotingService : IVotingService
 
         if (pollMessage == null)
         {
-            throw new Exception("No poll message received within the waiting period");
+            return VotingResult.PollNotFound;
         }
 
         _logger.LogInformation("Received poll message with MessageId: {MessageId}", pollMessage.MessageId);
 
         var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, votingProfile.Session.VoteIndex);
 
-        if (!voted)
+        return voted ? VotingResult.Success : VotingResult.VoteFailed;
+
+    }
+
+    private static bool TryGetFakeResult(string status, out VotingResult result)
+    {
+        if (Enum.TryParse<VotingResult>(status, true, out var parsedResult))
         {
-            throw new Exception($"Failed to vote on poll message: {pollMessage.MessageId}");
+            result = parsedResult;
+            return true;
         }
+
+        result = default;
+        return false;
     }
 }

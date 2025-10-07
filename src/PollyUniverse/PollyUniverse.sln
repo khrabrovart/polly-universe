@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared", "Pol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared.OpenAI", "PollyUniverse.Shared.OpenAI\PollyUniverse.Shared.OpenAI.csproj", "{7AB70720-F452-492A-A133-5AA0DDC4CDC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared.TelegramBot", "PollyUniverse.Shared.TelegramBot\PollyUniverse.Shared.TelegramBot.csproj", "{264809C3-2579-42D4-A585-BDF06E37AAC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{7AB70720-F452-492A-A133-5AA0DDC4CDC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AB70720-F452-492A-A133-5AA0DDC4CDC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AB70720-F452-492A-A133-5AA0DDC4CDC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
