@@ -8,7 +8,7 @@ resource "aws_lambda_function" "voting_lambda" {
   filename      = data.archive_file.voting_lambda_zip.output_path
   function_name = "${local.app_name}-voting"
   role          = aws_iam_role.voting_lambda_role.arn
-  handler       = "PollyUniverse.Voting.Func::PollyUniverse.Voting.Func.Function::HandleEvent"
+  handler       = "PollyUniverse.Func.Voting::PollyUniverse.Func.Voting.Function::HandleEvent"
   runtime       = "dotnet8"
   timeout       = 300
   memory_size   = 512

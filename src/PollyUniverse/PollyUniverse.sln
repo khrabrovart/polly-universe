@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.Func", "PollyUniverse.Voting.Func\PollyUniverse.Voting.Func.csproj", "{63B0905F-6985-4714-91B2-B7F071CF5292}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Voting", "PollyUniverse.Func.Voting\PollyUniverse.Func.Voting.csproj", "{63B0905F-6985-4714-91B2-B7F071CF5292}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.Func.Runner", "PollyUniverse.Voting.Func.Runner\PollyUniverse.Voting.Func.Runner.csproj", "{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Voting.Runner", "PollyUniverse.Func.Voting.Runner\PollyUniverse.Func.Voting.Runner.csproj", "{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Tools.SessionInit", "PollyUniverse.Tools.SessionInit\PollyUniverse.Tools.SessionInit.csproj", "{B7D54A17-7437-43E0-A3C1-9EA06F644787}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared.TelegramBot", "PollyUniverse.Shared.TelegramBot\PollyUniverse.Shared.TelegramBot.csproj", "{264809C3-2579-42D4-A585-BDF06E37AAC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Tools.PromptTest", "PollyUniverse.Tools.PromptTest\PollyUniverse.Tools.PromptTest.csproj", "{D3EEBD87-63EF-47A4-8E97-7396758A70AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Scheduling", "PollyUniverse.Func.Scheduling\PollyUniverse.Func.Scheduling.csproj", "{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +56,9 @@ Global
 		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

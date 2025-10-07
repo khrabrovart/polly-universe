@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <AWSProjectType>Lambda</AWSProjectType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Amazon.Lambda.Core" Version="2.7.1" />
+      <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.4" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
+      <PackageReference Include="WTelegramClient" Version="4.3.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PollyUniverse.Shared.Aws\PollyUniverse.Shared.Aws.csproj" />
+      <ProjectReference Include="..\PollyUniverse.Shared.OpenAI\PollyUniverse.Shared.OpenAI.csproj" />
+      <ProjectReference Include="..\PollyUniverse.Shared.TelegramBot\PollyUniverse.Shared.TelegramBot.csproj" />
+      <ProjectReference Include="..\PollyUniverse.Shared\PollyUniverse.Shared.csproj" />
+    </ItemGroup>
+
+</Project>
