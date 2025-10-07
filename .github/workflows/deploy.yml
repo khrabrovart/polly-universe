@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build-voting:
-    name: 'Build Voting Function'
+    name: 'Voting'
     runs-on: ubuntu-latest
 
     defaults:
@@ -25,16 +25,16 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore Voting Function
+      - name: Restore
         run: dotnet restore PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj
 
-      - name: Build Voting Function
+      - name: Build
         run: dotnet build PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj --configuration Release --no-restore
 
-      - name: Publish Voting Function
+      - name: Publish
         run: dotnet publish PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj --configuration Release --output ./publish-voting
 
-      - name: Upload Voting Function Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: voting-lambda
@@ -42,7 +42,7 @@ jobs:
           retention-days: 1
 
   build-scheduling:
-    name: 'Build Scheduling Function'
+    name: 'Scheduling'
     runs-on: ubuntu-latest
 
     defaults:
@@ -58,16 +58,16 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore Scheduling Function
+      - name: Restore
         run: dotnet restore PollyUniverse.Func.Scheduling/PollyUniverse.Func.Scheduling.csproj
 
-      - name: Build Scheduling Function
+      - name: Build
         run: dotnet build PollyUniverse.Func.Scheduling/PollyUniverse.Func.Scheduling.csproj --configuration Release --no-restore
 
-      - name: Publish Scheduling Function
+      - name: Publish
         run: dotnet publish PollyUniverse.Func.Scheduling/PollyUniverse.Func.Scheduling.csproj --configuration Release --output ./publish-scheduling
 
-      - name: Upload Scheduling Function Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: scheduling-lambda
