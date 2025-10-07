@@ -103,7 +103,7 @@ resource "aws_iam_policy" "voting_lambda_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "kms:ViaService" = "ssm.${data.aws_region.current.name}.amazonaws.com"
+            "kms:ViaService" = "ssm.${data.aws_region.current.id}.amazonaws.com"
           }
         }
       }
