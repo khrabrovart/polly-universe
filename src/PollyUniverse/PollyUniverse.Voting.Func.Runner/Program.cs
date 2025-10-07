@@ -13,7 +13,6 @@ class Program
 
         var request = new VotingRequest
         {
-            SessionId = Environment.GetEnvironmentVariable("DEV__SESSION_ID"),
             VotingProfileId = Environment.GetEnvironmentVariable("DEV__VOTING_PROFILE_ID")
         };
 

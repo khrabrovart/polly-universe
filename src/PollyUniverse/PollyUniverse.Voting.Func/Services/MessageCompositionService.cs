@@ -7,7 +7,7 @@ public interface IMessageCompositionService
     Task<string> ComposeMessage(
         string openAiApiKey,
         string openAiModel,
-        string promptFilePath,
+        string prompt,
         Dictionary<string, string> parameters);
 }
 
@@ -23,11 +23,10 @@ public class MessageCompositionService : IMessageCompositionService
     public async Task<string> ComposeMessage(
         string openAiApiKey,
         string openAiModel,
-        string promptFilePath,
+        string prompt,
         Dictionary<string, string> parameters)
     {
-        var promptTemplate = await File.ReadAllTextAsync(promptFilePath);
-        var composedPrompt = ApplyParameters(promptTemplate, parameters);
+        var composedPrompt = ApplyParameters(prompt, parameters);
 
         return await _openAIService.CompleteChat(openAiApiKey, openAiModel, composedPrompt);
     }

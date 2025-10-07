@@ -36,16 +36,17 @@ public class VotingProfileRepository : IVotingProfileRepository
             : new VotingProfile
             {
                 Id = item["Id"].S,
-                SessionId = item["SessionId"].S,
                 Poll = new VotingProfilePoll
                 {
                     FromId = long.Parse(item["Poll"].M["FromId"].N),
                     PeerId = long.Parse(item["Poll"].M["PeerId"].N),
-                    UtcTime = TimeSpan.Parse(item["Poll"].M["UtcTime"].S),
+                    DayOfWeek = item["Poll"].M["DayOfWeek"].S,
+                    UtcTime = TimeSpan.Parse(item["Poll"].M["UtcTime"].S)
                 },
-                Vote = new VotingProfileVote
+                Session = new VotingProfileSession
                 {
-                    Index = int.Parse(item["Vote"].M["Index"].N)
+                    Id = item["Session"].M["Id"].S,
+                    VoteIndex = int.Parse(item["Session"].M["VoteIndex"].N)
                 }
             };
     }

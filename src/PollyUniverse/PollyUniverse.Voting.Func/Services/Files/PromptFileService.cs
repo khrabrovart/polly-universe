@@ -5,6 +5,7 @@ namespace PollyUniverse.Voting.Func.Services.Files;
 public interface IPromptFileService
 {
     Task<string> DownloadPromptFile(string promptId);
+    Task<Dictionary<string, string>> DownloadPromptFiles(params string[] promptIds);
 }
 
 public class PromptFileService : IPromptFileService
@@ -31,5 +32,18 @@ public class PromptFileService : IPromptFileService
         var success = await _s3Service.Download(_config.S3Bucket, remoteFilePath, localFilePath);
 
         return success ? localFilePath : null;
+    }
+
+    public async Task<Dictionary<string, string>> DownloadPromptFiles(params string[] promptIds)
+    {
+        var tasks = promptIds.Select(async promptId =>
+        {
+            var filePath = await DownloadPromptFile(promptId);
+            return (promptId, filePath);
+        });
+
+        var results = await Task.WhenAll(tasks);
+
+        return results.ToDictionary(result => result.promptId, result => result.filePath);
     }
 }

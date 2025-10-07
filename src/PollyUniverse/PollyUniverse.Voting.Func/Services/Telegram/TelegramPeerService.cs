@@ -10,11 +10,18 @@ public interface ITelegramPeerService
 
 public class TelegramPeerService : ITelegramPeerService
 {
-    private Messages_Chats _chats;
+    private static readonly Dictionary<long, Messages_Chats> ChatsByUser = new();
 
     public async Task<InputPeer> GetInputPeer(Client telegramClient, long peerId)
     {
-        _chats ??= await telegramClient.Messages_GetAllChats();
-        return _chats.chats.GetValueOrDefault(peerId);
+        var userId = telegramClient.User.id;
+
+        if (!ChatsByUser.TryGetValue(userId, out var chats))
+        {
+            chats = await telegramClient.Messages_GetAllChats();
+            ChatsByUser[userId] = chats;
+        }
+
+        return chats.chats.GetValueOrDefault(peerId);
     }
 }

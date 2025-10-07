@@ -10,7 +10,7 @@ public interface ITelegramVoteService
         Client telegramClient,
         InputPeer inputPeer,
         PollMessage pollMessage,
-        VotingProfileVote voteDescriptor);
+        int voteIndex);
 }
 
 public class TelegramVoteService : ITelegramVoteService
@@ -19,12 +19,12 @@ public class TelegramVoteService : ITelegramVoteService
         Client telegramClient,
         InputPeer inputPeer,
         PollMessage pollMessage,
-        VotingProfileVote voteDescriptor)
+        int voteIndex)
     {
         var updates = await telegramClient.Messages_SendVote(
             inputPeer,
             pollMessage.MessageId,
-            pollMessage.Options[voteDescriptor.Index]);
+            pollMessage.Options[voteIndex]);
 
         return updates.UpdateList[0] is UpdateMessagePoll;
     }

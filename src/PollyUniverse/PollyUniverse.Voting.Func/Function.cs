@@ -1,4 +1,5 @@
-﻿using Amazon.Lambda.Core;
+﻿using System.Text.Json;
+using Amazon.Lambda.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -54,6 +55,11 @@ public class Function
             .AddSingleton<ITelegramVoteService, TelegramVoteService>()
 
             .AddSingleton<IMessageCompositionService, MessageCompositionService>()
+            .AddSingleton<INotificationService, NotificationService>()
+            .AddSingleton<IPromptService, PromptService>()
+            .AddSingleton<ISessionService, SessionService>()
+            .AddSingleton<IVotingProfileService, VotingProfileService>()
+            .AddSingleton<IVotingService, VotingService>()
 
             .AddSingleton<ISessionMetadataRepository, SessionMetadataRepository>()
             .AddSingleton<IVotingProfileRepository, VotingProfileRepository>()
@@ -74,10 +80,7 @@ public class Function
                 throw new ArgumentNullException(nameof(request), "Voting request cannot be null");
             }
 
-            logger.LogInformation(
-                "Processing request for SessionId: {SessionId}, VotingProfileId: {ProfileId}",
-                request.SessionId,
-                request.VotingProfileId);
+            logger.LogInformation("Processing request {Request}", JsonSerializer.Serialize(request));
 
             await handler.Handle(request);
         }

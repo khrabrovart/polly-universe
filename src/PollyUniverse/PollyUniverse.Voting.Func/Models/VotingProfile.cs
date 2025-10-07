@@ -4,11 +4,9 @@ public class VotingProfile
 {
     public string Id { get; set; }
 
-    public string SessionId { get; set; }
+    public VotingProfileSession Session { get; set; }
 
     public VotingProfilePoll Poll { get; set; }
-
-    public VotingProfileVote Vote { get; set; }
 }
 
 public class VotingProfilePoll
@@ -17,10 +15,14 @@ public class VotingProfilePoll
 
     public long PeerId { get; set; }
 
+    public string DayOfWeek { get; set; }
+
     public TimeSpan UtcTime { get; set; }
 }
 
-public class VotingProfileVote
+public class VotingProfileSession
 {
-    public int Index { get; set; }
+    public string Id { get; set; }
+
+    public int VoteIndex { get; set; }
 }

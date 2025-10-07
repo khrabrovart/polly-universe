@@ -5,12 +5,12 @@ namespace PollyUniverse.Voting.Func.Services.Telegram;
 
 public interface ITelegramClientService
 {
-    Task<Client> InitializeClient(string sessionFilePath, SessionMetadata sessionMetadata);
+    Task<Client> CreateClient(string sessionFilePath, SessionMetadata sessionMetadata);
 }
 
 public class TelegramClientService : ITelegramClientService
 {
-    public async Task<Client> InitializeClient(string sessionFilePath, SessionMetadata sessionMetadata)
+    public async Task<Client> CreateClient(string sessionFilePath, SessionMetadata sessionMetadata)
     {
         return await CreateClientAndLogin(sessionFilePath, sessionMetadata.ApiHash, sessionMetadata.PhoneNumber);
     }
