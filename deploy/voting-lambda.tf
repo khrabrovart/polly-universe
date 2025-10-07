@@ -72,6 +72,13 @@ resource "aws_iam_policy" "voting_lambda_policy" {
       {
         Effect = "Allow"
         Action = [
+          "s3:ListBucket"
+        ]
+        Resource = aws_s3_bucket.polly_universe.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "s3:GetObject"
         ]
         Resource = "${aws_s3_bucket.polly_universe.arn}/*"
