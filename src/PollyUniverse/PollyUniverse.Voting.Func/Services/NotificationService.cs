@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared.Aws.Services;
 using PollyUniverse.Shared.TelegramBot.Services;
+using PollyUniverse.Voting.Func.Extensions;
 using PollyUniverse.Voting.Func.Models;
 using PollyUniverse.Voting.Func.Services.Telegram;
 using WTelegram;
@@ -102,8 +103,10 @@ public class NotificationService : INotificationService
 
         _logger.LogInformation("Sending notification message");
 
-        var peerId = long.Parse($"-100{notificationsInputPeer.ID}");
-        var messageSent = await _telegramBotService.SendMessage(botToken, peerId, message);
+        var messageSent = await _telegramBotService.SendMessage(
+            botToken,
+            notificationsInputPeer.GetTelegramPeerId(),
+            message);
 
         if (!messageSent)
         {
