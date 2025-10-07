@@ -1,11 +1,9 @@
-﻿using System.Text.Json;
-using Amazon.Lambda.Core;
+﻿using Amazon.Lambda.Core;
 using Amazon.Lambda.DynamoDBEvents;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared.Aws.Extensions;
-using PollyUniverse.Func.Scheduling.Models;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -53,7 +51,7 @@ public class Function
         {
             if (dynamoEvent == null)
             {
-                throw new ArgumentNullException(nameof(dynamoEvent), "DynamoDB event cannot be null");
+                throw new ArgumentNullException(nameof(dynamoEvent), "DynamoDB stream event cannot be null");
             }
 
             logger.LogInformation("Processing DynamoDB stream event with {RecordCount} records", dynamoEvent.Records.Count);
