@@ -1,49 +1,65 @@
+using Amazon.Lambda.DynamoDBEvents;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Scheduling.Models;
-using PollyUniverse.Func.Scheduling.Services;
+using System.Text.Json;
 
 namespace PollyUniverse.Func.Scheduling;
 
 public interface IEventHandler
 {
-    Task Handle(VotingRequest request);
+    Task Handle(DynamoDBEvent dynamoEvent);
 }
 
 public class EventHandler : IEventHandler
 {
-    private readonly INotificationService _notificationService;
-    private readonly ISessionService _sessionService;
-    private readonly IVotingProfileService _votingProfileService;
-    private readonly IVotingService _votingService;
     private readonly ILogger<EventHandler> _logger;
 
     public EventHandler(
-        INotificationService notificationService,
-        ISessionService sessionService,
-        IVotingProfileService votingProfileService,
-        IVotingService votingService,
         ILogger<EventHandler> logger)
     {
-        _notificationService = notificationService;
-        _sessionService = sessionService;
-        _votingProfileService = votingProfileService;
-        _votingService = votingService;
         _logger = logger;
     }
 
-    public async Task Handle(VotingRequest request)
+    public async Task Handle(DynamoDBEvent dynamoEvent)
     {
-        _logger.LogInformation(
-            "Handling voting request for VotingProfileId: {VotingProfileId}",
-            request.VotingProfileId);
+        _logger.LogInformation("Handling DynamoDB stream event with {RecordCount} records", dynamoEvent.Records.Count);
 
-        var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
-        var telegramClient = await _sessionService.InitializeTelegramClientWithSession(votingProfile.Session.Id);
-        var votingResult = await _votingService.WaitForPollAndVote(telegramClient, votingProfile);
-        await _notificationService.SendNotification(telegramClient, votingResult);
+        foreach (var record in dynamoEvent.Records)
+        {
+            await ProcessDynamoDBRecord(record);
+        }
 
-        _logger.LogInformation(
-            "Completed voting request for VotingProfileId: {VotingProfileId}",
-            request.VotingProfileId);
+        _logger.LogInformation("DynamoDB stream event handled successfully");
+    }
+
+    private async Task ProcessDynamoDBRecord(DynamoDBEvent.DynamodbStreamRecord record)
+    {
+        try
+        {
+            _logger.LogInformation("Processing DynamoDB stream record from source: {EventSourceArn}", record.EventSourceArn);
+
+            // Log the record details for debugging
+            _logger.LogInformation("Record details: {Record}", JsonSerializer.Serialize(record));
+
+            // For now, just demonstrate that we can receive the events
+
+            await SchedulePoll();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing DynamoDB record");
+            throw;
+        }
+    }
+
+    private async Task SchedulePoll()
+    {
+        // This could involve:
+        // 1. Creating EventBridge rules for scheduled execution
+        // 2. Storing schedule information in DynamoDB
+        // 3. Calculating next execution time based on DayOfWeek and UtcTime
+
+        _logger.LogInformation("Processing DynamoDB stream event for poll scheduling");
+        await Task.CompletedTask;
     }
 }

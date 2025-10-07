@@ -25,20 +25,36 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore
+      - name: Restore Voting Function
         run: dotnet restore PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj
 
-      - name: Build
+      - name: Build Voting Function
         run: dotnet build PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj --configuration Release --no-restore
 
-      - name: Publish
-        run: dotnet publish PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj --configuration Release --output ./publish
+      - name: Publish Voting Function
+        run: dotnet publish PollyUniverse.Func.Voting/PollyUniverse.Func.Voting.csproj --configuration Release --output ./publish-voting
 
-      - name: Upload Artifact
+      - name: Upload Voting Function Artifact
         uses: actions/upload-artifact@v4
         with:
           name: voting-lambda
-          path: ./src/PollyUniverse/publish/
+          path: ./src/PollyUniverse/publish-voting/
+          retention-days: 1
+
+      - name: Restore Scheduling Function
+        run: dotnet restore PollyUniverse.Func.Scheduling/PollyUniverse.Func.Scheduling.csproj
+
+      - name: Build Scheduling Function
+        run: dotnet build PollyUniverse.Func.Scheduling/PollyUniverse.Func.Scheduling.csproj --configuration Release --no-restore
+
+      - name: Publish Scheduling Function
+        run: dotnet publish PollyUniverse.Func.Scheduling/PollyUniverse.Func.Scheduling.csproj --configuration Release --output ./publish-scheduling
+
+      - name: Upload Scheduling Function Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scheduling-lambda
+          path: ./src/PollyUniverse/publish-scheduling/
           retention-days: 1
 
   plan:
@@ -54,11 +70,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Artifact
+      - name: Download Voting Function Artifact
         uses: actions/download-artifact@v4
         with:
           name: voting-lambda
           path: ./voting-lambda
+
+      - name: Download Scheduling Function Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: scheduling-lambda
+          path: ./scheduling-lambda
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -101,11 +123,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Artifact
+      - name: Download Voting Function Artifact
         uses: actions/download-artifact@v4
         with:
           name: voting-lambda
           path: ./voting-lambda
+
+      - name: Download Scheduling Function Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: scheduling-lambda
+          path: ./scheduling-lambda
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
