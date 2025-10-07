@@ -75,6 +75,30 @@ resource "aws_iam_policy" "voting_lambda_policy" {
           "s3:GetObject"
         ]
         Resource = "${aws_s3_bucket.polly_universe.arn}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Resource = [
+          aws_ssm_parameter.bot_token.arn,
+          aws_ssm_parameter.notifications_peer_id.arn,
+          aws_ssm_parameter.openai_api_key.arn
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "ssm.${data.aws_region.current.name}.amazonaws.com"
+          }
+        }
       }
     ]
   })
