@@ -3,7 +3,7 @@ using PollyUniverse.Voting.Func.Models;
 
 namespace PollyUniverse.Voting.Func.Runner;
 
-class Program
+public class Program
 {
     public static async Task Main(string[] args)
     {

@@ -17,7 +17,7 @@ public class NotificationService : INotificationService
 {
     private readonly ISystemsManagementService _systemsManagementService;
     private readonly ITelegramPeerService _telegramPeerService;
-    private readonly IMessageCompositionService _messageCompositionService;
+    private readonly IMessageComposeService _messageComposeService;
     private readonly IPromptService _promptService;
     private readonly ITelegramBotService _telegramBotService;
     private readonly ILogger<NotificationService> _logger;
@@ -33,7 +33,7 @@ public class NotificationService : INotificationService
     public NotificationService(
         ISystemsManagementService systemsManagementService,
         ITelegramPeerService telegramPeerService,
-        IMessageCompositionService messageCompositionService,
+        IMessageComposeService messageComposeService,
         IPromptService promptService,
         ITelegramBotService telegramBotService,
         ILogger<NotificationService> logger,
@@ -41,7 +41,7 @@ public class NotificationService : INotificationService
     {
         _systemsManagementService = systemsManagementService;
         _telegramPeerService = telegramPeerService;
-        _messageCompositionService = messageCompositionService;
+        _messageComposeService = messageComposeService;
         _promptService = promptService;
         _telegramBotService = telegramBotService;
         _logger = logger;
@@ -95,7 +95,7 @@ public class NotificationService : INotificationService
             throw new Exception($"No input peer found for notifications: {notificationsPeerId}");
         }
 
-        var message = await _messageCompositionService.ComposeMessage(
+        var message = await _messageComposeService.ComposeMessage(
             openAiApiKey,
             _config.OpenAIModel,
             prompt,

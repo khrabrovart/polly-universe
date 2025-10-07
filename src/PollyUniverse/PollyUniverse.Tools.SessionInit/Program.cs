@@ -1,6 +1,6 @@
 ﻿using dotenv.net;
 
-namespace PollyUniverse.Voting.SessionInit;
+namespace PollyUniverse.Tools.SessionInit;
 
 class Program
 {
@@ -8,7 +8,8 @@ class Program
 
     public static async Task Main(string[] args)
     {
-        DotEnv.Load();
+        DotEnv.Load(options: new DotEnvOptions(envFilePaths: [".env", ".env.dev"]));
+
         WTelegram.Helpers.Log = (_, _) => { };
 
         var sessionFilePath = Path.Combine(AppContext.BaseDirectory, SessionFileName);

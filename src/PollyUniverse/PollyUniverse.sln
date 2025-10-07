@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.Func",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.Func.Runner", "PollyUniverse.Voting.Func.Runner\PollyUniverse.Voting.Func.Runner.csproj", "{21CFFB68-1C21-45A9-ACB3-1FFDEA23FF5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Voting.SessionInit", "PollyUniverse.Voting.SessionInit\PollyUniverse.Voting.SessionInit.csproj", "{B7D54A17-7437-43E0-A3C1-9EA06F644787}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Tools.SessionInit", "PollyUniverse.Tools.SessionInit\PollyUniverse.Tools.SessionInit.csproj", "{B7D54A17-7437-43E0-A3C1-9EA06F644787}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared.Aws", "PollyUniverse.Shared.Aws\PollyUniverse.Shared.Aws.csproj", "{AFA6179F-2A73-4710-ADAF-CB831240C84A}"
 EndProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared.OpenAI", "PollyUniverse.Shared.OpenAI\PollyUniverse.Shared.OpenAI.csproj", "{7AB70720-F452-492A-A133-5AA0DDC4CDC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Shared.TelegramBot", "PollyUniverse.Shared.TelegramBot\PollyUniverse.Shared.TelegramBot.csproj", "{264809C3-2579-42D4-A585-BDF06E37AAC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Tools.PromptTest", "PollyUniverse.Tools.PromptTest\PollyUniverse.Tools.PromptTest.csproj", "{D3EEBD87-63EF-47A4-8E97-7396758A70AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +50,9 @@ Global
 		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{264809C3-2579-42D4-A585-BDF06E37AAC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3EEBD87-63EF-47A4-8E97-7396758A70AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

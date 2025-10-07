@@ -56,7 +56,7 @@ public class Function
             .AddSingleton<ITelegramPollService, TelegramPollService>()
             .AddSingleton<ITelegramVoteService, TelegramVoteService>()
 
-            .AddSingleton<IMessageCompositionService, MessageCompositionService>()
+            .AddSingleton<IMessageComposeService, MessageComposeService>()
             .AddSingleton<INotificationService, NotificationService>()
             .AddSingleton<IPromptService, PromptService>()
             .AddSingleton<ISessionService, SessionService>()

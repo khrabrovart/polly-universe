@@ -2,7 +2,7 @@ using PollyUniverse.Shared.OpenAI.Services;
 
 namespace PollyUniverse.Voting.Func.Services;
 
-public interface IMessageCompositionService
+public interface IMessageComposeService
 {
     Task<string> ComposeMessage(
         string openAiApiKey,
@@ -11,11 +11,11 @@ public interface IMessageCompositionService
         Dictionary<string, string> parameters);
 }
 
-public class MessageCompositionService : IMessageCompositionService
+public class MessageComposeService : IMessageComposeService
 {
     private readonly IOpenAIService _openAIService;
 
-    public MessageCompositionService(IOpenAIService openAIService)
+    public MessageComposeService(IOpenAIService openAIService)
     {
         _openAIService = openAIService;
     }
