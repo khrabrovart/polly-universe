@@ -53,7 +53,15 @@ public class VotingProfileRepository : IVotingProfileRepository
                 Id = item["Session"].M["Id"].S,
                 Enabled = item["Session"].M["Enabled"].BOOL ?? false,
                 VoteIndex = int.Parse(item["Session"].M["VoteIndex"].N)
-            }
+            },
+            Sessions = item["Sessions"].L
+                .Select(session => new VotingProfileSession
+                {
+                    Id = session.M["Id"].S,
+                    Enabled = session.M["Enabled"].BOOL ?? false,
+                    VoteIndex = int.Parse(session.M["VoteIndex"].N)
+                })
+                .ToList()
         };
     }
 
@@ -83,6 +91,19 @@ public class VotingProfileRepository : IVotingProfileRepository
                         { "Enabled", new AttributeValue { BOOL = votingProfile.Session.Enabled } },
                         { "VoteIndex", new AttributeValue { N = votingProfile.Session.VoteIndex.ToString() } }
                     }
+                }
+            },
+            { "Sessions", new AttributeValue
+                {
+                    L = votingProfile.Sessions.Select(session => new AttributeValue
+                    {
+                        M = new Dictionary<string, AttributeValue>
+                        {
+                            { "Id", new AttributeValue { S = session.Id } },
+                            { "Enabled", new AttributeValue { BOOL = session.Enabled } },
+                            { "VoteIndex", new AttributeValue { N = session.VoteIndex.ToString() } }
+                        }
+                    }).ToList()
                 }
             }
         };

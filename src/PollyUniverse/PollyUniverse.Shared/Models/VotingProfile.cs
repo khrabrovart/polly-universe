@@ -6,9 +6,11 @@ public class VotingProfile
 
     public required bool Enabled { get; set; }
 
+    public required VotingProfilePoll Poll { get; set; }
+
     public required VotingProfileSession Session { get; set; }
 
-    public required VotingProfilePoll Poll { get; set; }
+    public required List<VotingProfileSession> Sessions { get; set; }
 }
 
 public class VotingProfilePoll

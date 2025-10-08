@@ -56,31 +56,39 @@ public class EventHandler : IEventHandler
         }
     }
 
-    private static VotingProfile ToVotingProfile(Dictionary<string, DynamoDBEvent.AttributeValue> record)
+    private static VotingProfile ToVotingProfile(Dictionary<string, DynamoDBEvent.AttributeValue> item)
     {
-        if (record == null)
+        if (item == null)
         {
             return null;
         }
 
         return new VotingProfile
         {
-            Id = record["Id"].S,
-            Enabled = record["Enabled"].BOOL ?? false,
+            Id = item["Id"].S,
+            Enabled = item["Enabled"].BOOL ?? false,
             Poll = new VotingProfilePoll
             {
-                FromId = long.Parse(record["Poll"].M["FromId"].N),
-                PeerId = long.Parse(record["Poll"].M["PeerId"].N),
-                DayOfWeek = Enum.Parse<DayOfWeek>(record["Poll"].M["DayOfWeek"].S),
-                Time = TimeSpan.Parse(record["Poll"].M["Time"].S),
-                Timezone = record["Poll"].M["Timezone"].S
+                FromId = long.Parse(item["Poll"].M["FromId"].N),
+                PeerId = long.Parse(item["Poll"].M["PeerId"].N),
+                DayOfWeek = Enum.Parse<DayOfWeek>(item["Poll"].M["DayOfWeek"].S),
+                Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
+                Timezone = item["Poll"].M["Timezone"].S
             },
             Session = new VotingProfileSession
             {
-                Id = record["Session"].M["Id"].S,
-                Enabled = record["Session"].M["Enabled"].BOOL ?? false,
-                VoteIndex = int.Parse(record["Session"].M["VoteIndex"].N)
-            }
+                Id = item["Session"].M["Id"].S,
+                Enabled = item["Session"].M["Enabled"].BOOL ?? false,
+                VoteIndex = int.Parse(item["Session"].M["VoteIndex"].N)
+            },
+            Sessions = item["Sessions"].L
+                .Select(session => new VotingProfileSession
+                {
+                    Id = session.M["Id"].S,
+                    Enabled = session.M["Enabled"].BOOL ?? false,
+                    VoteIndex = int.Parse(session.M["VoteIndex"].N)
+                })
+                .ToList()
         };
     }
 

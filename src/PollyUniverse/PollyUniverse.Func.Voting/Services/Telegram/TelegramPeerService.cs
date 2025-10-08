@@ -20,7 +20,7 @@ public class TelegramPeerService : ITelegramPeerService
         if (!ChatsByUser.TryGetValue(userId, out var chats))
         {
             chats = await telegramClient.Messages_GetAllChats();
-            ChatsByUser[userId] = chats;
+            ChatsByUser.TryAdd(userId, chats);
         }
 
         return chats.chats.GetValueOrDefault(peerId);

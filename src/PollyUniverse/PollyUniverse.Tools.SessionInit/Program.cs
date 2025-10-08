@@ -5,15 +5,15 @@ namespace PollyUniverse.Tools.SessionInit;
 
 class Program
 {
-    private const string SessionFileName = "default.session";
-
     public static async Task Main(string[] args)
     {
         DotEnv.Load(options: new DotEnvOptions(envFilePaths: [".env", ".env.dev"]));
 
         WTelegram.Helpers.Log = (_, _) => { };
 
-        var sessionFilePath = Path.Combine(AppContext.BaseDirectory, SessionFileName);
+        var apiId = Environment.GetEnvironmentVariable("API_ID");
+        var sessionFileName = $"{apiId}.session";
+        var sessionFilePath = Path.Combine(AppContext.BaseDirectory, sessionFileName);
 
         await using var sessionStream = File.Open(sessionFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
         await using var client = new WTelegram.Client(Config, sessionStream);
@@ -38,6 +38,7 @@ class Program
     private static string ReadPassword()
     {
         Console.Write("Enter password: ");
+
         var password = new StringBuilder();
         var completed = false;
 
