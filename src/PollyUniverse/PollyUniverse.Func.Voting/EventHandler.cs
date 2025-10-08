@@ -40,6 +40,21 @@ public class EventHandler : IEventHandler
 
         var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
 
+        var duplicateSessions = votingProfile.Sessions
+            .GroupBy(s => s.Id)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
+
+        if (duplicateSessions.Any())
+        {
+            _logger.LogError(
+                "Duplicate session IDs found in VotingProfileId: {VotingProfileId}",
+                request.VotingProfileId);
+
+            return;
+        }
+
         var sessionTasks = votingProfile.Sessions
             .Select(session => ProcessSession(votingProfile.Poll, session));
 
