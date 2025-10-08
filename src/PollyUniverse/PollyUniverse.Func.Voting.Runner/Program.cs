@@ -16,6 +16,6 @@ public class Program
             VotingProfileId = Environment.GetEnvironmentVariable("DEV__VOTING_PROFILE_ID")
         };
 
-        await function.HandleEvent(request, null);
+        await function.Handle(request, null);
     }
 }

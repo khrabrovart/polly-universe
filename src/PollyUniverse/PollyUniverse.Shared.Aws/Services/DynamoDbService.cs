@@ -6,6 +6,8 @@ namespace PollyUniverse.Shared.Aws.Services;
 public interface IDynamoDbService
 {
     Task<Dictionary<string, AttributeValue>> Get(string tableName, Dictionary<string, AttributeValue> key);
+
+    Task Put(string tableName, Dictionary<string, AttributeValue> item);
 }
 
 public class DynamoDbService : IDynamoDbService
@@ -20,7 +22,11 @@ public class DynamoDbService : IDynamoDbService
     public async Task<Dictionary<string, AttributeValue>> Get(string tableName, Dictionary<string, AttributeValue> key)
     {
         var response = await _dynamoDbClient.GetItemAsync(tableName, key);
-
         return !response.IsItemSet ? null : response.Item;
+    }
+
+    public async Task Put(string tableName, Dictionary<string, AttributeValue> item)
+    {
+        await _dynamoDbClient.PutItemAsync(tableName, item);
     }
 }

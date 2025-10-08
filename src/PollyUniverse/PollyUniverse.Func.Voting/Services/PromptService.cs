@@ -16,8 +16,8 @@ public class PromptService : IPromptService
     private const string SystemFormatPromptId = "system_format";
 
     private readonly IPromptFileService _promptFileService;
-    private ILogger<PromptService> _logger;
-    private FunctionConfig _config;
+    private readonly ILogger<PromptService> _logger;
+    private readonly FunctionConfig _config;
 
     public PromptService(
         IPromptFileService promptFileService,

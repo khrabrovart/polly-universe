@@ -1,0 +1,34 @@
+namespace PollyUniverse.Shared.Models;
+
+public class VotingProfile
+{
+    public required string Id { get; set; }
+
+    public required bool Enabled { get; set; }
+
+    public required VotingProfileSession Session { get; set; }
+
+    public required VotingProfilePoll Poll { get; set; }
+}
+
+public class VotingProfilePoll
+{
+    public required long FromId { get; set; }
+
+    public required long PeerId { get; set; }
+
+    public required string DayOfWeek { get; set; }
+
+    public required TimeSpan Time { get; set; }
+
+    public required string Timezone { get; set; }
+}
+
+public class VotingProfileSession
+{
+    public required string Id { get; set; }
+
+    public required bool Enabled { get; set; }
+
+    public required int VoteIndex { get; set; }
+}

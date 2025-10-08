@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Tools.PromptT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Scheduling", "PollyUniverse.Func.Scheduling\PollyUniverse.Func.Scheduling.csproj", "{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Scheduling.Runner", "PollyUniverse.Func.Scheduling.Runner\PollyUniverse.Func.Scheduling.Runner.csproj", "{3974437C-F7BA-40B3-835F-13575D233AAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E51E55F-DB4B-4348-9FF2-0D30EFA73EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3974437C-F7BA-40B3-835F-13575D233AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3974437C-F7BA-40B3-835F-13575D233AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3974437C-F7BA-40B3-835F-13575D233AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3974437C-F7BA-40B3-835F-13575D233AAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

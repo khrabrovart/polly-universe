@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
-using PollyUniverse.Func.Voting.Repositories;
 using PollyUniverse.Func.Voting.Services.Files;
 using PollyUniverse.Func.Voting.Services.Telegram;
+using PollyUniverse.Shared.Repositories;
 using WTelegram;
 
 namespace PollyUniverse.Func.Voting.Services;

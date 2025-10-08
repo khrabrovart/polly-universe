@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Encodings.Web;
 using Flurl.Http;
 using Flurl.Http.Configuration;
@@ -30,6 +31,6 @@ public class TelegramBotService : ITelegramBotService
                 parse_mode = "Markdown"
             });
 
-        return response.StatusCode == 200;
+        return response.StatusCode == (int)HttpStatusCode.OK;
     }
 }

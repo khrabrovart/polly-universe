@@ -1,9 +1,13 @@
-﻿using Amazon.Lambda.Core;
+﻿using System.Text.Json;
+using Amazon.Lambda.Core;
 using Amazon.Lambda.DynamoDBEvents;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PollyUniverse.Func.Scheduling.Comparers;
+using PollyUniverse.Func.Scheduling.Services;
 using PollyUniverse.Shared.Aws.Extensions;
+using PollyUniverse.Shared.Extensions;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -33,30 +37,35 @@ public class Function
             builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
         });
 
+        services.AddSharedServices();
         services.AddAwsServices();
 
         services
             .AddSingleton<IEventHandler, EventHandler>()
+
+            .AddSingleton<IVotingProfileComparer, VotingProfileComparer>()
+
+            .AddSingleton<IVotingScheduleService, VotingScheduleService>()
             ;
 
         ServiceProvider = services.BuildServiceProvider();
     }
 
-    public async Task HandleEvent(DynamoDBEvent dynamoEvent, ILambdaContext context)
+    public async Task Handle(DynamoDBEvent evt, ILambdaContext context)
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
 
         try
         {
-            if (dynamoEvent == null)
+            if (evt == null)
             {
-                throw new ArgumentNullException(nameof(dynamoEvent), "DynamoDB stream event cannot be null");
+                throw new ArgumentNullException(nameof(evt), "DynamoDB stream event cannot be null");
             }
 
-            logger.LogInformation("Processing DynamoDB stream event with {RecordCount} records", dynamoEvent.Records.Count);
+            logger.LogInformation("Processing DynamoDB stream event {Request}", JsonSerializer.Serialize(evt));
 
-            await handler.Handle(dynamoEvent);
+            await handler.Handle(evt);
         }
         catch (Exception ex)
         {

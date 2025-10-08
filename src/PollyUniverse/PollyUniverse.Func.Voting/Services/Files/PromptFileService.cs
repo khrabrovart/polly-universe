@@ -5,6 +5,7 @@ namespace PollyUniverse.Func.Voting.Services.Files;
 public interface IPromptFileService
 {
     Task<string> DownloadPromptFile(string promptId);
+
     Task<Dictionary<string, string>> DownloadPromptFiles(params string[] promptIds);
 }
 

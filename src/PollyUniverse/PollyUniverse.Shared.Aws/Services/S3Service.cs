@@ -7,6 +7,7 @@ namespace PollyUniverse.Shared.Aws.Services;
 public interface IS3Service
 {
     Task<bool> Download(string bucketName, string objectKey, string filePath);
+
     Task<bool> Put(string bucketName, string objectKey, byte[] data);
 }
 
@@ -51,7 +52,6 @@ public class S3Service : IS3Service
         };
 
         var response = await _s3Client.PutObjectAsync(request);
-
         return response.HttpStatusCode == HttpStatusCode.OK;
     }
 }

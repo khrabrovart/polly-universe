@@ -1,5 +1,5 @@
-using PollyUniverse.Func.Voting.Models;
-using PollyUniverse.Func.Voting.Repositories;
+using PollyUniverse.Shared.Models;
+using PollyUniverse.Shared.Repositories;
 
 namespace PollyUniverse.Func.Voting.Services;
 

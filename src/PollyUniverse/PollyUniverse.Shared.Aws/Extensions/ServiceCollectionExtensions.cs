@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.S3;
+using Amazon.Scheduler;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.Extensions.DependencyInjection;
 using PollyUniverse.Shared.Aws.Services;
@@ -13,10 +14,12 @@ public static class ServiceCollectionExtensions
         services
             .AddAWSService<IAmazonDynamoDB>()
             .AddAWSService<IAmazonS3>()
+            .AddAWSService<IAmazonScheduler>()
             .AddAWSService<IAmazonSimpleSystemsManagement>()
 
             .AddSingleton<IS3Service, S3Service>()
             .AddSingleton<IDynamoDbService, DynamoDbService>()
+            .AddSingleton<ISchedulerService, SchedulerService>()
             .AddSingleton<ISystemsManagementService, SystemsManagementService>()
             ;
     }

@@ -1,10 +1,11 @@
 using PollyUniverse.Func.Voting.Models;
+using PollyUniverse.Shared.Models;
 using TL;
 using WTelegram;
 
-namespace PollyUniverse.Func.Voting.Services.Telegram;
+namespace PollyUniverse.Func.Voting.Services;
 
-public interface ITelegramPollService
+public interface IPollService
 {
     Task<PollMessage> WaitForPollMessage(
         Client telegramClient,
@@ -12,7 +13,7 @@ public interface ITelegramPollService
         TimeSpan timeout);
 }
 
-public class TelegramPollService : ITelegramPollService
+public class PollService : IPollService
 {
     public async Task<PollMessage> WaitForPollMessage(
         Client telegramClient,
@@ -50,13 +51,17 @@ public class TelegramPollService : ITelegramPollService
                 continue;
             }
 
-            var messageDate = message.Date;
+            var messageUtcDateTime = message.Date;
             var messageFromId = message.From.ID;
             var messagePeerId = message.Peer.ID;
 
-            var expectedDate = DateTime.UtcNow.Date + pollDescriptor.UtcTime;
+            var pollTimezone = TimeZoneInfo.FindSystemTimeZoneById(pollDescriptor.Timezone);
+            var timezoneCurrentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pollTimezone);
 
-            if (messageDate < expectedDate || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
+            var minPollTimezoneDateTime = timezoneCurrentTime.Date.Add(pollDescriptor.Time);
+            var minPollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(minPollTimezoneDateTime);
+
+            if (messageUtcDateTime < minPollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
             {
                 continue;
             }

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services.Telegram;
+using PollyUniverse.Shared.Models;
 using WTelegram;
 
 namespace PollyUniverse.Func.Voting.Services;
@@ -13,21 +14,21 @@ public interface IVotingService
 public class VotingService : IVotingService
 {
     private readonly ITelegramPeerService _telegramPeerService;
-    private readonly ITelegramPollService _telegramPollService;
     private readonly ITelegramVoteService _telegramVoteService;
+    private readonly IPollService _pollService;
     private readonly ILogger<VotingService> _logger;
     private readonly FunctionConfig _config;
 
     public VotingService(
         ITelegramPeerService telegramPeerService,
-        ITelegramPollService telegramPollService,
         ITelegramVoteService telegramVoteService,
+        IPollService pollService,
         ILogger<VotingService> logger,
         FunctionConfig config)
     {
         _telegramPeerService = telegramPeerService;
-        _telegramPollService = telegramPollService;
         _telegramVoteService = telegramVoteService;
+        _pollService = pollService;
         _logger = logger;
         _config = config;
     }
@@ -49,7 +50,7 @@ public class VotingService : IVotingService
 
         _logger.LogInformation("Waiting for poll message");
 
-        var pollMessage = await _telegramPollService.WaitForPollMessage(
+        var pollMessage = await _pollService.WaitForPollMessage(
             telegramClient,
             votingProfile.Poll,
             TimeSpan.FromMinutes(_config.PollWaitingMinutes));

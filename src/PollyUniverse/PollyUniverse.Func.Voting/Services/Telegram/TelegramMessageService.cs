@@ -17,6 +17,6 @@ public class TelegramMessageService : ITelegramMessageService
             text,
             Random.Shared.NextInt64());
 
-        return updates.UpdateList[0] is UpdateMessagePoll;
+        return updates.UpdateList[0] is UpdateNewMessage;
     }
 }

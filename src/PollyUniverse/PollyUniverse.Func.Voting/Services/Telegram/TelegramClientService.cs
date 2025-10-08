@@ -1,4 +1,4 @@
-using PollyUniverse.Func.Voting.Models;
+using PollyUniverse.Shared.Models;
 using WTelegram;
 
 namespace PollyUniverse.Func.Voting.Services.Telegram;

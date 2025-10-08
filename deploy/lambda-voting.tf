@@ -8,7 +8,7 @@ resource "aws_lambda_function" "voting_lambda" {
   filename      = data.archive_file.voting_lambda_zip.output_path
   function_name = "${local.app_name}-voting"
   role          = aws_iam_role.voting_lambda_role.arn
-  handler       = "PollyUniverse.Func.Voting::PollyUniverse.Func.Voting.Function::HandleEvent"
+  handler       = "PollyUniverse.Func.Voting::PollyUniverse.Func.Voting.Function::Handle"
   runtime       = "dotnet8"
   timeout       = 300
   memory_size   = 512
@@ -18,8 +18,6 @@ resource "aws_lambda_function" "voting_lambda" {
 
   environment {
     variables = {
-      SESSION_METADATA_TABLE          = aws_dynamodb_table.session_metadata.name
-      VOTING_PROFILES_TABLE           = aws_dynamodb_table.voting_profiles.name
       S3_BUCKET                       = aws_s3_bucket.polly_universe.bucket
       POLL_WAITING_MINUTES            = var.poll_waiting_minutes
       BOT_TOKEN_PARAMETER             = aws_ssm_parameter.bot_token.name

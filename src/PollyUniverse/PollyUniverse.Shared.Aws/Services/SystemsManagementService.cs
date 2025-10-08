@@ -6,6 +6,7 @@ namespace PollyUniverse.Shared.Aws.Services;
 public interface ISystemsManagementService
 {
     Task<string> GetParameter(string name);
+
     Task<Dictionary<string, string>> GetParameters(params string[] parameters);
 }
 

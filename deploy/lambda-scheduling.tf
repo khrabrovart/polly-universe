@@ -8,7 +8,7 @@ resource "aws_lambda_function" "scheduling_lambda" {
   filename      = data.archive_file.scheduling_lambda_zip.output_path
   function_name = "${local.app_name}-scheduling"
   role          = aws_iam_role.scheduling_lambda_role.arn
-  handler       = "PollyUniverse.Func.Scheduling::PollyUniverse.Func.Scheduling.Function::HandleEvent"
+  handler       = "PollyUniverse.Func.Scheduling::PollyUniverse.Func.Scheduling.Function::Handle"
   runtime       = "dotnet8"
   timeout       = 60
   memory_size   = 512
@@ -65,13 +65,22 @@ resource "aws_iam_policy" "scheduling_lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "events:PutRule",
-          "events:DeleteRule",
-          "events:PutTargets",
-          "events:RemoveTargets",
-          "events:DescribeRule"
+          "scheduler:CreateSchedule",
+          "scheduler:UpdateSchedule",
+          "scheduler:DeleteSchedule",
+          "scheduler:GetSchedule",
+          "scheduler:ListSchedules"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:scheduler:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:schedule/${aws_scheduler_schedule_group.scheduler_group.name}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole"
+        ]
+        Resource = aws_iam_role.scheduler_role.arn
       }
     ]
   })

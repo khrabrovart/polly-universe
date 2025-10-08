@@ -4,12 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
-using PollyUniverse.Func.Voting.Repositories;
 using PollyUniverse.Func.Voting.Services;
 using PollyUniverse.Func.Voting.Services.Files;
 using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Aws.Extensions;
+using PollyUniverse.Shared.Extensions;
 using PollyUniverse.Shared.OpenAI.Extensions;
+using PollyUniverse.Shared.Repositories;
 using PollyUniverse.Shared.TelegramBot.Extensions;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -40,6 +41,7 @@ public class Function
             builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
         });
 
+        services.AddSharedServices();
         services.AddAwsServices();
         services.AddOpenAIServices();
         services.AddTelegramBotServices();
@@ -53,11 +55,11 @@ public class Function
             .AddSingleton<ITelegramClientService, TelegramClientService>()
             .AddSingleton<ITelegramMessageService, TelegramMessageService>()
             .AddSingleton<ITelegramPeerService, TelegramPeerService>()
-            .AddSingleton<ITelegramPollService, TelegramPollService>()
             .AddSingleton<ITelegramVoteService, TelegramVoteService>()
 
             .AddSingleton<IMessageComposeService, MessageComposeService>()
             .AddSingleton<INotificationService, NotificationService>()
+            .AddSingleton<IPollService, PollService>()
             .AddSingleton<IPromptService, PromptService>()
             .AddSingleton<ISessionService, SessionService>()
             .AddSingleton<IVotingProfileService, VotingProfileService>()
@@ -70,7 +72,7 @@ public class Function
         ServiceProvider = services.BuildServiceProvider();
     }
 
-    public async Task HandleEvent(VotingRequest request, ILambdaContext context)
+    public async Task Handle(VotingRequest request, ILambdaContext context)
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
