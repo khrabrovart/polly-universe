@@ -29,10 +29,11 @@ public class PollService : IPollService
         TimeSpan timeout)
     {
         var tcs = new TaskCompletionSource<PollMessage>();
+        var pollUtcDateTime = GetPollUtcDateTime(pollDescriptor);
 
         var handler = (UpdatesBase updatesBase) =>
         {
-            FindPollMessage(pollDescriptor, updatesBase, tcs);
+            FindPollMessage(pollDescriptor, pollUtcDateTime, updatesBase, tcs);
             return Task.CompletedTask;
         };
 
@@ -49,6 +50,7 @@ public class PollService : IPollService
 
     private void FindPollMessage(
         VotingProfilePoll pollDescriptor,
+        DateTime pollUtcDateTime,
         UpdatesBase updatesBase,
         TaskCompletionSource<PollMessage> tcs)
     {
@@ -63,34 +65,16 @@ public class PollService : IPollService
             var messageFromId = message.From.ID;
             var messagePeerId = message.Peer.ID;
 
-            var pollTimezone = TimeZoneInfo.FindSystemTimeZoneById(pollDescriptor.Timezone);
-
-            _logger.LogInformation("Poll timezone: {Timezone}", pollTimezone);
-
-            var timezoneCurrentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pollTimezone);
-
-            _logger.LogInformation("Current time in poll timezone: {TimezoneCurrentTime}", timezoneCurrentTime);
-
-            var minPollTimezoneDateTime = timezoneCurrentTime.Date.Add(pollDescriptor.Time);
-
-            _logger.LogInformation("Expected poll date in poll timezone: {MinPollTimezoneDateTime}", minPollTimezoneDateTime);
-
-            var minPollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(minPollTimezoneDateTime, pollTimezone);
-
-            _logger.LogInformation("Expected poll date in UTC: {MinPollUtcDateTime}", minPollUtcDateTime);
-
-            _logger.LogInformation("Poll|Criteria - FromId: {PollFromId}|{CriteriaFromId}, PeerId: {PollPeerId}|{CriteriaPeerId}, MinUtcDateTime: {PollUtcDateTime}|{CriteriaUtcDateTime}",
+            _logger.LogInformation("Poll|Criteria - FromId: {PollFromId}|{CriteriaFromId}, PeerId: {PollPeerId}|{CriteriaPeerId}, Time: {PollUtcDateTime}|{CriteriaUtcDateTime}",
                 messageFromId, pollDescriptor.FromId,
                 messagePeerId, pollDescriptor.PeerId,
-                messageUtcDateTime, minPollUtcDateTime);
+                messageUtcDateTime, pollUtcDateTime);
 
-            if (messageUtcDateTime < minPollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
+            if (messageUtcDateTime < pollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
             {
                 _logger.LogInformation("Skipping poll message because it does not match the criteria");
                 continue;
             }
-
-            _logger.LogInformation("Matching poll message found: {Message}", message);
 
             var pollMessage = new PollMessage
             {
@@ -100,5 +84,16 @@ public class PollService : IPollService
 
             tcs.TrySetResult(pollMessage);
         }
+    }
+
+    private static DateTime GetPollUtcDateTime(VotingProfilePoll pollDescriptor)
+    {
+        var pollTimezone = TimeZoneInfo.FindSystemTimeZoneById(pollDescriptor.Timezone);
+        var timezoneCurrentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pollTimezone);
+
+        var pollTimezoneDateTime = timezoneCurrentTime.Date.Add(pollDescriptor.Time);
+        var pollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(pollTimezoneDateTime, pollTimezone);
+
+        return pollUtcDateTime;
     }
 }
