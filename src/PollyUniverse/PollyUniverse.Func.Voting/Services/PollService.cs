@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Shared.Models;
 using TL;
@@ -15,6 +16,13 @@ public interface IPollService
 
 public class PollService : IPollService
 {
+    private readonly ILogger<PollService> _logger;
+
+    public PollService(ILogger<PollService> logger)
+    {
+        _logger = logger;
+    }
+
     public async Task<PollMessage> WaitForPollMessage(
         Client telegramClient,
         VotingProfilePoll pollDescriptor,
@@ -39,7 +47,7 @@ public class PollService : IPollService
         return completedTask == pollTask ? pollTask.Result : null;
     }
 
-    private static void FindPollMessage(
+    private void FindPollMessage(
         VotingProfilePoll pollDescriptor,
         UpdatesBase updatesBase,
         TaskCompletionSource<PollMessage> tcs)
@@ -51,6 +59,8 @@ public class PollService : IPollService
                 continue;
             }
 
+            _logger.LogInformation("Found new poll message: {Message}", message);
+
             var messageUtcDateTime = message.Date;
             var messageFromId = message.From.ID;
             var messagePeerId = message.Peer.ID;
@@ -61,10 +71,17 @@ public class PollService : IPollService
             var minPollTimezoneDateTime = timezoneCurrentTime.Date.Add(pollDescriptor.Time);
             var minPollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(minPollTimezoneDateTime);
 
+            _logger.LogInformation("Poll - FromId: {FromId}, PeerId: {PeerId}, Date: {MinPollUtcDateTime}, Criteria - FromId: {PollFromId}, PeerId: {PollPeerId}, Date: {MessageUtcDateTime}",
+                messageFromId, messagePeerId, messageUtcDateTime,
+                pollDescriptor.FromId, pollDescriptor.PeerId, minPollUtcDateTime);
+
             if (messageUtcDateTime < minPollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
             {
+                _logger.LogInformation("Skipping poll message: {Message}, because it does not match the criteria", message);
                 continue;
             }
+
+            _logger.LogInformation("Matching poll message found: {Message}", message);
 
             var pollMessage = new PollMessage
             {
