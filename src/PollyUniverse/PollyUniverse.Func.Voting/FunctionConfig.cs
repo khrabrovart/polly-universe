@@ -14,9 +14,10 @@ public class FunctionConfig
         OpenAIApiKeyParameter = config.GetOrThrow("OPENAI_API_KEY_PARAMETER");
         OpenAIModel = config.GetOrThrow("OPENAI_MODEL");
 
-        IsDev = bool.TryParse(config["DEV:ENABLED"], out var isDev) && isDev;
-        UseLocalPrompts = bool.TryParse(config["DEV:USE_LOCAL_PROMPTS"], out var useLocalPrompts) && useLocalPrompts;
-        UseVotingResult = config["DEV:USE_FAKE_VOTING_RESULT"];
+        DevUseLocalTmpDirectory = bool.TryParse(config["DEV:USE_LOCAL_TMP_DIR"], out var useLocalTmp) && useLocalTmp;
+        DevUseLocalPrompts = bool.TryParse(config["DEV:USE_LOCAL_PROMPTS"], out var useLocalPrompts) && useLocalPrompts;
+        DevUseFakeVotingResult = config["DEV:USE_FAKE_VOTING_RESULT"];
+        DevMuteNotifications = bool.TryParse(config["DEV:MUTE_NOTIFICATIONS"], out var muteNotifications) && muteNotifications;
     }
 
     public string S3Bucket { get; set; }
@@ -33,11 +34,13 @@ public class FunctionConfig
 
     #region Development Settings
 
-    public bool IsDev { get; set; }
+    public bool DevUseLocalTmpDirectory { get; set; }
 
-    public bool UseLocalPrompts { get; set; }
+    public bool DevUseLocalPrompts { get; set; }
 
-    public string UseVotingResult { get; set; }
+    public string DevUseFakeVotingResult { get; set; }
+
+    public bool DevMuteNotifications { get; set; }
 
     #endregion
 }

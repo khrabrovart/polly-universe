@@ -6,6 +6,8 @@ namespace PollyUniverse.Func.Voting.Services.Telegram;
 public interface ITelegramMessageService
 {
     Task<bool> SendMessage(Client telegramClient, InputPeer inputPeer, string text);
+
+    Task<MessageBase[]> GetMessages(Client telegramClient, InputPeer inputPeer, int limit);
 }
 
 public class TelegramMessageService : ITelegramMessageService
@@ -18,5 +20,11 @@ public class TelegramMessageService : ITelegramMessageService
             Random.Shared.NextInt64());
 
         return updates.UpdateList[0] is UpdateNewMessage;
+    }
+
+    public async Task<MessageBase[]> GetMessages(Client telegramClient, InputPeer inputPeer, int limit)
+    {
+        var history = await telegramClient.Messages_GetHistory(inputPeer, limit: limit);
+        return history.Messages;
     }
 }

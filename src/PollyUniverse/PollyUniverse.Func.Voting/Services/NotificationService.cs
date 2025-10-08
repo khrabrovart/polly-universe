@@ -50,6 +50,12 @@ public class NotificationService : INotificationService
 
     public async Task SendNotification(Client telegramClient, VotingResult votingResult)
     {
+        if (_config.DevMuteNotifications)
+        {
+            _logger.LogInformation("Notifications are muted");
+            return;
+        }
+
         var promptId = VotingResultPrompts.GetValueOrDefault(votingResult);
 
         if (string.IsNullOrEmpty(promptId))

@@ -19,7 +19,7 @@ public class SessionFileService : ISessionFileService
     {
         _s3Service = s3Service;
         _config = config;
-        _localFolder = _config.IsDev ? "./tmp" : "/tmp";
+        _localFolder = _config.DevUseLocalTmpDirectory ? "./tmp" : "/tmp";
     }
 
     public async Task<string> DownloadSessionFile(string sessionId)
@@ -27,6 +27,11 @@ public class SessionFileService : ISessionFileService
         var fileName = $"{sessionId}.session";
         var remoteFilePath = $"{SessionBucketPrefix}/{fileName}";
         var localFilePath = $"{_localFolder}/{fileName}";
+
+        if (File.Exists(localFilePath))
+        {
+            return localFilePath;
+        }
 
         var success = await _s3Service.Download(_config.S3Bucket, remoteFilePath, localFilePath);
 

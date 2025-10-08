@@ -35,7 +35,7 @@ public class VotingService : IVotingService
 
     public async Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile)
     {
-        if (TryGetFakeResult(_config.UseVotingResult, out var fakeResult))
+        if (TryGetFakeResult(_config.DevUseFakeVotingResult, out var fakeResult))
         {
             _logger.LogInformation("Using fake voting result: {Result}", fakeResult);
             return fakeResult;

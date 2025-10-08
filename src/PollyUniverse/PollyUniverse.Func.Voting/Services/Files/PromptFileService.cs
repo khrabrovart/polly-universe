@@ -21,7 +21,7 @@ public class PromptFileService : IPromptFileService
     {
         _s3Service = s3Service;
         _config = config;
-        _localFolder = _config.IsDev ? "./tmp" : "/tmp";
+        _localFolder = _config.DevUseLocalTmpDirectory ? "./tmp" : "/tmp";
     }
 
     public async Task<string> DownloadPromptFile(string promptId)
@@ -29,6 +29,11 @@ public class PromptFileService : IPromptFileService
         var fileName = $"{promptId}.md";
         var remoteFilePath = $"{PromptBucketPrefix}/{fileName}";
         var localFilePath = $"{_localFolder}/{fileName}";
+
+        if (File.Exists(localFilePath))
+        {
+            return localFilePath;
+        }
 
         var success = await _s3Service.Download(_config.S3Bucket, remoteFilePath, localFilePath);
 

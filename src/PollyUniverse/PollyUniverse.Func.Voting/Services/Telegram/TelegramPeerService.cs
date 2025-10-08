@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using TL;
 using WTelegram;
 
@@ -10,7 +11,7 @@ public interface ITelegramPeerService
 
 public class TelegramPeerService : ITelegramPeerService
 {
-    private static readonly Dictionary<long, Messages_Chats> ChatsByUser = new();
+    private static readonly ConcurrentDictionary<long, Messages_Chats> ChatsByUser = new();
 
     public async Task<InputPeer> GetInputPeer(Client telegramClient, long peerId)
     {
