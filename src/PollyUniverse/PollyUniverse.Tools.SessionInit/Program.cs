@@ -1,4 +1,5 @@
-﻿using dotenv.net;
+﻿using System.Text;
+using dotenv.net;
 
 namespace PollyUniverse.Tools.SessionInit;
 
@@ -29,8 +30,43 @@ class Program
             "api_id" => Environment.GetEnvironmentVariable("API_ID"),
             "api_hash" => Environment.GetEnvironmentVariable("API_HASH"),
             "phone_number" => Environment.GetEnvironmentVariable("PHONE_NUMBER"),
-            "password" => Environment.GetEnvironmentVariable("PASSWORD"),
+            "password" => ReadPassword(),
             _ => null
         };
+    }
+
+    private static string ReadPassword()
+    {
+        Console.Write("Enter password: ");
+        var password = new StringBuilder();
+        var completed = false;
+
+        while (!completed)
+        {
+            var key = Console.ReadKey(true);
+
+            switch (key.Key)
+            {
+                case ConsoleKey.Enter:
+                    completed = true;
+                    Console.WriteLine();
+                    break;
+
+                case ConsoleKey.Backspace:
+                    if (password.Length > 0)
+                    {
+                        password.Remove(password.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                    break;
+
+                case var _ when key.KeyChar >= 32 && key.KeyChar <= 126:
+                    password.Append(key.KeyChar);
+                    Console.Write("*");
+                    break;
+            }
+        }
+
+        return password.ToString();
     }
 }
