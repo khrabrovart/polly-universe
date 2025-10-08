@@ -31,7 +31,7 @@ resource "aws_iam_policy" "scheduler_policy" {
           "lambda:InvokeFunction"
         ]
         Resource = [
-          "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:${local.app_name}-*"
+          "arn:aws:lambda:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:function:${local.app_name}-*"
         ]
       }
     ]

@@ -75,7 +75,7 @@ resource "aws_iam_policy" "scheduling_lambda_policy" {
           "scheduler:ListSchedules"
         ]
         Resource = [
-          "arn:aws:scheduler:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:schedule/${aws_scheduler_schedule_group.scheduler_group.name}/*"
+          "arn:aws:scheduler:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:schedule/${aws_scheduler_schedule_group.scheduler_group.name}/*"
         ]
       },
       {
