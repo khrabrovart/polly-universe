@@ -85,7 +85,7 @@ public class VotingScheduleService : IVotingScheduleService
         return $"{_config.ScheduleNamePrefix}-{votingProfile.Id}";
     }
 
-    private static string ComposeCronExpression(string dayOfWeek, TimeSpan time, int launchToleranceMinutes)
+    private static string ComposeCronExpression(DayOfWeek dayOfWeek, TimeSpan time, int launchToleranceMinutes)
     {
         // AWS EventBridge launches cron jobs with a delay
         // We subtract some tolerance from the scheduled time to ensure it is already running at the expected time
@@ -94,10 +94,12 @@ public class VotingScheduleService : IVotingScheduleService
         var hours = correctedTime.Hours;
         var minutes = correctedTime.Minutes;
 
+        var dayOfWeekNumber = (int)dayOfWeek + 1;
+
         const string dayOfMonth = "?";
         const string month = "*";
         const string year = "*";
 
-        return $"cron({minutes} {hours} {dayOfMonth} {month} {dayOfWeek} {year})";
+        return $"cron({minutes} {hours} {dayOfMonth} {month} {dayOfWeekNumber} {year})";
     }
 }

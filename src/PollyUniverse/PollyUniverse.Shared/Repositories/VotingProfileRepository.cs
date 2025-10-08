@@ -44,7 +44,7 @@ public class VotingProfileRepository : IVotingProfileRepository
             {
                 FromId = long.Parse(item["Poll"].M["FromId"].N),
                 PeerId = long.Parse(item["Poll"].M["PeerId"].N),
-                DayOfWeek = item["Poll"].M["DayOfWeek"].S,
+                DayOfWeek = Enum.Parse<DayOfWeek>(item["Poll"].M["DayOfWeek"].S),
                 Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
                 Timezone = item["Poll"].M["Timezone"].S,
             },
@@ -69,7 +69,7 @@ public class VotingProfileRepository : IVotingProfileRepository
                     {
                         { "FromId", new AttributeValue { N = votingProfile.Poll.FromId.ToString() } },
                         { "PeerId", new AttributeValue { N = votingProfile.Poll.PeerId.ToString() } },
-                        { "DayOfWeek", new AttributeValue { S = votingProfile.Poll.DayOfWeek } },
+                        { "DayOfWeek", new AttributeValue { S = votingProfile.Poll.DayOfWeek.ToString() } },
                         { "Time", new AttributeValue { S = votingProfile.Poll.Time.ToString() } },
                         { "Timezone", new AttributeValue { S = votingProfile.Poll.Timezone } }
                     }

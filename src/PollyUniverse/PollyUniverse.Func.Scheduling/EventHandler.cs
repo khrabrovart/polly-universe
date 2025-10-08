@@ -71,7 +71,7 @@ public class EventHandler : IEventHandler
             {
                 FromId = long.Parse(record["Poll"].M["FromId"].N),
                 PeerId = long.Parse(record["Poll"].M["PeerId"].N),
-                DayOfWeek = record["Poll"].M["DayOfWeek"].S,
+                DayOfWeek = Enum.Parse<DayOfWeek>(record["Poll"].M["DayOfWeek"].S),
                 Time = TimeSpan.Parse(record["Poll"].M["Time"].S),
                 Timezone = record["Poll"].M["Timezone"].S
             },

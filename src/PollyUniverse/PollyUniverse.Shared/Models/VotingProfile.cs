@@ -17,7 +17,7 @@ public class VotingProfilePoll
 
     public required long PeerId { get; set; }
 
-    public required string DayOfWeek { get; set; }
+    public required DayOfWeek DayOfWeek { get; set; }
 
     public required TimeSpan Time { get; set; }
 
