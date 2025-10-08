@@ -84,6 +84,13 @@ public class SchedulerService : ISchedulerService
             GroupName = groupName
         };
 
-        return await _scheduler.GetScheduleAsync(request);
+        try
+        {
+            return await _scheduler.GetScheduleAsync(request);
+        }
+        catch (ResourceNotFoundException)
+        {
+            return null;
+        }
     }
 }
