@@ -39,6 +39,7 @@ public class SessionMetadataRepository : ISessionMetadataRepository
         return new SessionMetadata
         {
             Id = item["Id"].S,
+            ApiId = int.Parse(item["ApiId"].N),
             ApiHash = item["ApiHash"].S,
             PhoneNumber = item["PhoneNumber"].S
         };
@@ -49,6 +50,7 @@ public class SessionMetadataRepository : ISessionMetadataRepository
         var item = new Dictionary<string, AttributeValue>
         {
             { "Id", new AttributeValue { S = sessionMetadata.Id } },
+            { "ApiId", new AttributeValue { N = sessionMetadata.ApiId.ToString() } },
             { "ApiHash", new AttributeValue { S = sessionMetadata.ApiHash } },
             { "PhoneNumber", new AttributeValue { S = sessionMetadata.PhoneNumber } }
         };
