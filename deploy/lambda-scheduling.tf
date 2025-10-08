@@ -10,7 +10,7 @@ resource "aws_lambda_function" "scheduling_lambda" {
   role          = aws_iam_role.scheduling_lambda_role.arn
   handler       = "PollyUniverse.Func.Scheduling::PollyUniverse.Func.Scheduling.Function::Handle"
   runtime       = "dotnet8"
-  timeout       = 60
+  timeout       = 30
   memory_size   = 512
   architectures = ["arm64"]
 
@@ -18,7 +18,10 @@ resource "aws_lambda_function" "scheduling_lambda" {
 
   environment {
     variables = {
-
+      SCHEDULE_NAME_PREFIX        = "${local.app_name}-voting"
+      SCHEDULER_GROUP_NAME        = aws_scheduler_schedule_group.scheduler_group.name
+      TARGET_LAMBDA_ARN           = aws_lambda_function.voting_lambda.arn
+      SCHEDULE_EXECUTION_ROLE_ARN = aws_iam_role.scheduler_role.arn
     }
   }
 
