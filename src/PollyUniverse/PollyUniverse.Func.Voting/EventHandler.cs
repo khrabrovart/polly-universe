@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services;
+using PollyUniverse.Shared.Models;
 
 namespace PollyUniverse.Func.Voting;
 
@@ -38,12 +39,25 @@ public class EventHandler : IEventHandler
             request.VotingProfileId);
 
         var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
-        var telegramClient = await _sessionService.InitializeTelegramClientWithSession(votingProfile.Session.Id);
-        var votingResult = await _votingService.WaitForPollAndVote(telegramClient, votingProfile);
-        await _notificationService.SendNotification(telegramClient, votingResult);
+
+        var sessionTasks = votingProfile.Sessions
+            .Select(session => ProcessSession(votingProfile.Poll, session));
+
+        await Task.WhenAll(sessionTasks);
 
         _logger.LogInformation(
             "Completed voting request for VotingProfileId: {VotingProfileId}",
             request.VotingProfileId);
+    }
+
+    private async Task ProcessSession(VotingProfilePoll pollDescriptor, VotingProfileSession sessionDescriptor)
+    {
+        _logger.LogInformation("Voting starting for session {SessionId}", sessionDescriptor.Id);
+
+        var telegramClient = await _sessionService.InitializeTelegramClientWithSession(sessionDescriptor.Id);
+        var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, sessionDescriptor.VoteIndex);
+        await _notificationService.SendNotification(telegramClient, votingResult);
+
+        _logger.LogInformation("Voting complete for session {SessionId} with result {VotingResult}", sessionDescriptor.Id, votingResult);
     }
 }

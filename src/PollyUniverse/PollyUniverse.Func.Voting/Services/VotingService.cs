@@ -8,7 +8,10 @@ namespace PollyUniverse.Func.Voting.Services;
 
 public interface IVotingService
 {
-    Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile);
+    Task<VotingResult> WaitForPollAndVote(
+        Client telegramClient,
+        VotingProfilePoll pollDescriptor,
+        int voteIndex);
 }
 
 public class VotingService : IVotingService
@@ -33,7 +36,7 @@ public class VotingService : IVotingService
         _config = config;
     }
 
-    public async Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfile votingProfile)
+    public async Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfilePoll pollDescriptor, int voteIndex)
     {
         if (TryGetFakeResult(_config.DevUseFakeVotingResult, out var fakeResult))
         {
@@ -41,18 +44,18 @@ public class VotingService : IVotingService
             return fakeResult;
         }
 
-        var votingInputPeer = await _telegramPeerService.GetInputPeer(telegramClient, votingProfile.Poll.PeerId);
+        var votingInputPeer = await _telegramPeerService.GetInputPeer(telegramClient, pollDescriptor.PeerId);
 
         if (votingInputPeer == null)
         {
-            throw new Exception($"No input peer found for voting: {votingProfile.Poll.PeerId}");
+            throw new Exception($"No input peer found for voting: {pollDescriptor.PeerId}");
         }
 
         _logger.LogInformation("Waiting for poll message");
 
         var pollMessage = await _pollService.WaitForPollMessage(
             telegramClient,
-            votingProfile.Poll,
+            pollDescriptor,
             TimeSpan.FromMinutes(_config.PollWaitingMinutes));
 
         if (pollMessage == null)
@@ -62,7 +65,7 @@ public class VotingService : IVotingService
 
         _logger.LogInformation("Received poll message with MessageId: {MessageId}", pollMessage.MessageId);
 
-        var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, votingProfile.Session.VoteIndex);
+        var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, voteIndex);
 
         return voted ? VotingResult.Success : VotingResult.VoteFailed;
 
