@@ -66,14 +66,25 @@ public class PollService : IPollService
             var messagePeerId = message.Peer.ID;
 
             var pollTimezone = TimeZoneInfo.FindSystemTimeZoneById(pollDescriptor.Timezone);
+
+            _logger.LogInformation("Poll timezone: {Timezone}", pollTimezone);
+
             var timezoneCurrentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pollTimezone);
 
+            _logger.LogInformation("Current time in poll timezone: {TimezoneCurrentTime}", timezoneCurrentTime);
+
             var minPollTimezoneDateTime = timezoneCurrentTime.Date.Add(pollDescriptor.Time);
+
+            _logger.LogInformation("Expected poll date in poll timezone: {MinPollTimezoneDateTime}", minPollTimezoneDateTime);
+
             var minPollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(minPollTimezoneDateTime);
 
-            _logger.LogInformation("Poll - FromId: {FromId}, PeerId: {PeerId}, Date: {MinPollUtcDateTime}, Criteria - FromId: {PollFromId}, PeerId: {PollPeerId}, Date: {MessageUtcDateTime}",
-                messageFromId, messagePeerId, messageUtcDateTime,
-                pollDescriptor.FromId, pollDescriptor.PeerId, minPollUtcDateTime);
+            _logger.LogInformation("Expected poll date in UTC: {MinPollUtcDateTime}", minPollUtcDateTime);
+
+            _logger.LogInformation("Poll|Criteria - FromId: {PollFromId}|{CriteriaFromId}, PeerId: {PollPeerId}|{CriteriaPeerId}, MinUtcDateTime: {PollUtcDateTime}|{CriteriaUtcDateTime}",
+                messageFromId, pollDescriptor.FromId,
+                messagePeerId, pollDescriptor.PeerId,
+                messageUtcDateTime, minPollUtcDateTime);
 
             if (messageUtcDateTime < minPollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
             {

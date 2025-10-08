@@ -96,7 +96,6 @@ public class VotingScheduleService : IVotingScheduleService
 
         const string dayOfMonth = "?";
         const string month = "*";
-
         const string year = "*";
 
         return $"cron({minutes} {hours} {dayOfMonth} {month} {dayOfWeek} {year})";
