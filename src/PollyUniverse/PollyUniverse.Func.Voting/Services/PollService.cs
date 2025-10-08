@@ -59,8 +59,6 @@ public class PollService : IPollService
                 continue;
             }
 
-            _logger.LogInformation("Found new poll message: {Message}", message);
-
             var messageUtcDateTime = message.Date;
             var messageFromId = message.From.ID;
             var messagePeerId = message.Peer.ID;
@@ -77,7 +75,7 @@ public class PollService : IPollService
 
             _logger.LogInformation("Expected poll date in poll timezone: {MinPollTimezoneDateTime}", minPollTimezoneDateTime);
 
-            var minPollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(minPollTimezoneDateTime);
+            var minPollUtcDateTime = TimeZoneInfo.ConvertTimeToUtc(minPollTimezoneDateTime, pollTimezone);
 
             _logger.LogInformation("Expected poll date in UTC: {MinPollUtcDateTime}", minPollUtcDateTime);
 
@@ -88,7 +86,7 @@ public class PollService : IPollService
 
             if (messageUtcDateTime < minPollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
             {
-                _logger.LogInformation("Skipping poll message: {Message}, because it does not match the criteria", message);
+                _logger.LogInformation("Skipping poll message because it does not match the criteria");
                 continue;
             }
 
