@@ -53,7 +53,8 @@ public class VotingProfileRepository : IVotingProfileRepository
                 {
                     Id = session.M["Id"].S,
                     Enabled = session.M["Enabled"].BOOL ?? false,
-                    VoteIndex = int.Parse(session.M["VoteIndex"].N)
+                    VoteIndex = int.Parse(session.M["VoteIndex"].N),
+                    VoteDelaySeconds = int.Parse(session.M["VoteDelaySeconds"].N)
                 })
                 .ToList()
         };
@@ -85,7 +86,8 @@ public class VotingProfileRepository : IVotingProfileRepository
                         {
                             { "Id", new AttributeValue { S = session.Id } },
                             { "Enabled", new AttributeValue { BOOL = session.Enabled } },
-                            { "VoteIndex", new AttributeValue { N = session.VoteIndex.ToString() } }
+                            { "VoteIndex", new AttributeValue { N = session.VoteIndex.ToString() } },
+                            { "VoteDelaySeconds", new AttributeValue { N = session.VoteDelaySeconds.ToString() } }
                         }
                     }).ToList()
                 }

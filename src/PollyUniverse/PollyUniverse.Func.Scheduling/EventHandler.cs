@@ -80,7 +80,8 @@ public class EventHandler : IEventHandler
                 {
                     Id = session.M["Id"].S,
                     Enabled = session.M["Enabled"].BOOL ?? false,
-                    VoteIndex = int.Parse(session.M["VoteIndex"].N)
+                    VoteIndex = int.Parse(session.M["VoteIndex"].N),
+                    VoteDelaySeconds = int.Parse(session.M["VoteDelaySeconds"].N)
                 })
                 .ToList()
         };

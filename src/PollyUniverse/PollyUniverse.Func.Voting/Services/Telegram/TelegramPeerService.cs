@@ -11,7 +11,7 @@ public interface ITelegramPeerService
 
 public class TelegramPeerService : ITelegramPeerService
 {
-    private static readonly ConcurrentDictionary<long, Messages_Chats> ChatsByUser = new();
+    private static readonly ConcurrentDictionary<long, Dictionary<long, ChatBase>> ChatsByUser = new();
 
     public async Task<InputPeer> GetInputPeer(Client telegramClient, long peerId)
     {
@@ -19,10 +19,12 @@ public class TelegramPeerService : ITelegramPeerService
 
         if (!ChatsByUser.TryGetValue(userId, out var chats))
         {
-            chats = await telegramClient.Messages_GetAllChats();
+            var allChats = await telegramClient.Messages_GetAllChats();
+
+            chats = allChats.chats;
             ChatsByUser.TryAdd(userId, chats);
         }
 
-        return chats.chats.GetValueOrDefault(peerId);
+        return chats.GetValueOrDefault(peerId);
     }
 }

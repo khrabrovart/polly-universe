@@ -59,6 +59,11 @@ public class VotingService : IVotingService
             return VotingResult.PollNotFound;
         }
 
+        if (sessionDescriptor.VoteDelaySeconds > 0)
+        {
+            await Task.Delay(CalculateSemiRandomDelay(sessionDescriptor.VoteDelaySeconds));
+        }
+
         var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, sessionDescriptor.VoteIndex);
         return voted ? VotingResult.Success : VotingResult.VoteFailed;
     }
@@ -73,5 +78,11 @@ public class VotingService : IVotingService
 
         result = default;
         return false;
+    }
+
+    private static TimeSpan CalculateSemiRandomDelay(int delaySeconds)
+    {
+        var semiRandomSeconds = Math.Max(0, delaySeconds + Random.Shared.Next(-1, 2));
+        return TimeSpan.FromSeconds(semiRandomSeconds);
     }
 }

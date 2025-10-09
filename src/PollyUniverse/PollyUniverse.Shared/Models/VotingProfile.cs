@@ -31,4 +31,6 @@ public class VotingProfileSession
     public required bool Enabled { get; set; }
 
     public required int VoteIndex { get; set; }
+
+    public required int VoteDelaySeconds { get; set; }
 }
