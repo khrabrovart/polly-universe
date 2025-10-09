@@ -72,7 +72,6 @@ public class PollService : IPollService
 
             if (messageUtcDateTime < pollUtcDateTime || messageFromId != pollDescriptor.FromId || messagePeerId != pollDescriptor.PeerId)
             {
-                _logger.LogInformation("Skipping poll message because it does not match the criteria");
                 continue;
             }
 

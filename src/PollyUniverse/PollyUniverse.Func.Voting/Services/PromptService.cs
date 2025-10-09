@@ -37,7 +37,6 @@ public class PromptService : IPromptService
 
         if (_config.DevUseLocalPrompts)
         {
-            _logger.LogInformation("Using local prompts");
             promptFilePaths = GetLocalPromptFilePaths(orderedPrompts);
         }
         else

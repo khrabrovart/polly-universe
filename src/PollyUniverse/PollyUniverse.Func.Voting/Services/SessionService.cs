@@ -50,11 +50,11 @@ public class SessionService : ISessionService
             throw new Exception($"No session metadata found: {sessionId}");
         }
 
-        _logger.LogInformation("Initializing Telegram client for SessionId: {SessionId}", sessionId);
+        _logger.LogInformation("Initializing Telegram client for session \"{SessionId}\"", sessionId);
 
         var client = await _telegramClientService.CreateClient(sessionFilePath, sessionMetadata);
 
-        _logger.LogInformation("Logged in successfully as {User}", client.User);
+        _logger.LogInformation("Logged in successfully as \"{User}\"", client.User);
 
         return client;
     }

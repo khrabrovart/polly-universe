@@ -77,20 +77,13 @@ public class Function
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
 
-        try
+        if (request == null)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request), "Voting request cannot be null");
-            }
-
-            logger.LogInformation("Processing request {Request}", JsonSerializer.Serialize(request));
-
-            await handler.Handle(request);
+            throw new ArgumentNullException(nameof(request), "Voting request cannot be null");
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error while processing voting request");
-        }
+
+        logger.LogInformation("Processing request \"{Request}\"", JsonSerializer.Serialize(request));
+
+        await handler.Handle(request);
     }
 }

@@ -56,20 +56,13 @@ public class Function
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
 
-        try
+        if (evt == null)
         {
-            if (evt == null)
-            {
-                throw new ArgumentNullException(nameof(evt), "DynamoDB stream event cannot be null");
-            }
-
-            logger.LogInformation("Processing DynamoDB stream event {Request}", JsonSerializer.Serialize(evt));
-
-            await handler.Handle(evt);
+            throw new ArgumentNullException(nameof(evt), "DynamoDB stream event cannot be null");
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error while processing DynamoDB stream event");
-        }
+
+        logger.LogInformation("Processing DynamoDB stream event {Request}", JsonSerializer.Serialize(evt));
+
+        await handler.Handle(evt);
     }
 }

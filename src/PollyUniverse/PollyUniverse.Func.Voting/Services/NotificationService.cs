@@ -52,7 +52,6 @@ public class NotificationService : INotificationService
     {
         if (_config.DevMuteNotifications)
         {
-            _logger.LogInformation("Notifications are muted");
             return;
         }
 
@@ -92,8 +91,6 @@ public class NotificationService : INotificationService
             throw new Exception($"No notifications peer ID found in SSM Parameter Store: {_config.NotificationsPeerIdParameter}");
         }
 
-        _logger.LogInformation("Composing notification message");
-
         var notificationsInputPeer = await _telegramPeerService.GetInputPeer(telegramClient, long.Parse(notificationsPeerId));
 
         if (notificationsInputPeer == null)
@@ -111,8 +108,6 @@ public class NotificationService : INotificationService
             _config.OpenAIModel,
             prompt,
             null);
-
-        _logger.LogInformation("Sending notification message");
 
         var messageSent = await _telegramBotService.SendMessage(
             botToken,

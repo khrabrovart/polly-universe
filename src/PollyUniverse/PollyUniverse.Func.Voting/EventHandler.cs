@@ -34,24 +34,13 @@ public class EventHandler : IEventHandler
 
     public async Task Handle(VotingRequest request)
     {
-        _logger.LogInformation(
-            "Handling voting request for VotingProfileId: {VotingProfileId}",
-            request.VotingProfileId);
+        _logger.LogInformation("Handling voting request for voting profile \"{VotingProfileId}\"", request.VotingProfileId);
 
         var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
 
-        var duplicateSessions = votingProfile.Sessions
-            .GroupBy(s => s.Id)
-            .Where(g => g.Count() > 1)
-            .Select(g => g.Key)
-            .ToList();
-
-        if (duplicateSessions.Any())
+        if (HasDuplicateSessions(votingProfile))
         {
-            _logger.LogError(
-                "Duplicate session IDs found in VotingProfileId: {VotingProfileId}",
-                request.VotingProfileId);
-
+            _logger.LogError("Duplicate sessions found in voting profile \"{VotingProfileId}\"", request.VotingProfileId);
             return;
         }
 
@@ -60,19 +49,33 @@ public class EventHandler : IEventHandler
 
         await Task.WhenAll(sessionTasks);
 
-        _logger.LogInformation(
-            "Completed voting request for VotingProfileId: {VotingProfileId}",
-            request.VotingProfileId);
+        _logger.LogInformation("Completed voting request for voting profile \"{VotingProfileId}\"", request.VotingProfileId);
     }
 
     private async Task ProcessSession(VotingProfilePoll pollDescriptor, VotingProfileSession sessionDescriptor)
     {
-        _logger.LogInformation("Voting starting for session {SessionId}", sessionDescriptor.Id);
+        try
+        {
+            _logger.LogInformation("Voting starting for session \"{SessionId}\"", sessionDescriptor.Id);
 
-        var telegramClient = await _sessionService.InitializeTelegramClientWithSession(sessionDescriptor.Id);
-        var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, sessionDescriptor.VoteIndex);
-        await _notificationService.SendNotification(telegramClient, votingResult);
+            var telegramClient = await _sessionService.InitializeTelegramClientWithSession(sessionDescriptor.Id);
+            var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, sessionDescriptor.VoteIndex);
+            await _notificationService.SendNotification(telegramClient, votingResult);
 
-        _logger.LogInformation("Voting complete for session {SessionId} with result {VotingResult}", sessionDescriptor.Id, votingResult);
+            _logger.LogInformation("Voting complete for session \"{SessionId}\" with result \"{VotingResult}\"", sessionDescriptor.Id, votingResult);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing session \"{SessionId}\": {ErrorMessage}", sessionDescriptor.Id, ex.Message);
+        }
+    }
+
+    private static bool HasDuplicateSessions(VotingProfile votingProfile)
+    {
+        var duplicateSessions = votingProfile.Sessions
+            .GroupBy(s => s.Id)
+            .Count(g => g.Count() > 1);
+
+        return duplicateSessions > 0;
     }
 }

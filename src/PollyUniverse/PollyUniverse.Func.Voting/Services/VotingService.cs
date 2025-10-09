@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Models;
@@ -19,20 +18,17 @@ public class VotingService : IVotingService
     private readonly ITelegramPeerService _telegramPeerService;
     private readonly ITelegramVoteService _telegramVoteService;
     private readonly IPollService _pollService;
-    private readonly ILogger<VotingService> _logger;
     private readonly FunctionConfig _config;
 
     public VotingService(
         ITelegramPeerService telegramPeerService,
         ITelegramVoteService telegramVoteService,
         IPollService pollService,
-        ILogger<VotingService> logger,
         FunctionConfig config)
     {
         _telegramPeerService = telegramPeerService;
         _telegramVoteService = telegramVoteService;
         _pollService = pollService;
-        _logger = logger;
         _config = config;
     }
 
@@ -40,7 +36,6 @@ public class VotingService : IVotingService
     {
         if (TryGetFakeResult(_config.DevUseFakeVotingResult, out var fakeResult))
         {
-            _logger.LogInformation("Using fake voting result: {Result}", fakeResult);
             return fakeResult;
         }
 
@@ -50,8 +45,6 @@ public class VotingService : IVotingService
         {
             throw new Exception($"No input peer found for voting: {pollDescriptor.PeerId}");
         }
-
-        _logger.LogInformation("Waiting for poll message");
 
         var pollMessage = await _pollService.WaitForPollMessage(
             telegramClient,
@@ -63,12 +56,8 @@ public class VotingService : IVotingService
             return VotingResult.PollNotFound;
         }
 
-        _logger.LogInformation("Received poll message with MessageId: {MessageId}", pollMessage.MessageId);
-
         var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, voteIndex);
-
         return voted ? VotingResult.Success : VotingResult.VoteFailed;
-
     }
 
     private static bool TryGetFakeResult(string status, out VotingResult result)
