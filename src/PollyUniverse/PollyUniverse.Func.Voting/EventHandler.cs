@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services;
 using PollyUniverse.Shared.Models;
+using WTelegram;
 
 namespace PollyUniverse.Func.Voting;
 
@@ -44,22 +45,38 @@ public class EventHandler : IEventHandler
             return;
         }
 
-        var sessionTasks = votingProfile.Sessions
-            .Select(session => ProcessSession(votingProfile.Poll, session));
+        var telegramClientTasks = votingProfile.Sessions
+            .Select(async session =>
+            {
+                var client = await _sessionService.InitializeTelegramClientWithSession(session.Id);
+                return (Session: session, Client: client);
+            })
+            .ToArray();
+
+        await Task.WhenAll(telegramClientTasks);
+
+        var telegramClients = telegramClientTasks
+            .Select(task => task.Result)
+            .ToArray();
+
+        var sessionTasks = telegramClients
+            .Select(x => ProcessSession(x.Client, votingProfile.Poll, x.Session));
 
         await Task.WhenAll(sessionTasks);
 
-        _logger.LogInformation("Completed voting request for voting profile \"{VotingProfileId}\"", request.VotingProfileId);
+        _logger.LogInformation("Voting request complete for voting profile \"{VotingProfileId}\"", request.VotingProfileId);
     }
 
-    private async Task ProcessSession(VotingProfilePoll pollDescriptor, VotingProfileSession sessionDescriptor)
+    private async Task ProcessSession(
+        Client telegramClient,
+        VotingProfilePoll pollDescriptor,
+        VotingProfileSession sessionDescriptor)
     {
         try
         {
-            _logger.LogInformation("Voting starting for session \"{SessionId}\"", sessionDescriptor.Id);
+            _logger.LogInformation("Voting starting for session \"{SessionId}\", waiting for poll to appear...", sessionDescriptor.Id);
 
-            var telegramClient = await _sessionService.InitializeTelegramClientWithSession(sessionDescriptor.Id);
-            var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, sessionDescriptor.VoteIndex);
+            var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, sessionDescriptor);
             await _notificationService.SendNotification(telegramClient, votingResult);
 
             _logger.LogInformation("Voting complete for session \"{SessionId}\" with result \"{VotingResult}\"", sessionDescriptor.Id, votingResult);

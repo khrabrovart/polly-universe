@@ -8,8 +8,6 @@ public class VotingProfile
 
     public required VotingProfilePoll Poll { get; set; }
 
-    public required VotingProfileSession Session { get; set; }
-
     public required List<VotingProfileSession> Sessions { get; set; }
 }
 

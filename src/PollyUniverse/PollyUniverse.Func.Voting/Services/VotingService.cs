@@ -10,7 +10,7 @@ public interface IVotingService
     Task<VotingResult> WaitForPollAndVote(
         Client telegramClient,
         VotingProfilePoll pollDescriptor,
-        int voteIndex);
+        VotingProfileSession sessionDescriptor);
 }
 
 public class VotingService : IVotingService
@@ -32,7 +32,10 @@ public class VotingService : IVotingService
         _config = config;
     }
 
-    public async Task<VotingResult> WaitForPollAndVote(Client telegramClient, VotingProfilePoll pollDescriptor, int voteIndex)
+    public async Task<VotingResult> WaitForPollAndVote(
+        Client telegramClient,
+        VotingProfilePoll pollDescriptor,
+        VotingProfileSession sessionDescriptor)
     {
         if (TryGetFakeResult(_config.DevUseFakeVotingResult, out var fakeResult))
         {
@@ -56,7 +59,7 @@ public class VotingService : IVotingService
             return VotingResult.PollNotFound;
         }
 
-        var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, voteIndex);
+        var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, sessionDescriptor.VoteIndex);
         return voted ? VotingResult.Success : VotingResult.VoteFailed;
     }
 

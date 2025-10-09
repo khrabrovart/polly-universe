@@ -75,12 +75,6 @@ public class EventHandler : IEventHandler
                 Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
                 Timezone = item["Poll"].M["Timezone"].S
             },
-            Session = new VotingProfileSession
-            {
-                Id = item["Session"].M["Id"].S,
-                Enabled = item["Session"].M["Enabled"].BOOL ?? false,
-                VoteIndex = int.Parse(item["Session"].M["VoteIndex"].N)
-            },
             Sessions = item["Sessions"].L
                 .Select(session => new VotingProfileSession
                 {
