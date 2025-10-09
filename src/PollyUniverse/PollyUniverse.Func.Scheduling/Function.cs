@@ -61,7 +61,7 @@ public class Function
             throw new ArgumentNullException(nameof(evt), "DynamoDB stream event cannot be null");
         }
 
-        logger.LogInformation("Processing DynamoDB stream event {Request}", JsonSerializer.Serialize(evt));
+        logger.LogInformation("Processing DynamoDB stream event \"{Event}\"", JsonSerializer.Serialize(evt));
 
         await handler.Handle(evt);
     }

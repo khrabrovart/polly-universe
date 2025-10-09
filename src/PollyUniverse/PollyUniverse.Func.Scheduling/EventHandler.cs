@@ -89,34 +89,34 @@ public class EventHandler : IEventHandler
 
     private async Task OnInsert(VotingProfile newProfile)
     {
-        _logger.LogInformation("Processing INSERT event for VotingProfile: {ProfileId}", newProfile?.Id);
+        _logger.LogInformation("Processing INSERT event for voting profile \"{ProfileId}\"", newProfile?.Id);
 
         await _votingScheduleService.UpdateSchedule(newProfile);
 
-        _logger.LogInformation("Schedule created");
+        _logger.LogInformation("Schedule created for voting profile \"{ProfileId}\"", newProfile?.Id);
     }
 
     private async Task OnModify(VotingProfile oldProfile, VotingProfile newProfile)
     {
-        _logger.LogInformation("Processing MODIFY event for VotingProfile: {ProfileId}", newProfile?.Id);
+        _logger.LogInformation("Processing MODIFY event for voting profile \"{ProfileId}\"", newProfile?.Id);
 
         if (_votingProfileComparer.Compare(oldProfile, newProfile))
         {
-            _logger.LogInformation("No changes detected between old and new profiles. Skipping update");
+            _logger.LogInformation("No changes detected between old and new profiles for profile \"{ProfileId}\". Skipping update.", newProfile?.Id);
             return;
         }
 
         await _votingScheduleService.UpdateSchedule(newProfile);
 
-        _logger.LogInformation("Schedule updated");
+        _logger.LogInformation("Schedule updated for voting profile \"{ProfileId}\"", newProfile?.Id);
     }
 
     private async Task OnRemove(VotingProfile oldProfile)
     {
-        _logger.LogInformation("Processing REMOVE event for VotingProfile: {ProfileId}", oldProfile?.Id);
+        _logger.LogInformation("Processing REMOVE event for voting profile \"{ProfileId}\"", oldProfile?.Id);
 
         await _votingScheduleService.DeleteSchedule(oldProfile);
 
-        _logger.LogInformation("Schedule removed");
+        _logger.LogInformation("Schedule removed for voting profile \"{ProfileId}\"", oldProfile?.Id);
     }
 }

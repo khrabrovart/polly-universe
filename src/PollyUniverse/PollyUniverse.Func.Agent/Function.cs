@@ -55,25 +55,25 @@ public class Function
             throw new ArgumentNullException(nameof(request), "API Gateway request cannot be null");
         }
 
-        logger.LogInformation("Processing API Gateway request {Method} {Path}", request.HttpMethod, request.Path);
+        logger.LogInformation("Processing API Gateway request {Method} {Path} \"{Body}\"", request.HttpMethod, request.Path, request.Body);
 
         try
         {
-            var result = await handler.Handle(request);
-            return result;
+            await handler.Handle(request);
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "Error processing API Gateway request");
-            return new APIGatewayProxyResponse
-            {
-                StatusCode = 500,
-                Body = JsonSerializer.Serialize(new { error = "Internal server error" }),
-                Headers = new Dictionary<string, string>
-                {
-                    ["Content-Type"] = "application/json"
-                }
-            };
+            // Ignore any exceptions to avoid Telegram Bot webhook failure
         }
+
+        return new APIGatewayProxyResponse
+        {
+            StatusCode = 200,
+            Body = JsonSerializer.Serialize(new { message = "Success" }),
+            Headers = new Dictionary<string, string>
+            {
+                ["Content-Type"] = "application/json"
+            }
+        };
     }
 }
