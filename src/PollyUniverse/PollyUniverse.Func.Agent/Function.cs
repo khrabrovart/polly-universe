@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Amazon.Lambda.Core;
+using Amazon.Lambda.APIGatewayEvents;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -44,18 +45,35 @@ public class Function
         ServiceProvider = services.BuildServiceProvider();
     }
 
-    public async Task Handle(DynamoDBEvent evt, ILambdaContext context)
+    public async Task<APIGatewayProxyResponse> Handle(APIGatewayProxyRequest request, ILambdaContext context)
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
 
-        if (evt == null)
+        if (request == null)
         {
-            throw new ArgumentNullException(nameof(evt), "DynamoDB stream event cannot be null");
+            throw new ArgumentNullException(nameof(request), "API Gateway request cannot be null");
         }
 
-        logger.LogInformation("Processing DynamoDB stream event {Request}", JsonSerializer.Serialize(evt));
+        logger.LogInformation("Processing API Gateway request {Method} {Path}", request.HttpMethod, request.Path);
 
-        await handler.Handle(evt);
+        try
+        {
+            var result = await handler.Handle(request);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing API Gateway request");
+            return new APIGatewayProxyResponse
+            {
+                StatusCode = 500,
+                Body = JsonSerializer.Serialize(new { error = "Internal server error" }),
+                Headers = new Dictionary<string, string>
+                {
+                    ["Content-Type"] = "application/json"
+                }
+            };
+        }
     }
 }

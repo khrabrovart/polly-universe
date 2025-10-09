@@ -1,8 +1,7 @@
-﻿using Amazon.Lambda.DynamoDBEvents;
+﻿using Amazon.Lambda.APIGatewayEvents;
 using dotenv.net;
-using PollyUniverse.Func.Agent;
 
-namespace PollyUniverse.Func.Scheduling.Runner;
+namespace PollyUniverse.Func.Agent.Runner;
 
 public class Program
 {
@@ -12,26 +11,13 @@ public class Program
 
         var function = new Function();
 
-        var evt = new DynamoDBEvent
+        var request = new APIGatewayProxyRequest
         {
-            Records = new List<DynamoDBEvent.DynamodbStreamRecord>
-            {
-                new()
-                {
-                    EventName = "MODIFY",
-                    Dynamodb = new DynamoDBEvent.StreamRecord
-                    {
-                        OldImage = new Dictionary<string, DynamoDBEvent.AttributeValue>
-                        {
-                        },
-                        NewImage = new Dictionary<string, DynamoDBEvent.AttributeValue>
-                        {
-                        }
-                    }
-                }
-            }
+            HttpMethod = "POST",
+            Path = "/receive",
+            Body = @"{ ""votingProfileId"": ""your-voting-profile-id"" }"
         };
 
-        await function.Handle(evt, null);
+        await function.Handle(request, null);
     }
 }
