@@ -24,6 +24,6 @@ public class EventHandler : IEventHandler
     {
         var agentRequest = JsonSerializer.Deserialize<AgentRequest>(request.Body);
 
-        _logger.LogInformation("Received message: {Text}", agentRequest?.Message?.Text);
+        _logger.LogInformation("Received message: {Message}", JsonSerializer.Serialize(agentRequest.Message));
     }
 }
