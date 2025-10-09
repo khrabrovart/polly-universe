@@ -20,6 +20,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Scheduli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Scheduling.Runner", "PollyUniverse.Func.Scheduling.Runner\PollyUniverse.Func.Scheduling.Runner.csproj", "{3974437C-F7BA-40B3-835F-13575D233AAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Agent", "PollyUniverse.Func.Agent\PollyUniverse.Func.Agent.csproj", "{3FE95ADB-B98B-4003-855F-6C53E340F847}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyUniverse.Func.Agent.Runner", "PollyUniverse.Func.Agent.Runner\PollyUniverse.Func.Agent.Runner.csproj", "{DFDBB6FC-CF06-4591-9CFD-3AF24775C2B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +70,13 @@ Global
 		{3974437C-F7BA-40B3-835F-13575D233AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3974437C-F7BA-40B3-835F-13575D233AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3974437C-F7BA-40B3-835F-13575D233AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FE95ADB-B98B-4003-855F-6C53E340F847}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE95ADB-B98B-4003-855F-6C53E340F847}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE95ADB-B98B-4003-855F-6C53E340F847}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE95ADB-B98B-4003-855F-6C53E340F847}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFDBB6FC-CF06-4591-9CFD-3AF24775C2B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFDBB6FC-CF06-4591-9CFD-3AF24775C2B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFDBB6FC-CF06-4591-9CFD-3AF24775C2B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFDBB6FC-CF06-4591-9CFD-3AF24775C2B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
