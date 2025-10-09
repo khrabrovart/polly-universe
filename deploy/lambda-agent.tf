@@ -24,7 +24,6 @@ resource "aws_lambda_function" "agent_lambda" {
 
   depends_on = [
     aws_iam_role_policy_attachment.agent_lambda_basic_execution,
-    aws_iam_role_policy_attachment.agent_lambda_policy_attachment,
     aws_cloudwatch_log_group.agent_lambda_logs
   ]
 }
@@ -48,22 +47,6 @@ resource "aws_iam_role" "agent_lambda_role" {
 
 resource "aws_iam_role_policy_attachment" "agent_lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-  role       = aws_iam_role.agent_lambda_role.name
-}
-
-resource "aws_iam_policy" "agent_lambda_policy" {
-  name        = "${local.app_name}-agent-lambda-policy"
-  description = "IAM policy for agent lambda function"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "agent_lambda_policy_attachment" {
-  policy_arn = aws_iam_policy.agent_lambda_policy.arn
   role       = aws_iam_role.agent_lambda_role.name
 }
 

@@ -48,8 +48,8 @@ resource "aws_api_gateway_deployment" "agent_api_deployment" {
   ]
 }
 
-resource "aws_api_gateway_stage" "agent_api_stage" {
+resource "aws_api_gateway_stage" "agent_api_stage_hook" {
   deployment_id = aws_api_gateway_deployment.agent_api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.agent_api.id
-  stage_name    = "prod"
+  stage_name    = "hook"
 }
