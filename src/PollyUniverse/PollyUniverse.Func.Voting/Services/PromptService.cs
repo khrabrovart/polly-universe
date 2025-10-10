@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using PollyUniverse.Shared.Services.Files;
 
 namespace PollyUniverse.Func.Voting.Services;
@@ -10,8 +9,8 @@ public interface IPromptService
 
 public class PromptService : IPromptService
 {
-    private const string SystemBasePromptId = "system_base";
-    private const string SystemFormatPromptId = "system_format";
+    private const string SystemBasePromptId = "voting/system_base";
+    private const string SystemFormatPromptId = "voting/system_format";
 
     private readonly IPromptFileService _promptFileService;
     private readonly FunctionConfig _config;

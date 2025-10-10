@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using PollyUniverse.Shared.Extensions;
 
 namespace PollyUniverse.Func.Agent;
 

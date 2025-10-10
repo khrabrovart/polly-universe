@@ -37,7 +37,7 @@ public class VotingService : IVotingService
         VotingProfilePoll pollDescriptor,
         VotingProfileSession sessionDescriptor)
     {
-        if (TryGetFakeResult(_config.DevUseFakeVotingResult, out var fakeResult))
+        if (TryGetFakeResult(_config.DevFakeVotingResult, out var fakeResult))
         {
             return fakeResult;
         }

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Aws.Services;
@@ -20,14 +19,13 @@ public class NotificationService : INotificationService
     private readonly IMessageComposeService _messageComposeService;
     private readonly IPromptService _promptService;
     private readonly ITelegramBotService _telegramBotService;
-    private readonly ILogger<NotificationService> _logger;
     private readonly FunctionConfig _config;
 
     private static readonly Dictionary<VotingResult, string> VotingResultPrompts = new()
     {
-        { VotingResult.Success, "prompt_success" },
-        { VotingResult.PollNotFound, "prompt_poll_not_found" },
-        { VotingResult.VoteFailed, "prompt_vote_failed" }
+        { VotingResult.Success, "voting/prompt_success" },
+        { VotingResult.PollNotFound, "voting/prompt_poll_not_found" },
+        { VotingResult.VoteFailed, "voting/prompt_vote_failed" }
     };
 
     public NotificationService(
@@ -36,7 +34,6 @@ public class NotificationService : INotificationService
         IMessageComposeService messageComposeService,
         IPromptService promptService,
         ITelegramBotService telegramBotService,
-        ILogger<NotificationService> logger,
         FunctionConfig config)
     {
         _systemsManagementService = systemsManagementService;
@@ -44,7 +41,6 @@ public class NotificationService : INotificationService
         _messageComposeService = messageComposeService;
         _promptService = promptService;
         _telegramBotService = telegramBotService;
-        _logger = logger;
         _config = config;
     }
 

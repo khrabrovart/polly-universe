@@ -14,7 +14,7 @@ public class FunctionConfig
         OpenAIApiKeyParameter = config.GetOrThrow("OPENAI_API_KEY_PARAMETER");
         OpenAIModel = config.GetOrThrow("OPENAI_MODEL");
 
-        DevUseFakeVotingResult = config["DEV:USE_FAKE_VOTING_RESULT"];
+        DevFakeVotingResult = config["DEV:FAKE_VOTING_RESULT"];
         DevMuteNotifications = bool.TryParse(config["DEV:MUTE_NOTIFICATIONS"], out var muteNotifications) && muteNotifications;
     }
 
@@ -32,7 +32,7 @@ public class FunctionConfig
 
     #region Development Settings
 
-    public string DevUseFakeVotingResult { get; set; }
+    public string DevFakeVotingResult { get; set; }
 
     public bool DevMuteNotifications { get; set; }
 
