@@ -1,18 +1,17 @@
-using PollyUniverse.Shared.Models;
 using WTelegram;
 
-namespace PollyUniverse.Func.Voting.Services.Telegram;
+namespace PollyUniverse.Shared.Telegram.Services;
 
 public interface ITelegramClientService
 {
-    Task<Client> CreateClient(string sessionFilePath, SessionMetadata sessionMetadata);
+    Task<Client> CreateClient(string sessionFilePath, string apiHash, string phoneNumber);
 }
 
 public class TelegramClientService : ITelegramClientService
 {
-    public async Task<Client> CreateClient(string sessionFilePath, SessionMetadata sessionMetadata)
+    public async Task<Client> CreateClient(string sessionFilePath, string apiHash, string phoneNumber)
     {
-        return await CreateClientAndLogin(sessionFilePath, sessionMetadata.ApiHash, sessionMetadata.PhoneNumber);
+        return await CreateClientAndLogin(sessionFilePath, apiHash, phoneNumber);
     }
 
     private static async Task<Client> CreateClientAndLogin(string sessionFilePath, string apiHash, string phoneNumber)

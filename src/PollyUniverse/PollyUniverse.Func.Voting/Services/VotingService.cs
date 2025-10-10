@@ -1,6 +1,6 @@
 using PollyUniverse.Func.Voting.Models;
-using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Models;
+using PollyUniverse.Shared.Telegram.Services;
 using WTelegram;
 
 namespace PollyUniverse.Func.Voting.Services;
@@ -64,7 +64,12 @@ public class VotingService : IVotingService
             await Task.Delay(CalculateSemiRandomDelay(sessionDescriptor.VoteDelaySeconds));
         }
 
-        var voted = await _telegramVoteService.Vote(telegramClient, votingInputPeer, pollMessage, sessionDescriptor.VoteIndex);
+        var voted = await _telegramVoteService.Vote(
+            telegramClient,
+            votingInputPeer,
+            pollMessage.MessageId,
+            pollMessage.Options[sessionDescriptor.VoteIndex]);
+
         return voted ? VotingResult.Success : VotingResult.VoteFailed;
     }
 

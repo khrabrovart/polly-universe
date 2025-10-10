@@ -9,7 +9,7 @@ namespace PollyUniverse.Shared.Aws.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddAwsServices(this IServiceCollection services)
+    public static IServiceCollection AddAwsServices(this IServiceCollection services)
     {
         services
             .AddAWSService<IAmazonDynamoDB>()
@@ -22,5 +22,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISchedulerService, SchedulerService>()
             .AddSingleton<ISystemsManagementService, SystemsManagementService>()
             ;
+
+        return services;
     }
 }

@@ -1,17 +1,19 @@
 using Flurl.Http.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PollyUniverse.Shared.TelegramBot.Services;
+using PollyUniverse.Shared.Telegram.Services;
 
-namespace PollyUniverse.Shared.TelegramBot.Extensions;
+namespace PollyUniverse.Shared.Telegram.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddTelegramBotServices(this IServiceCollection services)
+    public static IServiceCollection AddTelegramServices(this IServiceCollection services)
     {
         services
             .AddSingleton(new FlurlClientCache().Add("Telegram", "https://api.telegram.org"))
 
             .AddSingleton<ITelegramBotService, TelegramBotService>()
             ;
+
+        return services;
     }
 }

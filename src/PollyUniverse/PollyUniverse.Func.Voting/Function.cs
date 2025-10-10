@@ -5,13 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services;
-using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Aws.Extensions;
 using PollyUniverse.Shared.Extensions;
 using PollyUniverse.Shared.OpenAI.Extensions;
 using PollyUniverse.Shared.Repositories;
 using PollyUniverse.Shared.Services.Files;
-using PollyUniverse.Shared.TelegramBot.Extensions;
+using PollyUniverse.Shared.Telegram.Extensions;
+using PollyUniverse.Shared.Telegram.Services;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -42,9 +42,6 @@ public class Function
         });
 
         services.AddSharedServices();
-        services.AddAwsServices();
-        services.AddOpenAIServices();
-        services.AddTelegramBotServices();
 
         services
             .AddSingleton<IEventHandler, EventHandler>()

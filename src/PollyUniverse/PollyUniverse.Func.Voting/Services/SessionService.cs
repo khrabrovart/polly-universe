@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
-using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Repositories;
 using PollyUniverse.Shared.Services.Files;
+using PollyUniverse.Shared.Telegram.Services;
 using WTelegram;
 
 namespace PollyUniverse.Func.Voting.Services;
@@ -56,7 +56,10 @@ public class SessionService : ISessionService
 
         _logger.LogInformation("Initializing Telegram client for session \"{SessionId}\"", sessionId);
 
-        var client = await _telegramClientService.CreateClient(sessionFilePath, sessionMetadata);
+        var client = await _telegramClientService.CreateClient(
+            sessionFilePath,
+            sessionMetadata.ApiHash,
+            sessionMetadata.PhoneNumber);
 
         _logger.LogInformation("Logged in successfully as \"{User}\"", client.User);
 

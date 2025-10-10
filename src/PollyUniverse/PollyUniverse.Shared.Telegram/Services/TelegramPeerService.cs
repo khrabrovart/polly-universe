@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using TL;
 using WTelegram;
 
-namespace PollyUniverse.Func.Voting.Services.Telegram;
+namespace PollyUniverse.Shared.Telegram.Services;
 
 public interface ITelegramPeerService
 {

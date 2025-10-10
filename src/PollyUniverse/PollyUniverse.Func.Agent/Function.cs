@@ -36,7 +36,6 @@ public class Function
         });
 
         services.AddSharedServices();
-        services.AddAwsServices();
 
         services
             .AddSingleton<IEventHandler, EventHandler>()

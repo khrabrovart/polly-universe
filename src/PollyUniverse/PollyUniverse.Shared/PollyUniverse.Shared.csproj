@@ -12,7 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\PollyUniverse.Shared.Aws\PollyUniverse.Shared.Aws.csproj" />
       <ProjectReference Include="..\PollyUniverse.Shared.OpenAI\PollyUniverse.Shared.OpenAI.csproj" />
-      <ProjectReference Include="..\PollyUniverse.Shared.TelegramBot\PollyUniverse.Shared.TelegramBot.csproj" />
+      <ProjectReference Include="..\PollyUniverse.Shared.Telegram\PollyUniverse.Shared.Telegram.csproj" />
     </ItemGroup>
 
 </Project>

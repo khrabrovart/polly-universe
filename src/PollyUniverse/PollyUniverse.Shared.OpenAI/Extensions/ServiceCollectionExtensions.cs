@@ -5,10 +5,12 @@ namespace PollyUniverse.Shared.OpenAI.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddOpenAIServices(this IServiceCollection services)
+    public static IServiceCollection AddOpenAIServices(this IServiceCollection services)
     {
         services
             .AddSingleton<IOpenAIService, OpenAIService>()
             ;
+
+        return services;
     }
 }
