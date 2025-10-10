@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
-using PollyUniverse.Func.Voting.Services.Files;
 using PollyUniverse.Func.Voting.Services.Telegram;
 using PollyUniverse.Shared.Repositories;
+using PollyUniverse.Shared.Services.Files;
 using WTelegram;
 
 namespace PollyUniverse.Func.Voting.Services;
@@ -17,22 +17,26 @@ public class SessionService : ISessionService
     private readonly ITelegramClientService _telegramClientService;
     private readonly ISessionMetadataRepository _sessionMetadataRepository;
     private readonly ILogger<SessionService> _logger;
+    private readonly FunctionConfig _config;
 
     public SessionService(
         ISessionFileService sessionFileService,
         ITelegramClientService telegramClientService,
         ISessionMetadataRepository sessionMetadataRepository,
-        ILogger<SessionService> logger)
+        ILogger<SessionService> logger,
+        FunctionConfig config)
     {
         _sessionFileService = sessionFileService;
         _telegramClientService = telegramClientService;
         _sessionMetadataRepository = sessionMetadataRepository;
         _logger = logger;
+        _config = config;
     }
 
     public async Task<Client> InitializeTelegramClientWithSession(string sessionId)
     {
-        var sessionFileTask = _sessionFileService.DownloadSessionFile(sessionId);
+        var sessionFileTask = _sessionFileService.DownloadSessionFile(_config.S3Bucket, sessionId);
+
         var sessionMetadataTask = _sessionMetadataRepository.Get(sessionId);
 
         await Task.WhenAll(sessionFileTask, sessionMetadataTask);

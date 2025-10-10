@@ -5,7 +5,7 @@ namespace PollyUniverse.Tools.PromptTest;
 
 public class Program
 {
-    private const string LocalPromptsFolder = "./Prompts";
+    private const string LocalPromptsFolder = "./tmp/prompts";
 
     public static async Task Main(string[] args)
     {

@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PollyUniverse.Func.Voting\PollyUniverse.Func.Voting.csproj" />
+      <PackageReference Include="dotenv.net" Version="4.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="dotenv.net" Version="4.0.0" />
+      <ProjectReference Include="..\PollyUniverse.Func.Voting\PollyUniverse.Func.Voting.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,19 +21,7 @@
       <None Update=".env.dev">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="Prompts\prompt_success.md">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Prompts\system_base.md">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Prompts\system_format.md">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Prompts\prompt_poll_not_found.md">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Prompts\prompt_vote_failed.md">
+      <None Update="tmp\**\*.*">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

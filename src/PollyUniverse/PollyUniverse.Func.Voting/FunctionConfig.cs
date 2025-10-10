@@ -14,8 +14,6 @@ public class FunctionConfig
         OpenAIApiKeyParameter = config.GetOrThrow("OPENAI_API_KEY_PARAMETER");
         OpenAIModel = config.GetOrThrow("OPENAI_MODEL");
 
-        DevUseLocalTmpDirectory = bool.TryParse(config["DEV:USE_LOCAL_TMP_DIR"], out var useLocalTmp) && useLocalTmp;
-        DevUseLocalPrompts = bool.TryParse(config["DEV:USE_LOCAL_PROMPTS"], out var useLocalPrompts) && useLocalPrompts;
         DevUseFakeVotingResult = config["DEV:USE_FAKE_VOTING_RESULT"];
         DevMuteNotifications = bool.TryParse(config["DEV:MUTE_NOTIFICATIONS"], out var muteNotifications) && muteNotifications;
     }
@@ -33,10 +31,6 @@ public class FunctionConfig
     public string OpenAIModel { get; set; }
 
     #region Development Settings
-
-    public bool DevUseLocalTmpDirectory { get; set; }
-
-    public bool DevUseLocalPrompts { get; set; }
 
     public string DevUseFakeVotingResult { get; set; }
 
