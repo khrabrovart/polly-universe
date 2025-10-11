@@ -3,6 +3,7 @@ using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PollyUniverse.Func.Agent.Services;
 using PollyUniverse.Shared;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -21,6 +22,8 @@ public class Function
                 .AddSingleton<IFunctionConfig>(new FunctionConfig(configuration))
 
                 .AddSingleton<IEventHandler, EventHandler>()
+
+                .AddSingleton<IMessageService, MessageService>()
                 ;
         });
     }
@@ -29,6 +32,7 @@ public class Function
     {
         var logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
         var handler = ServiceProvider.GetRequiredService<IEventHandler>();
+        var config = ServiceProvider.GetRequiredService<IFunctionConfig>();
 
         if (request == null)
         {
@@ -41,8 +45,13 @@ public class Function
         {
             await handler.Handle(request);
         }
-        catch
+        catch (Exception ex)
         {
+            if (config.DevFakeService)
+            {
+                throw;
+            }
+
             // Ignore any exceptions to avoid Telegram Bot webhook failure
         }
 

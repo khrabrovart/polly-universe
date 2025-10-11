@@ -24,15 +24,13 @@ public record MessageHistory
 
 public record MessageHistoryRecord
 {
-    public DateTime Date { get; init; }
+    public required DateTime Date { get; init; }
 
-    public long SenderId { get; init; }
+    public required long SenderId { get; init; }
 
-    public string SenderFirstName { get; init; }
+    public required string SenderName { get; init; }
 
-    public string SenderLastName { get; init; }
+    public required string SenderUsername { get; init; }
 
-    public string SenderUsername { get; init; }
-
-    public string Text { get; init; }
+    public required string Text { get; init; }
 }

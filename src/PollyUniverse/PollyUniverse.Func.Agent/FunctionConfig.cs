@@ -10,6 +10,12 @@ public interface IFunctionConfig
     string OpenAIApiKeyParameter { get; set; }
 
     string OpenAIModel { get; set; }
+
+    #region Development Settings
+
+    bool DevFakeService { get; set; }
+
+    #endregion
 }
 
 public class FunctionConfig : IFunctionConfig
@@ -19,6 +25,8 @@ public class FunctionConfig : IFunctionConfig
         BotTokenParameter = configuration.GetOrThrow("BOT_TOKEN_PARAMETER");
         OpenAIApiKeyParameter = configuration.GetOrThrow("OPENAI_API_KEY_PARAMETER");
         OpenAIModel = configuration.GetOrThrow("OPENAI_MODEL");
+
+        DevFakeService = bool.TryParse(configuration["DEV:FAKE_SERVICE"], out var devFakeService) && devFakeService;
     }
 
     public string BotTokenParameter { get; set; }
@@ -26,4 +34,10 @@ public class FunctionConfig : IFunctionConfig
     public string OpenAIApiKeyParameter { get; set; }
 
     public string OpenAIModel { get; set; }
+
+    #region Development Settings
+
+    public bool DevFakeService { get; set; }
+
+    #endregion
 }

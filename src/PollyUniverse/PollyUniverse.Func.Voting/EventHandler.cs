@@ -46,6 +46,7 @@ public class EventHandler : IEventHandler
         }
 
         var telegramClientTasks = votingProfile.Sessions
+            .Where(s => s.Enabled)
             .Select(async session =>
             {
                 var client = await _sessionService.InitializeTelegramClientWithSession(session.Id);

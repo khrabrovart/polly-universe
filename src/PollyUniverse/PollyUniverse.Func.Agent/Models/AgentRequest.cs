@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PollyUniverse.Shared.Telegram.Converters;
 using PollyUniverse.Shared.Telegram.Models;
 
 namespace PollyUniverse.Func.Agent.Models;
@@ -29,9 +30,6 @@ public class AgentRequestMessageFrom
     [JsonPropertyName("id")]
     public long Id { get; set; }
 
-    [JsonPropertyName("is_bot")]
-    public bool IsBot { get; set; }
-
     [JsonPropertyName("first_name")]
     public string FirstName { get; set; }
 
@@ -45,6 +43,7 @@ public class AgentRequestMessageFrom
 public class AgentRequestMessageChat
 {
     [JsonPropertyName("id")]
+    [JsonConverter(typeof(TelegramLongPeerIdJsonConverter))]
     public TelegramLongPeerId Id { get; set; }
 
     [JsonPropertyName("title")]

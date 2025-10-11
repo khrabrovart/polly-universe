@@ -21,6 +21,15 @@
       <None Update=".env.dev">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="tmp\prompts\shared\system_base.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="tmp\prompts\shared\system_format.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="tmp\prompts\agent\prompt_reply.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     
 </Project>

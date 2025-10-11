@@ -27,19 +27,27 @@ public class S3Service : IS3Service
         var request = new GetObjectRequest
         {
             BucketName = bucketName,
-            Key = objectKey
+            Key = objectKey,
+
         };
 
-        using var response = await _s3Client.GetObjectAsync(request);
+        try
+        {
+            using var response = await _s3Client.GetObjectAsync(request);
 
-        if (response.HttpStatusCode != HttpStatusCode.OK)
+            if (response.HttpStatusCode != HttpStatusCode.OK)
+            {
+                return false;
+            }
+
+            await response.WriteResponseStreamToFileAsync(filePath, false, CancellationToken.None);
+
+            return true;
+        }
+        catch (AmazonS3Exception e) when (e.StatusCode == HttpStatusCode.NotFound)
         {
             return false;
         }
-
-        await response.WriteResponseStreamToFileAsync(filePath, false, CancellationToken.None);
-
-        return true;
     }
 
     public async Task<bool> UploadFile(string bucketName, string objectKey, string filePath)

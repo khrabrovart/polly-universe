@@ -54,8 +54,7 @@ public class MessageService : IMessageService
         {
             Date = DateTimeOffset.FromUnixTimeSeconds(message.Date).DateTime,
             SenderId = message.From.Id,
-            SenderFirstName = message.From.FirstName,
-            SenderLastName = message.From.LastName,
+            SenderName = message.From.FirstName,
             SenderUsername = message.From.Username,
             Text = message.Text
         };
@@ -84,26 +83,34 @@ public class MessageService : IMessageService
 
         var generatedMessage = await _openAiService.CompleteChat(openAiApiKey, _config.OpenAIModel, prompt);
 
-        var messageSent = await _telegramBotService.SendMessage(
-            botToken,
-            peerId,
-            generatedMessage);
-
-        if (!messageSent)
+        if (!_config.DevFakeService)
         {
-            throw new Exception("Failed to send notification message");
+            var messageSent = await _telegramBotService.SendMessage(
+                botToken,
+                peerId,
+                generatedMessage);
+
+            if (!messageSent)
+            {
+                throw new Exception("Failed to send notification message");
+            }
         }
 
         var replyMessage = new MessageHistoryRecord
         {
             Date = DateTime.UtcNow,
-            SenderFirstName = "Polly",
+            SenderId = 0,
+            SenderName = "Polly",
+            SenderUsername = "polly_bot",
             Text = generatedMessage
         };
 
         messageHistory.AddMessage(lastMessage);
         messageHistory.AddMessage(replyMessage);
 
-        await _messageHistoryService.SaveHistory(messageHistory);
+        if (!_config.DevFakeService)
+        {
+            await _messageHistoryService.SaveHistory(messageHistory);
+        }
     }
 }
