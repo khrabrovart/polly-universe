@@ -1,6 +1,6 @@
 namespace PollyUniverse.Shared.Utils;
 
-static internal class TmpDirectoryUtils
+public static class TmpDirectoryUtils
 {
     public static string GetTmpDirectory()
     {

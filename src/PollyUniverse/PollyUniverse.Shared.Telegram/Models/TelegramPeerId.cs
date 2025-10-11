@@ -4,21 +4,21 @@ public interface ITelegramPeerId
 {
 }
 
-public class LongTelegramPeerId : ITelegramPeerId
+public class TelegramLongPeerId : ITelegramPeerId
 {
     private long _value;
 
-    public static implicit operator long(LongTelegramPeerId peerId) => peerId._value;
+    public static implicit operator long(TelegramLongPeerId peerId) => peerId._value;
 
-    public static implicit operator LongTelegramPeerId(long value)
+    public static implicit operator TelegramLongPeerId(long value)
     {
-        return new LongTelegramPeerId
+        return new TelegramLongPeerId
         {
             _value = value
         };
     }
 
-    public ShortTelegramPeerId ToShortPeerId()
+    public TelegramShortPeerId ToShortPeerId()
     {
         if (_value >= 0)
         {
@@ -37,15 +37,15 @@ public class LongTelegramPeerId : ITelegramPeerId
     }
 }
 
-public class ShortTelegramPeerId : ITelegramPeerId
+public class TelegramShortPeerId : ITelegramPeerId
 {
     private long _value;
 
-    public static implicit operator long(ShortTelegramPeerId peerId) => peerId._value;
+    public static implicit operator long(TelegramShortPeerId peerId) => peerId._value;
 
-    public static implicit operator ShortTelegramPeerId(long value)
+    public static implicit operator TelegramShortPeerId(long value)
     {
-        return new ShortTelegramPeerId
+        return new TelegramShortPeerId
         {
             _value = value
         };

@@ -17,7 +17,7 @@ public class VotingProfilePoll
 {
     public required long FromId { get; set; }
 
-    public required ShortTelegramPeerId PeerId { get; set; }
+    public required TelegramShortPeerId PeerId { get; set; }
 
     public required DayOfWeek DayOfWeek { get; set; }
 

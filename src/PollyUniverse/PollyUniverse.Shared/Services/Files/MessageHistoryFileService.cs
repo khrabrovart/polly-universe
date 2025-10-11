@@ -6,7 +6,11 @@ namespace PollyUniverse.Shared.Services.Files;
 
 public interface IMessageHistoryFileService
 {
-    Task<string> DownloadMessageHistoryFile(ShortTelegramPeerId peerId);
+    (string RemotePath, string LocalPath) GetFilePaths(TelegramShortPeerId peerId);
+
+    Task<string> DownloadMessageHistoryFile(TelegramShortPeerId peerId);
+
+    Task<bool> UploadMessageHistoryFile(TelegramShortPeerId peerId);
 }
 
 public class MessageHistoryFileService : IMessageHistoryFileService
@@ -24,11 +28,17 @@ public class MessageHistoryFileService : IMessageHistoryFileService
         _tmpDirectory = TmpDirectoryUtils.GetTmpDirectory();
     }
 
-    public async Task<string> DownloadMessageHistoryFile(ShortTelegramPeerId peerId)
+    public (string RemotePath, string LocalPath) GetFilePaths(TelegramShortPeerId peerId)
     {
         var fileName = $"{peerId}.csv";
         var remoteFilePath = $"{MessageHistoryBucketPrefix}/{fileName}";
         var localFilePath = $"{_tmpDirectory}/{remoteFilePath}";
+        return (remoteFilePath, localFilePath);
+    }
+
+    public async Task<string> DownloadMessageHistoryFile(TelegramShortPeerId peerId)
+    {
+        var (remoteFilePath, localFilePath) = GetFilePaths(peerId);
 
         if (File.Exists(localFilePath))
         {
@@ -38,5 +48,17 @@ public class MessageHistoryFileService : IMessageHistoryFileService
         var success = await _s3Service.Download(_bucketName, remoteFilePath, localFilePath);
 
         return success ? localFilePath : null;
+    }
+
+    public async Task<bool> UploadMessageHistoryFile(TelegramShortPeerId peerId)
+    {
+        var (remoteFilePath, localFilePath) = GetFilePaths(peerId);
+
+        if (!File.Exists(localFilePath))
+        {
+            return false;
+        }
+
+        return await _s3Service.UploadFile(_bucketName, remoteFilePath, localFilePath);
     }
 }

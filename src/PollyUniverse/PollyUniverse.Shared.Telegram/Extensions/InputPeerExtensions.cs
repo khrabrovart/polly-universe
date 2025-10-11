@@ -5,7 +5,7 @@ namespace PollyUniverse.Shared.Telegram.Extensions;
 
 public static class InputPeerExtensions
 {
-    public static LongTelegramPeerId GetLongPeerId(this InputPeer inputPeer)
+    public static TelegramLongPeerId GetLongPeerId(this InputPeer inputPeer)
     {
         return inputPeer switch
         {
@@ -16,7 +16,7 @@ public static class InputPeerExtensions
         };
     }
 
-    public static ShortTelegramPeerId GetShortPeerId(this InputPeer inputPeer)
+    public static TelegramShortPeerId GetShortPeerId(this InputPeer inputPeer)
     {
         return inputPeer.ID;
     }

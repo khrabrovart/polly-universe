@@ -7,14 +7,14 @@ namespace PollyUniverse.Shared.Telegram.Services;
 
 public interface ITelegramPeerService
 {
-    Task<InputPeer> GetInputPeer(Client telegramClient, ShortTelegramPeerId peerId);
+    Task<InputPeer> GetInputPeer(Client telegramClient, TelegramShortPeerId peerId);
 }
 
 public class TelegramPeerService : ITelegramPeerService
 {
     private static readonly ConcurrentDictionary<long, Dictionary<long, ChatBase>> ChatsByUser = new();
 
-    public async Task<InputPeer> GetInputPeer(Client telegramClient, ShortTelegramPeerId peerId)
+    public async Task<InputPeer> GetInputPeer(Client telegramClient, TelegramShortPeerId peerId)
     {
         var userId = telegramClient.User.id;
 

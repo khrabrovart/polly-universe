@@ -1,5 +1,7 @@
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Shared.Aws.Services;
+using PollyUniverse.Shared.OpenAI.Services;
+using PollyUniverse.Shared.Services;
 using PollyUniverse.Shared.Telegram.Extensions;
 using PollyUniverse.Shared.Telegram.Services;
 using WTelegram;
@@ -15,10 +17,13 @@ public class NotificationService : INotificationService
 {
     private readonly ISystemsManagementService _systemsManagementService;
     private readonly ITelegramPeerService _telegramPeerService;
-    private readonly IMessageComposeService _messageComposeService;
-    private readonly IPromptService _promptService;
     private readonly ITelegramBotService _telegramBotService;
+    private readonly IPromptService _promptService;
+    private readonly IOpenAIService _openAiService;
     private readonly IFunctionConfig _config;
+
+    private const string SystemBasePromptId = "shared/system_base";
+    private const string SystemFormatPromptId = "shared/system_format";
 
     private static readonly Dictionary<VotingResult, string> VotingResultPrompts = new()
     {
@@ -27,19 +32,26 @@ public class NotificationService : INotificationService
         { VotingResult.VoteFailed, "voting/prompt_vote_failed" }
     };
 
+    private static readonly Dictionary<VotingResult, string> VotingResultMarks = new()
+    {
+        { VotingResult.Success, "✅"},
+        { VotingResult.PollNotFound, "🔎"},
+        { VotingResult.VoteFailed, "❌"}
+    };
+
     public NotificationService(
         ISystemsManagementService systemsManagementService,
         ITelegramPeerService telegramPeerService,
-        IMessageComposeService messageComposeService,
-        IPromptService promptService,
         ITelegramBotService telegramBotService,
+        IPromptService promptService,
+        IOpenAIService openAiService,
         IFunctionConfig config)
     {
         _systemsManagementService = systemsManagementService;
         _telegramPeerService = telegramPeerService;
-        _messageComposeService = messageComposeService;
-        _promptService = promptService;
         _telegramBotService = telegramBotService;
+        _promptService = promptService;
+        _openAiService = openAiService;
         _config = config;
     }
 
@@ -50,14 +62,7 @@ public class NotificationService : INotificationService
             return;
         }
 
-        var promptId = VotingResultPrompts.GetValueOrDefault(votingResult);
-
-        if (string.IsNullOrEmpty(promptId))
-        {
-            throw new Exception($"No prompt ID found for voting result: {votingResult}");
-        }
-
-        var promptTask = _promptService.GetFullPrompt(promptId);
+        var promptTask = GetPrompt(votingResult);
         var ssmParametersTask = _systemsManagementService.GetParameters(
             _config.OpenAIApiKeyParameter,
             _config.BotTokenParameter,
@@ -94,24 +99,39 @@ public class NotificationService : INotificationService
         }
 
         var user = telegramClient.User;
-
-        var message = await _messageComposeService.ComposeMessage(
-            votingResult,
-            user.ID,
-            user.first_name,
-            openAiApiKey,
-            _config.OpenAIModel,
-            prompt,
-            null);
+        var generatedMessage =  await _openAiService.CompleteChat(openAiApiKey, _config.OpenAIModel, prompt);
+        generatedMessage = PostprocessMessage(generatedMessage, user.ID, user.first_name, votingResult);
 
         var messageSent = await _telegramBotService.SendMessage(
             botToken,
             notificationsInputPeer.GetLongPeerId(),
-            message);
+            generatedMessage);
 
         if (!messageSent)
         {
             throw new Exception("Failed to send notification message");
         }
+    }
+
+    private Task<string> GetPrompt(VotingResult votingResult)
+    {
+        var promptId = VotingResultPrompts.GetValueOrDefault(votingResult);
+
+        if (string.IsNullOrEmpty(promptId))
+        {
+            throw new Exception($"No prompt ID found for voting result: {votingResult}");
+        }
+
+        var orderedPrompts = new[] { SystemBasePromptId, promptId, SystemFormatPromptId };
+
+        return _promptService.GetPrompt(orderedPrompts, parameters: null);
+    }
+
+    private static string PostprocessMessage(string message, long userId, string userName, VotingResult votingResult)
+    {
+        var userMention = $"[{userName}](tg://user?id={userId})";
+        var mark = VotingResultMarks.GetValueOrDefault(votingResult, string.Empty);
+
+        return $"{mark} {message}".Replace("PLAYER_NAME", userMention);
     }
 }

@@ -23,10 +23,8 @@ public class Function
 
                 .AddSingleton<IEventHandler, EventHandler>()
 
-                .AddSingleton<IMessageComposeService, MessageComposeService>()
                 .AddSingleton<INotificationService, NotificationService>()
                 .AddSingleton<IPollService, PollService>()
-                .AddSingleton<IPromptService, PromptService>()
                 .AddSingleton<ISessionService, SessionService>()
                 .AddSingleton<IVotingProfileService, VotingProfileService>()
                 .AddSingleton<IVotingService, VotingService>()

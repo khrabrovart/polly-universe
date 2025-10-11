@@ -8,7 +8,9 @@ public interface IS3Service
 {
     Task<bool> Download(string bucketName, string objectKey, string filePath);
 
-    Task<bool> Put(string bucketName, string objectKey, byte[] data);
+    Task<bool> UploadFile(string bucketName, string objectKey, string filePath);
+
+    Task<bool> UploadData(string bucketName, string objectKey, byte[] data);
 }
 
 public class S3Service : IS3Service
@@ -40,7 +42,20 @@ public class S3Service : IS3Service
         return true;
     }
 
-    public async Task<bool> Put(string bucketName, string objectKey, byte[] data)
+    public async Task<bool> UploadFile(string bucketName, string objectKey, string filePath)
+    {
+        var request = new PutObjectRequest
+        {
+            BucketName = bucketName,
+            Key = objectKey,
+            FilePath = filePath
+        };
+
+        var response = await _s3Client.PutObjectAsync(request);
+        return response.HttpStatusCode == HttpStatusCode.OK;
+    }
+
+    public async Task<bool> UploadData(string bucketName, string objectKey, byte[] data)
     {
         await using var memoryStream = new MemoryStream(data);
 

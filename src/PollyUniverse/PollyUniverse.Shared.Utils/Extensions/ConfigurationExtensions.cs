@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace PollyUniverse.Shared.Extensions;
+namespace PollyUniverse.Shared.Utils.Extensions;
 
 public static class ConfigurationExtensions
 {

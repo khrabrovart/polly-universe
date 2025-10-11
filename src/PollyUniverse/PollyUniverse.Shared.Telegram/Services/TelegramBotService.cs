@@ -8,7 +8,7 @@ namespace PollyUniverse.Shared.Telegram.Services;
 
 public interface ITelegramBotService
 {
-    Task<bool> SendMessage(string botToken, LongTelegramPeerId peerId, string message);
+    Task<bool> SendMessage(string botToken, TelegramLongPeerId peerId, string message);
 }
 
 public class TelegramBotService : ITelegramBotService
@@ -20,7 +20,7 @@ public class TelegramBotService : ITelegramBotService
         _flurlClient = flurlClientCache.Get("Telegram");
     }
 
-    public async Task<bool> SendMessage(string botToken, LongTelegramPeerId peerId, string message)
+    public async Task<bool> SendMessage(string botToken, TelegramLongPeerId peerId, string message)
     {
         var botSegment = $"bot{UrlEncoder.Default.Encode(botToken)}";
         var response = await _flurlClient

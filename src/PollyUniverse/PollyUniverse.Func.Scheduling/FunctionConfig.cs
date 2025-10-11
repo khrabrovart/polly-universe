@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using PollyUniverse.Shared.Extensions;
+using PollyUniverse.Shared.Utils.Extensions;
 
 namespace PollyUniverse.Func.Scheduling;
 

@@ -13,9 +13,9 @@ public class Program
 
         var prompts = new[]
         {
-            "voting/system_base",
+            "shared/system_base",
             "voting/prompt_success",
-            "voting/system_format"
+            "shared/system_format"
         };
 
         var promptFilePaths = prompts.Select(id => Path.Combine(LocalPromptsFolder, $"{id}.md"));
