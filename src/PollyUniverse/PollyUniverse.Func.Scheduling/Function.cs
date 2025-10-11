@@ -1,12 +1,11 @@
 ﻿using System.Text.Json;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.DynamoDBEvents;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Scheduling.Comparers;
 using PollyUniverse.Func.Scheduling.Services;
-using PollyUniverse.Shared.Extensions;
+using PollyUniverse.Shared;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -18,34 +17,18 @@ public class Function
 
     static Function()
     {
-        var configuration = new ConfigurationBuilder()
-            .AddEnvironmentVariables()
-            .Build();
-
-        var services = new ServiceCollection();
-
-        services.AddLogging(builder =>
+        ServiceProvider = SharedBootstrapper.Bootstrap((services, configuration) =>
         {
-            builder.ClearProviders();
-            builder.AddConsole();
-            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
-            builder.AddFilter("Amazon", Microsoft.Extensions.Logging.LogLevel.Warning);
-            builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
+            services
+                .AddSingleton<IFunctionConfig>(new FunctionConfig(configuration))
+
+                .AddSingleton<IEventHandler, EventHandler>()
+
+                .AddSingleton<IVotingProfileComparer, VotingProfileComparer>()
+
+                .AddSingleton<IVotingScheduleService, VotingScheduleService>()
+                ;
         });
-
-        services.AddSharedServices(configuration);
-
-        services
-            .AddSingleton<IFunctionConfig>(new FunctionConfig(configuration))
-
-            .AddSingleton<IEventHandler, EventHandler>()
-
-            .AddSingleton<IVotingProfileComparer, VotingProfileComparer>()
-
-            .AddSingleton<IVotingScheduleService, VotingScheduleService>()
-            ;
-
-        ServiceProvider = services.BuildServiceProvider();
     }
 
     public async Task Handle(DynamoDBEvent evt, ILambdaContext context)
