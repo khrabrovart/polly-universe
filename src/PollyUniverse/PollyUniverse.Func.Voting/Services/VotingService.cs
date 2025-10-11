@@ -18,13 +18,13 @@ public class VotingService : IVotingService
     private readonly ITelegramPeerService _telegramPeerService;
     private readonly ITelegramVoteService _telegramVoteService;
     private readonly IPollService _pollService;
-    private readonly FunctionConfig _config;
+    private readonly IFunctionConfig _config;
 
     public VotingService(
         ITelegramPeerService telegramPeerService,
         ITelegramVoteService telegramVoteService,
         IPollService pollService,
-        FunctionConfig config)
+        IFunctionConfig config)
     {
         _telegramPeerService = telegramPeerService;
         _telegramVoteService = telegramVoteService;

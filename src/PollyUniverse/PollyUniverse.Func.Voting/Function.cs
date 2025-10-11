@@ -1,17 +1,10 @@
 ﻿using System.Text.Json;
 using Amazon.Lambda.Core;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Func.Voting.Services;
-using PollyUniverse.Shared.Aws.Extensions;
-using PollyUniverse.Shared.Extensions;
-using PollyUniverse.Shared.OpenAI.Extensions;
-using PollyUniverse.Shared.Repositories;
-using PollyUniverse.Shared.Services.Files;
-using PollyUniverse.Shared.Telegram.Extensions;
-using PollyUniverse.Shared.Telegram.Services;
+using PollyUniverse.Shared;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -23,50 +16,22 @@ public class Function
 
     static Function()
     {
-        var configuration = new ConfigurationBuilder()
-            .AddEnvironmentVariables()
-            .Build();
-
-        var services = new ServiceCollection();
-        var functionConfig = new FunctionConfig(configuration);
-
-        services.AddSingleton(functionConfig);
-
-        services.AddLogging(builder =>
+        ServiceProvider = SharedBootstrapper.Bootstrap((services, configuration) =>
         {
-            builder.ClearProviders();
-            builder.AddConsole();
-            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
-            builder.AddFilter("Amazon", Microsoft.Extensions.Logging.LogLevel.Warning);
-            builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
+            services
+                .AddSingleton<IFunctionConfig>(new FunctionConfig(configuration))
+
+                .AddSingleton<IEventHandler, EventHandler>()
+
+                .AddSingleton<IMessageComposeService, MessageComposeService>()
+                .AddSingleton<INotificationService, NotificationService>()
+                .AddSingleton<IPollService, PollService>()
+                .AddSingleton<IPromptService, PromptService>()
+                .AddSingleton<ISessionService, SessionService>()
+                .AddSingleton<IVotingProfileService, VotingProfileService>()
+                .AddSingleton<IVotingService, VotingService>()
+                ;
         });
-
-        services.AddSharedServices();
-
-        services
-            .AddSingleton<IEventHandler, EventHandler>()
-
-            .AddSingleton<IPromptFileService, PromptFileService>()
-            .AddSingleton<ISessionFileService, SessionFileService>()
-
-            .AddSingleton<ITelegramClientService, TelegramClientService>()
-            .AddSingleton<ITelegramMessageService, TelegramMessageService>()
-            .AddSingleton<ITelegramPeerService, TelegramPeerService>()
-            .AddSingleton<ITelegramVoteService, TelegramVoteService>()
-
-            .AddSingleton<IMessageComposeService, MessageComposeService>()
-            .AddSingleton<INotificationService, NotificationService>()
-            .AddSingleton<IPollService, PollService>()
-            .AddSingleton<IPromptService, PromptService>()
-            .AddSingleton<ISessionService, SessionService>()
-            .AddSingleton<IVotingProfileService, VotingProfileService>()
-            .AddSingleton<IVotingService, VotingService>()
-
-            .AddSingleton<ISessionMetadataRepository, SessionMetadataRepository>()
-            .AddSingleton<IVotingProfileRepository, VotingProfileRepository>()
-            ;
-
-        ServiceProvider = services.BuildServiceProvider();
     }
 
     public async Task Handle(VotingRequest request, ILambdaContext context)

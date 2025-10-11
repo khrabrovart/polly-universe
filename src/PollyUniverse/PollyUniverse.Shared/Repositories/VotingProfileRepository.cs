@@ -13,13 +13,13 @@ public interface IVotingProfileRepository
 
 public class VotingProfileRepository : IVotingProfileRepository
 {
-    private const string Table = "polly-universe-voting-profiles";
-
     private readonly IDynamoDbService _dynamoDbService;
+    private readonly string _tableName;
 
-    public VotingProfileRepository(IDynamoDbService dynamoDbService)
+    public VotingProfileRepository(IDynamoDbService dynamoDbService, ISharedConfig config)
     {
         _dynamoDbService = dynamoDbService;
+        _tableName = config.VotingProfilesTable;
     }
 
     public async Task<VotingProfile> Get(string id)
@@ -29,7 +29,7 @@ public class VotingProfileRepository : IVotingProfileRepository
             { "Id", new AttributeValue { S = id } }
         };
 
-        var item = await _dynamoDbService.Get(Table, key);
+        var item = await _dynamoDbService.Get(_tableName, key);
 
         if (item == null)
         {
@@ -94,6 +94,6 @@ public class VotingProfileRepository : IVotingProfileRepository
             }
         };
 
-        await _dynamoDbService.Put(Table, item);
+        await _dynamoDbService.Put(_tableName, item);
     }
 }

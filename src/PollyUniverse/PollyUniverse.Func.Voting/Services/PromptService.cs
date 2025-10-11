@@ -13,11 +13,11 @@ public class PromptService : IPromptService
     private const string SystemFormatPromptId = "voting/system_format";
 
     private readonly IPromptFileService _promptFileService;
-    private readonly FunctionConfig _config;
+    private readonly IFunctionConfig _config;
 
     public PromptService(
         IPromptFileService promptFileService,
-        FunctionConfig config)
+        IFunctionConfig config)
     {
         _promptFileService = promptFileService;
         _config = config;
@@ -26,7 +26,7 @@ public class PromptService : IPromptService
     public async Task<string> GetFullPrompt(string promptId)
     {
         var orderedPrompts = new[] { SystemBasePromptId, promptId, SystemFormatPromptId };
-        var promptFilePaths = await _promptFileService.DownloadPromptFiles(_config.S3Bucket, orderedPrompts);
+        var promptFilePaths = await _promptFileService.DownloadPromptFiles(orderedPrompts);
 
         if (promptFilePaths.Values.Any(v => v == null))
         {

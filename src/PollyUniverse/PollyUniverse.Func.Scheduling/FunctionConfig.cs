@@ -3,16 +3,25 @@ using PollyUniverse.Shared.Extensions;
 
 namespace PollyUniverse.Func.Scheduling;
 
-public class FunctionConfig
+public interface IFunctionConfig
 {
-    public FunctionConfig(IConfigurationRoot config)
-    {
-        ScheduleNamePrefix = config.GetOrThrow("SCHEDULE_NAME_PREFIX");
-        SchedulerGroupName = config.GetOrThrow("SCHEDULER_GROUP_NAME");
-        TargetLambdaArn = config.GetOrThrow("TARGET_LAMBDA_ARN");
-        ScheduleExecutionRoleArn = config.GetOrThrow("SCHEDULE_EXECUTION_ROLE_ARN");
+    string ScheduleNamePrefix { get; set; }
 
-        IsDev = bool.TryParse(config["DEV:ENABLED"], out var isDev) && isDev;
+    string SchedulerGroupName { get; set; }
+
+    string TargetLambdaArn { get; set; }
+
+    string ScheduleExecutionRoleArn { get; set; }
+}
+
+public class FunctionConfig : IFunctionConfig
+{
+    public FunctionConfig(IConfiguration configuration)
+    {
+        ScheduleNamePrefix = configuration.GetOrThrow("SCHEDULE_NAME_PREFIX");
+        SchedulerGroupName = configuration.GetOrThrow("SCHEDULER_GROUP_NAME");
+        TargetLambdaArn = configuration.GetOrThrow("TARGET_LAMBDA_ARN");
+        ScheduleExecutionRoleArn = configuration.GetOrThrow("SCHEDULE_EXECUTION_ROLE_ARN");
     }
 
     public string ScheduleNamePrefix { get; set; }
@@ -22,10 +31,4 @@ public class FunctionConfig
     public string TargetLambdaArn { get; set; }
 
     public string ScheduleExecutionRoleArn { get; set; }
-
-    #region Development Settings
-
-    public bool IsDev { get; set; }
-
-    #endregion
 }

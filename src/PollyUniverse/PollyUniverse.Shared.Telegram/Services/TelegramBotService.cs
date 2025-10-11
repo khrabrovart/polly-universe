@@ -2,12 +2,13 @@ using System.Net;
 using System.Text.Encodings.Web;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using PollyUniverse.Shared.Telegram.Models;
 
 namespace PollyUniverse.Shared.Telegram.Services;
 
 public interface ITelegramBotService
 {
-    Task<bool> SendMessage(string botToken, long telegramPeerId, string message);
+    Task<bool> SendMessage(string botToken, LongTelegramPeerId peerId, string message);
 }
 
 public class TelegramBotService : ITelegramBotService
@@ -19,14 +20,14 @@ public class TelegramBotService : ITelegramBotService
         _flurlClient = flurlClientCache.Get("Telegram");
     }
 
-    public async Task<bool> SendMessage(string botToken, long telegramPeerId, string message)
+    public async Task<bool> SendMessage(string botToken, LongTelegramPeerId peerId, string message)
     {
         var botSegment = $"bot{UrlEncoder.Default.Encode(botToken)}";
         var response = await _flurlClient
             .Request(botSegment, "sendMessage")
             .PostJsonAsync(new
             {
-                chat_id = telegramPeerId,
+                chat_id = (long)peerId,
                 text = message,
                 parse_mode = "Markdown"
             });

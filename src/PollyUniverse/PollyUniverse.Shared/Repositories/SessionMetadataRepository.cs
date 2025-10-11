@@ -13,13 +13,13 @@ public interface ISessionMetadataRepository
 
 public class SessionMetadataRepository : ISessionMetadataRepository
 {
-    private const string Table = "polly-universe-session-metadata";
-
     private readonly IDynamoDbService _dynamoDbService;
+    private readonly string _tableName;
 
-    public SessionMetadataRepository(IDynamoDbService dynamoDbService)
+    public SessionMetadataRepository(IDynamoDbService dynamoDbService, ISharedConfig config)
     {
         _dynamoDbService = dynamoDbService;
+        _tableName = config.SessionMetadataTable;
     }
 
     public async Task<SessionMetadata> Get(string clientId)
@@ -29,7 +29,7 @@ public class SessionMetadataRepository : ISessionMetadataRepository
             { "Id", new AttributeValue { S = clientId } }
         };
 
-        var item = await _dynamoDbService.Get(Table, key);
+        var item = await _dynamoDbService.Get(_tableName, key);
 
         if (item == null)
         {
@@ -55,6 +55,6 @@ public class SessionMetadataRepository : ISessionMetadataRepository
             { "PhoneNumber", new AttributeValue { S = sessionMetadata.PhoneNumber } }
         };
 
-        await _dynamoDbService.Put(Table, item);
+        await _dynamoDbService.Put(_tableName, item);
     }
 }

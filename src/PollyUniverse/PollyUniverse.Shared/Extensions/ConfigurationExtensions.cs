@@ -4,8 +4,8 @@ namespace PollyUniverse.Shared.Extensions;
 
 public static class ConfigurationExtensions
 {
-    public static string GetOrThrow(this IConfigurationRoot config, string key)
+    public static string GetOrThrow(this IConfiguration configuration, string key)
     {
-        return config[key] ?? throw new ArgumentNullException(key);
+        return configuration[key] ?? throw new ArgumentNullException(key);
     }
 }

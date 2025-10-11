@@ -2,16 +2,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace PollyUniverse.Func.Agent;
 
-public class FunctionConfig
+public interface IFunctionConfig
 {
-    public FunctionConfig(IConfigurationRoot config)
+}
+
+public class FunctionConfig : IFunctionConfig
+{
+    public FunctionConfig(IConfiguration configuration)
     {
-        IsDev = bool.TryParse(config["DEV:ENABLED"], out var isDev) && isDev;
     }
-
-    #region Development Settings
-
-    public bool IsDev { get; set; }
-
-    #endregion
 }

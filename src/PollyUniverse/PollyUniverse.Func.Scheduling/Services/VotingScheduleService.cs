@@ -14,11 +14,11 @@ public interface IVotingScheduleService
 public class VotingScheduleService : IVotingScheduleService
 {
     private readonly ISchedulerService _schedulerService;
-    private readonly FunctionConfig _config;
+    private readonly IFunctionConfig _config;
 
     public VotingScheduleService(
         ISchedulerService schedulerService,
-        FunctionConfig config)
+        IFunctionConfig config)
     {
         _schedulerService = schedulerService;
         _config = config;

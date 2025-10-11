@@ -3,22 +3,40 @@ using PollyUniverse.Shared.Extensions;
 
 namespace PollyUniverse.Func.Voting;
 
-public class FunctionConfig
+public interface IFunctionConfig
 {
-    public FunctionConfig(IConfigurationRoot config)
+    int PollWaitingMinutes { get; set; }
+
+    string BotTokenParameter { get; set; }
+
+    string NotificationsPeerIdParameter { get; set; }
+
+    string OpenAIApiKeyParameter { get; set; }
+
+    string OpenAIModel { get; set; }
+
+    #region Development Settings
+
+    string DevFakeVotingResult { get; set; }
+
+    bool DevMuteNotifications { get; set; }
+
+    #endregion
+}
+
+public class FunctionConfig : IFunctionConfig
+{
+    public FunctionConfig(IConfiguration configuration)
     {
-        S3Bucket = config.GetOrThrow("S3_BUCKET");
-        PollWaitingMinutes = int.Parse(config.GetOrThrow("POLL_WAITING_MINUTES"));
-        BotTokenParameter = config.GetOrThrow("BOT_TOKEN_PARAMETER");
-        NotificationsPeerIdParameter = config.GetOrThrow("NOTIFICATIONS_PEER_ID_PARAMETER");
-        OpenAIApiKeyParameter = config.GetOrThrow("OPENAI_API_KEY_PARAMETER");
-        OpenAIModel = config.GetOrThrow("OPENAI_MODEL");
+        PollWaitingMinutes = int.Parse(configuration.GetOrThrow("POLL_WAITING_MINUTES"));
+        BotTokenParameter = configuration.GetOrThrow("BOT_TOKEN_PARAMETER");
+        NotificationsPeerIdParameter = configuration.GetOrThrow("NOTIFICATIONS_PEER_ID_PARAMETER");
+        OpenAIApiKeyParameter = configuration.GetOrThrow("OPENAI_API_KEY_PARAMETER");
+        OpenAIModel = configuration.GetOrThrow("OPENAI_MODEL");
 
-        DevFakeVotingResult = config["DEV:FAKE_VOTING_RESULT"];
-        DevMuteNotifications = bool.TryParse(config["DEV:MUTE_NOTIFICATIONS"], out var muteNotifications) && muteNotifications;
+        DevFakeVotingResult = configuration["DEV:FAKE_VOTING_RESULT"];
+        DevMuteNotifications = bool.TryParse(configuration["DEV:MUTE_NOTIFICATIONS"], out var muteNotifications) && muteNotifications;
     }
-
-    public string S3Bucket { get; set; }
 
     public int PollWaitingMinutes { get; set; }
 

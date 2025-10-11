@@ -1,6 +1,6 @@
 using PollyUniverse.Func.Voting.Models;
 using PollyUniverse.Shared.Aws.Services;
-using PollyUniverse.Func.Voting.Extensions;
+using PollyUniverse.Shared.Telegram.Extensions;
 using PollyUniverse.Shared.Telegram.Services;
 using WTelegram;
 
@@ -18,7 +18,7 @@ public class NotificationService : INotificationService
     private readonly IMessageComposeService _messageComposeService;
     private readonly IPromptService _promptService;
     private readonly ITelegramBotService _telegramBotService;
-    private readonly FunctionConfig _config;
+    private readonly IFunctionConfig _config;
 
     private static readonly Dictionary<VotingResult, string> VotingResultPrompts = new()
     {
@@ -33,7 +33,7 @@ public class NotificationService : INotificationService
         IMessageComposeService messageComposeService,
         IPromptService promptService,
         ITelegramBotService telegramBotService,
-        FunctionConfig config)
+        IFunctionConfig config)
     {
         _systemsManagementService = systemsManagementService;
         _telegramPeerService = telegramPeerService;
@@ -106,7 +106,7 @@ public class NotificationService : INotificationService
 
         var messageSent = await _telegramBotService.SendMessage(
             botToken,
-            notificationsInputPeer.GetTelegramPeerId(),
+            notificationsInputPeer.GetLongPeerId(),
             message);
 
         if (!messageSent)

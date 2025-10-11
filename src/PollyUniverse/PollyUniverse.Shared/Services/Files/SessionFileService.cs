@@ -5,7 +5,7 @@ namespace PollyUniverse.Shared.Services.Files;
 
 public interface ISessionFileService
 {
-    Task<string> DownloadSessionFile(string s3Bucket, string sessionId);
+    Task<string> DownloadSessionFile(string sessionId);
 }
 
 public class SessionFileService : ISessionFileService
@@ -13,15 +13,17 @@ public class SessionFileService : ISessionFileService
     private const string SessionsBucketPrefix = "sessions";
 
     private readonly IS3Service _s3Service;
+    private readonly string _bucketName;
     private readonly string _tmpDirectory;
 
-    public SessionFileService(IS3Service s3Service)
+    public SessionFileService(IS3Service s3Service, ISharedConfig config)
     {
         _s3Service = s3Service;
+        _bucketName = config.S3Bucket;
         _tmpDirectory = TmpDirectoryUtils.GetTmpDirectory();
     }
 
-    public async Task<string> DownloadSessionFile(string s3Bucket, string sessionId)
+    public async Task<string> DownloadSessionFile(string sessionId)
     {
         var fileName = $"{sessionId}.session";
         var remoteFilePath = $"{SessionsBucketPrefix}/{fileName}";
@@ -32,7 +34,7 @@ public class SessionFileService : ISessionFileService
             return localFilePath;
         }
 
-        var success = await _s3Service.Download(s3Bucket, remoteFilePath, localFilePath);
+        var success = await _s3Service.Download(_bucketName, remoteFilePath, localFilePath);
 
         return success ? localFilePath : null;
     }

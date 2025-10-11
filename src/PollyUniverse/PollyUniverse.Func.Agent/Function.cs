@@ -1,10 +1,9 @@
 ﻿using System.Text.Json;
-using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PollyUniverse.Shared.Aws.Extensions;
 using PollyUniverse.Shared.Extensions;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -22,9 +21,6 @@ public class Function
             .Build();
 
         var services = new ServiceCollection();
-        var functionConfig = new FunctionConfig(configuration);
-
-        services.AddSingleton(functionConfig);
 
         services.AddLogging(builder =>
         {
@@ -35,9 +31,11 @@ public class Function
             builder.AddFilter("AWSSDK", Microsoft.Extensions.Logging.LogLevel.Warning);
         });
 
-        services.AddSharedServices();
+        services.AddSharedServices(configuration);
 
         services
+            .AddSingleton<IFunctionConfig>(new FunctionConfig(configuration))
+
             .AddSingleton<IEventHandler, EventHandler>()
             ;
 

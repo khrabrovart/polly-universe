@@ -1,3 +1,5 @@
+using PollyUniverse.Shared.Telegram.Models;
+
 namespace PollyUniverse.Shared.Models;
 
 public class VotingProfile
@@ -15,7 +17,7 @@ public class VotingProfilePoll
 {
     public required long FromId { get; set; }
 
-    public required long PeerId { get; set; }
+    public required ShortTelegramPeerId PeerId { get; set; }
 
     public required DayOfWeek DayOfWeek { get; set; }
 

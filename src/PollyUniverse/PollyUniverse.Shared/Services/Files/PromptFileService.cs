@@ -5,7 +5,7 @@ namespace PollyUniverse.Shared.Services.Files;
 
 public interface IPromptFileService
 {
-    Task<Dictionary<string, string>> DownloadPromptFiles(string s3Bucket, string[] promptIds);
+    Task<Dictionary<string, string>> DownloadPromptFiles(string[] promptIds);
 }
 
 public class PromptFileService : IPromptFileService
@@ -13,19 +13,21 @@ public class PromptFileService : IPromptFileService
     private const string PromptsBucketPrefix = "prompts";
 
     private readonly IS3Service _s3Service;
+    private readonly string _bucketName;
     private readonly string _tmpDirectory;
 
-    public PromptFileService(IS3Service s3Service)
+    public PromptFileService(IS3Service s3Service, ISharedConfig config)
     {
         _s3Service = s3Service;
+        _bucketName = config.S3Bucket;
         _tmpDirectory = TmpDirectoryUtils.GetTmpDirectory();
     }
 
-    public async Task<Dictionary<string, string>> DownloadPromptFiles(string s3Bucket, string[] promptIds)
+    public async Task<Dictionary<string, string>> DownloadPromptFiles(string[] promptIds)
     {
         var tasks = promptIds.Select(async promptId =>
         {
-            var filePath = await DownloadPromptFile(s3Bucket, promptId);
+            var filePath = await DownloadPromptFile(promptId);
             return (promptId, filePath);
         });
 
@@ -34,7 +36,7 @@ public class PromptFileService : IPromptFileService
         return results.ToDictionary(result => result.promptId, result => result.filePath);
     }
 
-    private async Task<string> DownloadPromptFile(string s3Bucket, string promptId)
+    private async Task<string> DownloadPromptFile(string promptId)
     {
         var fileName = $"{promptId}.md";
         var remoteFilePath = $"{PromptsBucketPrefix}/{fileName}";
@@ -45,7 +47,7 @@ public class PromptFileService : IPromptFileService
             return localFilePath;
         }
 
-        var success = await _s3Service.Download(s3Bucket, remoteFilePath, localFilePath);
+        var success = await _s3Service.Download(_bucketName, remoteFilePath, localFilePath);
 
         return success ? localFilePath : null;
     }
