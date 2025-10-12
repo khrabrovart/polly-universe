@@ -1,8 +1,8 @@
 namespace PollyUniverse.Func.Voting.Models;
 
-public class PollMessage
+public record PollMessage
 {
-    public int MessageId { get; set; }
+    public required int MessageId { get; init; }
 
-    public byte[][] Options { get; set; }
+    public required byte[][] Options { get; init; }
 }

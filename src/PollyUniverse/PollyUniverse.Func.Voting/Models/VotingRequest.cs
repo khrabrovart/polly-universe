@@ -1,6 +1,6 @@
 namespace PollyUniverse.Func.Voting.Models;
 
-public class VotingRequest
+public record VotingRequest
 {
-    public string VotingProfileId { get; set; }
+    public required string VotingProfileId { get; init; }
 }

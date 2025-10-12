@@ -1,10 +1,6 @@
 namespace PollyUniverse.Shared.Telegram.Models;
 
-public interface ITelegramPeerId
-{
-}
-
-public class TelegramLongPeerId : ITelegramPeerId
+public record TelegramLongPeerId
 {
     private long _value;
 
@@ -18,14 +14,16 @@ public class TelegramLongPeerId : ITelegramPeerId
         };
     }
 
-    public TelegramShortPeerId ToShortPeerId()
+    public static explicit operator TelegramShortPeerId(TelegramLongPeerId peerId)
     {
-        if (_value >= 0)
+        var value = peerId._value;
+
+        if (value >= 0)
         {
-            return _value;
+            return value;
         }
 
-        var strValue = _value.ToString();
+        var strValue = value.ToString();
 
         if (strValue.StartsWith("-100"))
         {
@@ -33,11 +31,11 @@ public class TelegramLongPeerId : ITelegramPeerId
             return long.Parse(shortStr);
         }
 
-        return -_value;
+        return -value;
     }
 }
 
-public class TelegramShortPeerId : ITelegramPeerId
+public record TelegramShortPeerId
 {
     private long _value;
 

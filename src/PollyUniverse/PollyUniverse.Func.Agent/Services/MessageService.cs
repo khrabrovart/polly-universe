@@ -3,6 +3,7 @@ using PollyUniverse.Shared.Aws.Services;
 using PollyUniverse.Shared.Models;
 using PollyUniverse.Shared.OpenAI.Services;
 using PollyUniverse.Shared.Services;
+using PollyUniverse.Shared.Telegram.Models;
 using PollyUniverse.Shared.Telegram.Services;
 
 namespace PollyUniverse.Func.Agent.Services;
@@ -48,7 +49,7 @@ public class MessageService : IMessageService
     {
         var peerId = message.Chat.Id;
 
-        var messageHistory = await _messageHistoryService.GetHistory(peerId.ToShortPeerId());
+        var messageHistory = await _messageHistoryService.GetHistory((TelegramShortPeerId)peerId);
 
         var lastMessage = new MessageHistoryRecord
         {

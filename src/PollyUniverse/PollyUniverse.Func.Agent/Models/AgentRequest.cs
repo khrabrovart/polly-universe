@@ -4,51 +4,51 @@ using PollyUniverse.Shared.Telegram.Models;
 
 namespace PollyUniverse.Func.Agent.Models;
 
-public class AgentRequest
+public record AgentRequest
 {
     [JsonPropertyName("message")]
-    public AgentRequestMessage Message { get; set; }
+    public AgentRequestMessage Message { get; init; }
 }
 
-public class AgentRequestMessage
+public record AgentRequestMessage
 {
     [JsonPropertyName("date")]
-    public long Date { get; set; }
+    public long Date { get; init; }
 
     [JsonPropertyName("text")]
-    public string Text { get; set; }
+    public string Text { get; init; }
 
     [JsonPropertyName("from")]
-    public AgentRequestMessageFrom From { get; set; }
+    public AgentRequestMessageFrom From { get; init; }
 
     [JsonPropertyName("chat")]
-    public AgentRequestMessageChat Chat { get; set; }
+    public AgentRequestMessageChat Chat { get; init; }
 }
 
-public class AgentRequestMessageFrom
+public record AgentRequestMessageFrom
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("first_name")]
-    public string FirstName { get; set; }
+    public string FirstName { get; init; }
 
     [JsonPropertyName("last_name")]
-    public string LastName { get; set; }
+    public string LastName { get; init; }
 
     [JsonPropertyName("username")]
-    public string Username { get; set; }
+    public string Username { get; init; }
 }
 
-public class AgentRequestMessageChat
+public record AgentRequestMessageChat
 {
     [JsonPropertyName("id")]
     [JsonConverter(typeof(TelegramLongPeerIdJsonConverter))]
-    public TelegramLongPeerId Id { get; set; }
+    public TelegramLongPeerId Id { get; init; }
 
     [JsonPropertyName("title")]
-    public string Title { get; set; }
+    public string Title { get; init; }
 
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string Type { get; init; }
 }
