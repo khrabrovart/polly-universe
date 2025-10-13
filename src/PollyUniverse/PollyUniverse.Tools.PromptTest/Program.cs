@@ -15,7 +15,7 @@ public class Program
         {
             "shared/system_base",
             "voting/prompt_success",
-            "shared/system_format"
+            "shared/system_format_text"
         };
 
         var promptFilePaths = prompts.Select(id => Path.Combine(LocalPromptsFolder, $"{id}.md"));
@@ -23,7 +23,7 @@ public class Program
             Environment.NewLine,
             await Task.WhenAll(promptFilePaths.Select(p => File.ReadAllTextAsync(p))));
 
-        var openAiService = new OpenAIService();
+        var openAiService = new OpenAIChatService();
         var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         var model = Environment.GetEnvironmentVariable("OPENAI_MODEL");
 
@@ -35,11 +35,11 @@ public class Program
     }
 
     private static async Task<string> TryPrompt(
-        OpenAIService openAiService,
+        OpenAIChatService openAIChatService,
         string apiKey,
         string model,
         string prompt)
     {
-        return await openAiService.CompleteChat(apiKey, model, prompt);
+        return await openAIChatService.CompleteChat(apiKey, model, prompt);
     }
 }

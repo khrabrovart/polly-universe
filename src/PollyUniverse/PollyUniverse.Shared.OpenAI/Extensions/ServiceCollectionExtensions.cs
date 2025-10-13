@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PollyUniverse.Shared.OpenAI.Services;
 
@@ -9,7 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddOpenAIServices(this IServiceCollection services)
     {
         services
-            .AddSingleton<IOpenAIService, OpenAIService>()
+            .AddSingleton<IOpenAIService, OpenAIChatService>()
             ;
 
         return services;

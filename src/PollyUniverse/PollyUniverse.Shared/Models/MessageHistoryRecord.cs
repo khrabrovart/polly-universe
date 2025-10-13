@@ -12,7 +12,7 @@ public record MessageHistory
         PeerId = peerId;
     }
 
-    public TelegramShortPeerId PeerId { get; init; }
+    public TelegramShortPeerId PeerId { get; }
 
     public IReadOnlyCollection<MessageHistoryRecord> Messages => _messages;
 
@@ -22,9 +22,17 @@ public record MessageHistory
     }
 }
 
+public enum MessageHistoryRole
+{
+    User,
+    Assistant
+}
+
 public record MessageHistoryRecord
 {
     public required DateTime Date { get; init; }
+
+    public required MessageHistoryRole Role { get; init; }
 
     public required long SenderId { get; init; }
 

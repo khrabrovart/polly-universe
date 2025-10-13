@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Agent.Models;
+using PollyUniverse.Func.Agent.Services.Tooling;
 using PollyUniverse.Shared.Aws.Services;
 using PollyUniverse.Shared.Models;
 using PollyUniverse.Shared.OpenAI.Services;
@@ -20,13 +22,15 @@ public class MessageService : IMessageService
     private readonly IPromptService _promptService;
     private readonly IOpenAIService _openAiService;
     private readonly ISystemsManagementService _systemsManagementService;
+    private readonly IEnumerable<IToolingService> _toolingServices;
+    private readonly ILogger<MessageService> _logger;
     private readonly IFunctionConfig _config;
 
     private static readonly string[] PromptIds =
     [
         "shared/system_base",
         "agent/prompt_reply",
-        "shared/system_format"
+        "shared/system_format_tools"
     ];
 
     public MessageService(
@@ -35,6 +39,8 @@ public class MessageService : IMessageService
         IPromptService promptService,
         IOpenAIService openAiService,
         ISystemsManagementService systemsManagementService,
+        IEnumerable<IToolingService> toolingServices,
+        ILogger<MessageService> logger,
         IFunctionConfig config)
     {
         _messageHistoryService = messageHistoryService;
@@ -42,6 +48,8 @@ public class MessageService : IMessageService
         _promptService = promptService;
         _openAiService = openAiService;
         _systemsManagementService = systemsManagementService;
+        _toolingServices = toolingServices;
+        _logger = logger;
         _config = config;
     }
 
@@ -54,6 +62,7 @@ public class MessageService : IMessageService
         var lastMessage = new MessageHistoryRecord
         {
             Date = DateTimeOffset.FromUnixTimeSeconds(message.Date).DateTime,
+            Role = MessageHistoryRole.User,
             SenderId = message.From.Id,
             SenderName = message.From.FirstName,
             SenderUsername = message.From.Username,
@@ -82,9 +91,27 @@ public class MessageService : IMessageService
             throw new Exception($"No bot token found in SSM Parameter Store: {_config.BotTokenParameter}");
         }
 
-        var generatedMessage = await _openAiService.CompleteChat(openAiApiKey, _config.OpenAIModel, prompt);
+        var history = messageHistory.Messages
+            .Select(m => m.Text)
+            .Append(lastMessage.Text)
+            .ToArray();
 
-        if (!_config.DevFakeService)
+        var tools = _toolingServices
+            .SelectMany(ts => ts.GetTools())
+            .ToArray();
+
+        var generatedMessage = await _openAiService.CompleteChat(
+            openAiApiKey,
+            _config.OpenAIModel,
+            prompt,
+            history,
+            tools);
+
+        if (_config.DevFakeService)
+        {
+            _logger.LogInformation("{Message}", generatedMessage);
+        }
+        else
         {
             var messageSent = await _telegramBotService.SendMessage(
                 botToken,
@@ -100,6 +127,7 @@ public class MessageService : IMessageService
         var replyMessage = new MessageHistoryRecord
         {
             Date = DateTime.UtcNow,
+            Role = MessageHistoryRole.Assistant,
             SenderId = 0,
             SenderName = "Polly",
             SenderUsername = "polly_bot",

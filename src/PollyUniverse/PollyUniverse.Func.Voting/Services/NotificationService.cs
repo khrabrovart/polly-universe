@@ -23,7 +23,7 @@ public class NotificationService : INotificationService
     private readonly IFunctionConfig _config;
 
     private const string SystemBasePromptId = "shared/system_base";
-    private const string SystemFormatPromptId = "shared/system_format";
+    private const string SystemFormatPromptId = "shared/system_format_text";
 
     private static readonly Dictionary<VotingResult, string> VotingResultPrompts = new()
     {

@@ -6,6 +6,8 @@ namespace PollyUniverse.Shared.Repositories;
 
 public interface IVotingProfileRepository
 {
+    Task<VotingProfile[]> GetAll();
+
     Task<VotingProfile> Get(string id);
 
     Task Put(VotingProfile votingProfile);
@@ -22,6 +24,13 @@ public class VotingProfileRepository : IVotingProfileRepository
         _tableName = config.VotingProfilesTable;
     }
 
+    public async Task<VotingProfile[]> GetAll()
+    {
+        var items = await _dynamoDbService.Scan(_tableName);
+
+        return items.Select(ToModel).ToArray();
+    }
+
     public async Task<VotingProfile> Get(string id)
     {
         var key = new Dictionary<string, AttributeValue>
@@ -31,33 +40,7 @@ public class VotingProfileRepository : IVotingProfileRepository
 
         var item = await _dynamoDbService.Get(_tableName, key);
 
-        if (item == null)
-        {
-            return null;
-        }
-
-        return new VotingProfile
-        {
-            Id = item["Id"].S,
-            Enabled = item["Enabled"].BOOL ?? false,
-            Poll = new VotingProfilePoll
-            {
-                FromId = long.Parse(item["Poll"].M["FromId"].N),
-                PeerId = long.Parse(item["Poll"].M["PeerId"].N),
-                DayOfWeek = Enum.Parse<DayOfWeek>(item["Poll"].M["DayOfWeek"].S),
-                Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
-                Timezone = item["Poll"].M["Timezone"].S,
-            },
-            Sessions = item["Sessions"].L
-                .Select(session => new VotingProfileSession
-                {
-                    Id = session.M["Id"].S,
-                    Enabled = session.M["Enabled"].BOOL ?? false,
-                    VoteIndex = int.Parse(session.M["VoteIndex"].N),
-                    VoteDelaySeconds = int.Parse(session.M["VoteDelaySeconds"].N)
-                })
-                .ToList()
-        };
+        return item == null ? null : ToModel(item);
     }
 
     public async Task Put(VotingProfile votingProfile)
@@ -95,5 +78,31 @@ public class VotingProfileRepository : IVotingProfileRepository
         };
 
         await _dynamoDbService.Put(_tableName, item);
+    }
+
+    private static VotingProfile ToModel(Dictionary<string, AttributeValue> item)
+    {
+        return new VotingProfile
+        {
+            Id = item["Id"].S,
+            Enabled = item["Enabled"].BOOL ?? false,
+            Poll = new VotingProfilePoll
+            {
+                FromId = long.Parse(item["Poll"].M["FromId"].N),
+                PeerId = long.Parse(item["Poll"].M["PeerId"].N),
+                DayOfWeek = Enum.Parse<DayOfWeek>(item["Poll"].M["DayOfWeek"].S),
+                Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
+                Timezone = item["Poll"].M["Timezone"].S,
+            },
+            Sessions = item["Sessions"].L
+                .Select(session => new VotingProfileSession
+                {
+                    Id = session.M["Id"].S,
+                    Enabled = session.M["Enabled"].BOOL ?? false,
+                    VoteIndex = int.Parse(session.M["VoteIndex"].N),
+                    VoteDelaySeconds = int.Parse(session.M["VoteDelaySeconds"].N)
+                })
+                .ToList()
+        };
     }
 }

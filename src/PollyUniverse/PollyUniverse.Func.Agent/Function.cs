@@ -4,6 +4,7 @@ using Amazon.Lambda.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PollyUniverse.Func.Agent.Services;
+using PollyUniverse.Func.Agent.Services.Tooling;
 using PollyUniverse.Shared;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -24,6 +25,8 @@ public class Function
                 .AddSingleton<IEventHandler, EventHandler>()
 
                 .AddSingleton<IMessageService, MessageService>()
+
+                .AddSingleton<IToolingService, VotingProfileService>()
                 ;
         });
     }
@@ -45,7 +48,7 @@ public class Function
         {
             await handler.Handle(request);
         }
-        catch (Exception ex)
+        catch
         {
             if (config.DevFakeService)
             {

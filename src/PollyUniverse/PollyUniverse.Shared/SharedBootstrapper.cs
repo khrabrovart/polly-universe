@@ -43,9 +43,11 @@ public static class SharedBootstrapper
             .AddSingleton<IMessageHistoryFileService, MessageHistoryFileService>()
             .AddSingleton<IPromptFileService, PromptFileService>()
             .AddSingleton<ISessionFileService, SessionFileService>()
+            .AddSingleton<IDictionaryFileService, DictionaryFileService>()
 
             .AddSingleton<IMessageHistoryService, MessageHistoryService>()
             .AddSingleton<IPromptService, PromptService>()
+            .AddSingleton<IDictionaryService, DictionaryService>()
             ;
 
         configure(services, configuration);
