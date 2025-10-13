@@ -20,7 +20,6 @@ resource "aws_lambda_function" "voting_lambda" {
     variables = {
       S3_BUCKET                       = aws_s3_bucket.polly_universe.bucket
       SESSION_METADATA_TABLE          = aws_dynamodb_table.session_metadata.name
-      USERS_TABLE                     = aws_dynamodb_table.users.name
       VOTING_PROFILES_TABLE           = aws_dynamodb_table.voting_profiles.name
       POLL_WAITING_MINUTES            = var.poll_waiting_minutes
       BOT_TOKEN_PARAMETER             = aws_ssm_parameter.bot_token.name
@@ -67,8 +66,7 @@ resource "aws_iam_policy" "voting_lambda_policy" {
         ]
         Resource = [
           aws_dynamodb_table.voting_profiles.arn,
-          aws_dynamodb_table.session_metadata.arn,
-          aws_dynamodb_table.users.arn
+          aws_dynamodb_table.session_metadata.arn
         ]
       },
       {
