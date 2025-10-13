@@ -31,7 +31,7 @@ public class TelegramClientService : ITelegramClientService
         var user = await client.LoginUserIfNeeded(reloginOnFailedResume: false);
 
         return user == null
-            ? throw new Exception("Failed to initialize Telegram client, session is not valid")
+            ? throw new Exception("Failed to initialize Telegram client, session is invalid")
             : client;
     }
 }

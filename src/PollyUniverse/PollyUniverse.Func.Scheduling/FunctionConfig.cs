@@ -5,16 +5,16 @@ namespace PollyUniverse.Func.Scheduling;
 
 public interface IFunctionConfig
 {
-    string ScheduleNamePrefix { get; set; }
+    string ScheduleNamePrefix { get; }
 
-    string SchedulerGroupName { get; set; }
+    string SchedulerGroupName { get; }
 
-    string TargetLambdaArn { get; set; }
+    string TargetLambdaArn { get; }
 
-    string ScheduleExecutionRoleArn { get; set; }
+    string ScheduleExecutionRoleArn { get; }
 }
 
-public class FunctionConfig : IFunctionConfig
+public record FunctionConfig : IFunctionConfig
 {
     public FunctionConfig(IConfiguration configuration)
     {
@@ -24,11 +24,11 @@ public class FunctionConfig : IFunctionConfig
         ScheduleExecutionRoleArn = configuration.GetOrThrow("SCHEDULE_EXECUTION_ROLE_ARN");
     }
 
-    public string ScheduleNamePrefix { get; set; }
+    public string ScheduleNamePrefix { get; }
 
-    public string SchedulerGroupName { get; set; }
+    public string SchedulerGroupName { get; }
 
-    public string TargetLambdaArn { get; set; }
+    public string TargetLambdaArn { get; }
 
-    public string ScheduleExecutionRoleArn { get; set; }
+    public string ScheduleExecutionRoleArn { get; }
 }

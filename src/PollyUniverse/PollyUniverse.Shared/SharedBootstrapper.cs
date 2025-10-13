@@ -38,6 +38,7 @@ public static class SharedBootstrapper
 
         services
             .AddSingleton<ISessionMetadataRepository, SessionMetadataRepository>()
+            .AddSingleton<IUserRepository, UserRepository>()
             .AddSingleton<IVotingProfileRepository, VotingProfileRepository>()
 
             .AddSingleton<IMessageHistoryFileService, MessageHistoryFileService>()

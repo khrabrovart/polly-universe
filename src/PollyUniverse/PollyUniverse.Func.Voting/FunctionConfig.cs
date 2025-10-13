@@ -5,26 +5,26 @@ namespace PollyUniverse.Func.Voting;
 
 public interface IFunctionConfig
 {
-    int PollWaitingMinutes { get; set; }
+    int PollWaitingMinutes { get; }
 
-    string BotTokenParameter { get; set; }
+    string BotTokenParameter { get; }
 
-    string NotificationsPeerIdParameter { get; set; }
+    string NotificationsPeerIdParameter { get; }
 
-    string OpenAIApiKeyParameter { get; set; }
+    string OpenAIApiKeyParameter { get; }
 
-    string OpenAIModel { get; set; }
+    string OpenAIModel { get; }
 
     #region Development Settings
 
-    string DevFakeVotingResult { get; set; }
+    string DevFakeVotingResult { get; }
 
-    bool DevMuteNotifications { get; set; }
+    bool DevMuteNotifications { get; }
 
     #endregion
 }
 
-public class FunctionConfig : IFunctionConfig
+public record FunctionConfig : IFunctionConfig
 {
     public FunctionConfig(IConfiguration configuration)
     {
@@ -38,21 +38,21 @@ public class FunctionConfig : IFunctionConfig
         DevMuteNotifications = bool.TryParse(configuration["DEV:MUTE_NOTIFICATIONS"], out var muteNotifications) && muteNotifications;
     }
 
-    public int PollWaitingMinutes { get; set; }
+    public int PollWaitingMinutes { get; }
 
-    public string BotTokenParameter { get; set; }
+    public string BotTokenParameter { get; }
 
-    public string NotificationsPeerIdParameter { get; set; }
+    public string NotificationsPeerIdParameter { get; }
 
-    public string OpenAIApiKeyParameter { get; set; }
+    public string OpenAIApiKeyParameter { get; }
 
-    public string OpenAIModel { get; set; }
+    public string OpenAIModel { get; }
 
     #region Development Settings
 
-    public string DevFakeVotingResult { get; set; }
+    public string DevFakeVotingResult { get; }
 
-    public bool DevMuteNotifications { get; set; }
+    public bool DevMuteNotifications { get; }
 
     #endregion
 }

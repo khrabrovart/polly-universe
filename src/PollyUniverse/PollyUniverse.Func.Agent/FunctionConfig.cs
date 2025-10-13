@@ -5,22 +5,22 @@ namespace PollyUniverse.Func.Agent;
 
 public interface IFunctionConfig
 {
-    string BotTokenParameter { get; set; }
+    string BotTokenParameter { get; }
 
-    string OpenAIApiKeyParameter { get; set; }
+    string OpenAIApiKeyParameter { get; }
 
-    string OpenAIModel { get; set; }
+    string OpenAIModel { get; }
 
-    int HistoryLength { get; set; }
+    int HistoryLength { get; }
 
     #region Development Settings
 
-    bool DevFakeService { get; set; }
+    bool DevFakeService { get; }
 
     #endregion
 }
 
-public class FunctionConfig : IFunctionConfig
+public record FunctionConfig : IFunctionConfig
 {
     public FunctionConfig(IConfiguration configuration)
     {
@@ -32,17 +32,17 @@ public class FunctionConfig : IFunctionConfig
         DevFakeService = bool.TryParse(configuration["DEV:FAKE_SERVICE"], out var devFakeService) && devFakeService;
     }
 
-    public string BotTokenParameter { get; set; }
+    public string BotTokenParameter { get; }
 
-    public string OpenAIApiKeyParameter { get; set; }
+    public string OpenAIApiKeyParameter { get; }
 
-    public string OpenAIModel { get; set; }
+    public string OpenAIModel { get; }
 
-    public int HistoryLength { get; set; }
+    public int HistoryLength { get; }
 
     #region Development Settings
 
-    public bool DevFakeService { get; set; }
+    public bool DevFakeService { get; }
 
     #endregion
 }

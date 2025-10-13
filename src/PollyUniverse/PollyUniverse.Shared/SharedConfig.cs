@@ -5,25 +5,30 @@ namespace PollyUniverse.Shared;
 
 public interface ISharedConfig
 {
-    string S3Bucket { get; set; }
+    string S3Bucket { get; }
 
-    string SessionMetadataTable { get; set; }
+    string SessionMetadataTable { get; }
 
-    string VotingProfilesTable { get; set; }
+    string UsersTable { get; }
+
+    string VotingProfilesTable { get; }
 }
 
-public class SharedConfig : ISharedConfig
+public record SharedConfig : ISharedConfig
 {
     public SharedConfig(IConfiguration configuration)
     {
         S3Bucket = configuration.GetOrThrow("S3_BUCKET");
         SessionMetadataTable = configuration.GetOrThrow("SESSION_METADATA_TABLE");
+        UsersTable = configuration.GetOrThrow("USERS_TABLE");
         VotingProfilesTable = configuration.GetOrThrow("VOTING_PROFILES_TABLE");
     }
 
-    public string S3Bucket { get; set; }
+    public string S3Bucket { get; }
 
-    public string SessionMetadataTable { get; set; }
+    public string SessionMetadataTable { get; }
 
-    public string VotingProfilesTable { get; set; }
+    public string UsersTable { get; }
+
+    public string VotingProfilesTable { get; }
 }
