@@ -91,6 +91,8 @@ public class VotingProfileToolingService : IToolingService
             return _t("get_voting_profile.error.sessions_not_found");
         }
 
+        var sessionsDict = sessions.ToDictionary(s => s.Id, s => s);
+
         var pollStr =
             $"""
              {_t("get_voting_profile.output.poll_from_id")}: {votingProfile.Poll.FromId},
@@ -100,11 +102,14 @@ public class VotingProfileToolingService : IToolingService
              {_t("get_voting_profile.output.poll_timezone")}: {votingProfile.Poll.Timezone},
              """;
 
-        var sessionsStr = sessions.Select(s =>
+        var sessionsStr = votingProfile.Sessions.Select(s =>
             $"""
              {s.Id}:
-               {_t("get_voting_profile.output.session_user_name")}: {s.User.Name}
-               {_t("get_voting_profile.output.session_user_gender")}: {s.User.Gender}
+               {_t("get_voting_profile.output.session_user_name")}: {sessionsDict[s.Id].User.Name}
+               {_t("get_voting_profile.output.session_user_gender")}: {sessionsDict[s.Id].User.Gender}
+               {_t("get_voting_profile.output.session_enabled")}: {s.Enabled}
+               {_t("get_voting_profile.output.session_vote_index")}: {s.VoteIndex}
+               {_t("get_voting_profile.output.session_vote_delay_seconds")}: {s.VoteDelaySeconds}
              """);
 
         return
