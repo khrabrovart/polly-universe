@@ -11,6 +11,8 @@ public interface IFunctionConfig
 
     string OpenAIModel { get; set; }
 
+    int HistoryLength { get; set; }
+
     #region Development Settings
 
     bool DevFakeService { get; set; }
@@ -25,6 +27,7 @@ public class FunctionConfig : IFunctionConfig
         BotTokenParameter = configuration.GetOrThrow("BOT_TOKEN_PARAMETER");
         OpenAIApiKeyParameter = configuration.GetOrThrow("OPENAI_API_KEY_PARAMETER");
         OpenAIModel = configuration.GetOrThrow("OPENAI_MODEL");
+        HistoryLength = int.Parse(configuration.GetOrThrow("HISTORY_LENGTH"));
 
         DevFakeService = bool.TryParse(configuration["DEV:FAKE_SERVICE"], out var devFakeService) && devFakeService;
     }
@@ -34,6 +37,8 @@ public class FunctionConfig : IFunctionConfig
     public string OpenAIApiKeyParameter { get; set; }
 
     public string OpenAIModel { get; set; }
+
+    public int HistoryLength { get; set; }
 
     #region Development Settings
 

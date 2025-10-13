@@ -24,6 +24,7 @@ resource "aws_lambda_function" "agent_lambda" {
       BOT_TOKEN_PARAMETER      = aws_ssm_parameter.bot_token.name
       OPENAI_API_KEY_PARAMETER = aws_ssm_parameter.openai_api_key.name
       OPENAI_MODEL             = var.openai_model
+      HISTORY_LENGTH           = var.agent_history_length
     }
   }
 

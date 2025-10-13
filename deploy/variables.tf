@@ -12,3 +12,8 @@ variable "openai_model" {
   description = "The OpenAI model to use for text generation"
   type        = string
 }
+
+variable "agent_history_length" {
+  description = "The number of previous messages to keep in the agent's history"
+  type        = number
+}

@@ -10,7 +10,7 @@ public interface IMessageHistoryService
 {
     Task<MessageHistory> GetHistory(TelegramShortPeerId peerId);
 
-    Task SaveHistory(MessageHistory history);
+    Task SaveHistory(MessageHistory history, int maxMessages);
 }
 
 public class MessageHistoryService : IMessageHistoryService
@@ -38,7 +38,7 @@ public class MessageHistoryService : IMessageHistoryService
         return new MessageHistory(peerId, records);
     }
 
-    public async Task SaveHistory(MessageHistory history)
+    public async Task SaveHistory(MessageHistory history, int maxMessages)
     {
         var (_, localFilePath) = _messageHistoryFileService.GetFilePaths(history.PeerId);
 
@@ -52,7 +52,7 @@ public class MessageHistoryService : IMessageHistoryService
         await using var writer = new StreamWriter(localFilePath, append: false);
         await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-        await csv.WriteRecordsAsync(history.Messages);
+        await csv.WriteRecordsAsync(history.Messages.TakeLast(maxMessages));
         await writer.FlushAsync();
 
         var uploaded = await _messageHistoryFileService.UploadMessageHistoryFile(history.PeerId);
