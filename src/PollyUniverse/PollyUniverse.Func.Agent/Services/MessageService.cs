@@ -91,10 +91,7 @@ public class MessageService : IMessageService
             throw new Exception($"No bot token found in SSM Parameter Store: {_config.BotTokenParameter}");
         }
 
-        var history = messageHistory.Messages
-            .Select(m => m.Text)
-            .Append(lastMessage.Text)
-            .ToArray();
+        var history = PrepareHistoryMessages(messageHistory, lastMessage);
 
         var tools = _toolingServices
             .SelectMany(ts => ts.GetTools())
@@ -141,5 +138,13 @@ public class MessageService : IMessageService
         {
             await _messageHistoryService.SaveHistory(messageHistory);
         }
+    }
+
+    private static string[] PrepareHistoryMessages(MessageHistory history, MessageHistoryRecord lastMessage)
+    {
+        return history.Messages
+            .Select(m => $"{m.Date} {m.SenderName} ({m.SenderUsername}): {m.Text}")
+            .Append($"{lastMessage.Date} {lastMessage.SenderName} ({lastMessage.SenderUsername}): {lastMessage.Text}")
+            .ToArray();
     }
 }
