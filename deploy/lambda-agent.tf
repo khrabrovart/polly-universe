@@ -63,7 +63,8 @@ resource "aws_iam_policy" "agent_lambda_policy" {
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
           "dynamodb:Query",
-          "dynamodb:Scan"
+          "dynamodb:Scan",
+          "dynamodb:BatchGetItem"
         ]
         Resource = [
           aws_dynamodb_table.voting_profiles.arn,
