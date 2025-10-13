@@ -21,3 +21,14 @@ resource "aws_dynamodb_table" "session_metadata" {
     type = "S"
   }
 }
+
+resource "aws_dynamodb_table" "users" {
+  name         = "${local.app_name}-users"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "Id"
+
+  attribute {
+    name = "Id"
+    type = "S"
+  }
+}
