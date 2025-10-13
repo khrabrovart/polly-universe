@@ -48,13 +48,14 @@ public class Function
         {
             await handler.Handle(request);
         }
-        catch
+        catch (Exception ex)
         {
             if (config.DevFakeService)
             {
                 throw;
             }
 
+            logger.LogError(ex, "Error processing API Gateway request");
             // Ignore any exceptions to avoid Telegram Bot webhook failure
         }
 
