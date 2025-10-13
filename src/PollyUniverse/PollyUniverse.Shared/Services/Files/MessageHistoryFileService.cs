@@ -30,7 +30,7 @@ public class MessageHistoryFileService : IMessageHistoryFileService
 
     public (string RemotePath, string LocalPath) GetFilePaths(TelegramShortPeerId peerId)
     {
-        var fileName = $"{peerId}.csv";
+        var fileName = $"{(long)peerId}.csv";
         var remoteFilePath = $"{MessageHistoryBucketPrefix}/{fileName}";
         var localFilePath = $"{_tmpDirectory}/{remoteFilePath}";
         return (remoteFilePath, localFilePath);

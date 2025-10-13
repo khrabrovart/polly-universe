@@ -9,4 +9,13 @@ public class SessionMetadata
     public required string ApiHash { get; set; }
 
     public required string PhoneNumber { get; set; }
+
+    public required SessionMetadataUser User { get; set; }
+}
+
+public class SessionMetadataUser
+{
+    public required string Name { get; set; }
+
+    public required string Gender { get; set; }
 }

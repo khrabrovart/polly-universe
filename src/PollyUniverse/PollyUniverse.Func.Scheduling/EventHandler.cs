@@ -67,6 +67,7 @@ public class EventHandler : IEventHandler
         {
             Id = item["Id"].S,
             Enabled = item["Enabled"].BOOL ?? false,
+            Description = item["Description"].S,
             Poll = new VotingProfilePoll
             {
                 FromId = long.Parse(item["Poll"].M["FromId"].N),

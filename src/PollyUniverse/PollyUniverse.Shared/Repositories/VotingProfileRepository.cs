@@ -49,7 +49,9 @@ public class VotingProfileRepository : IVotingProfileRepository
         {
             { "Id", new AttributeValue { S = votingProfile.Id } },
             { "Enabled", new AttributeValue { BOOL = votingProfile.Enabled } },
-            { "Poll", new AttributeValue
+            { "Description", new AttributeValue { S = votingProfile.Description } },
+            {
+                "Poll", new AttributeValue
                 {
                     M = new Dictionary<string, AttributeValue>
                     {
@@ -61,18 +63,21 @@ public class VotingProfileRepository : IVotingProfileRepository
                     }
                 }
             },
-            { "Sessions", new AttributeValue
+            {
+                "Sessions", new AttributeValue
                 {
-                    L = votingProfile.Sessions.Select(session => new AttributeValue
-                    {
-                        M = new Dictionary<string, AttributeValue>
+                    L = votingProfile.Sessions
+                        .Select(session => new AttributeValue
                         {
-                            { "Id", new AttributeValue { S = session.Id } },
-                            { "Enabled", new AttributeValue { BOOL = session.Enabled } },
-                            { "VoteIndex", new AttributeValue { N = session.VoteIndex.ToString() } },
-                            { "VoteDelaySeconds", new AttributeValue { N = session.VoteDelaySeconds.ToString() } }
-                        }
-                    }).ToList()
+                            M = new Dictionary<string, AttributeValue>
+                            {
+                                { "Id", new AttributeValue { S = session.Id } },
+                                { "Enabled", new AttributeValue { BOOL = session.Enabled } },
+                                { "VoteIndex", new AttributeValue { N = session.VoteIndex.ToString() } },
+                                { "VoteDelaySeconds", new AttributeValue { N = session.VoteDelaySeconds.ToString() } }
+                            }
+                        })
+                        .ToList()
                 }
             }
         };
@@ -86,6 +91,7 @@ public class VotingProfileRepository : IVotingProfileRepository
         {
             Id = item["Id"].S,
             Enabled = item["Enabled"].BOOL ?? false,
+            Description = item["Description"].S,
             Poll = new VotingProfilePoll
             {
                 FromId = long.Parse(item["Poll"].M["FromId"].N),

@@ -26,7 +26,7 @@ public class Function
 
                 .AddSingleton<IMessageService, MessageService>()
 
-                .AddSingleton<IToolingService, VotingProfileService>()
+                .AddSingleton<IToolingService, VotingProfileToolingService>()
                 ;
         });
     }

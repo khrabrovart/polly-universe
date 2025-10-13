@@ -9,6 +9,8 @@ public interface IDynamoDbService
 
     Task<Dictionary<string, AttributeValue>> Get(string tableName, Dictionary<string, AttributeValue> key);
 
+    Task<Dictionary<string, AttributeValue>[]> Get(string tableName, Dictionary<string, AttributeValue>[] keys);
+
     Task Put(string tableName, Dictionary<string, AttributeValue> item);
 }
 
@@ -43,6 +45,21 @@ public class DynamoDbService : IDynamoDbService
     {
         var response = await _dynamoDbClient.GetItemAsync(tableName, key);
         return !response.IsItemSet ? null : response.Item;
+    }
+
+    public async Task<Dictionary<string, AttributeValue>[]> Get(string tableName, Dictionary<string, AttributeValue>[] keys)
+    {
+        var requestItems = new Dictionary<string, KeysAndAttributes>
+        {
+            { tableName, new KeysAndAttributes { Keys = keys.ToList() } }
+        };
+
+        var response = await _dynamoDbClient.BatchGetItemAsync(new BatchGetItemRequest
+        {
+            RequestItems = requestItems
+        });
+
+        return response.Responses[tableName].ToArray();
     }
 
     public async Task Put(string tableName, Dictionary<string, AttributeValue> item)

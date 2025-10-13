@@ -8,6 +8,8 @@ public class VotingProfile
 
     public required bool Enabled { get; set; }
 
+    public required string Description { get; set; }
+
     public required VotingProfilePoll Poll { get; set; }
 
     public required List<VotingProfileSession> Sessions { get; set; }
