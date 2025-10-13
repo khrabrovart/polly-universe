@@ -10,7 +10,7 @@ public interface ISessionMetadataRepository
 
     Task<SessionMetadata[]> Get(string[] sessionIds);
 
-    Task Put(SessionMetadata sessionMetadata);
+    Task Update(SessionMetadata sessionMetadata);
 }
 
 public class SessionMetadataRepository : ISessionMetadataRepository
@@ -66,7 +66,7 @@ public class SessionMetadataRepository : ISessionMetadataRepository
         return items.Select(ToModel).ToArray();
     }
 
-    public async Task Put(SessionMetadata sessionMetadata)
+    public async Task Update(SessionMetadata sessionMetadata)
     {
         var item = new Dictionary<string, AttributeValue>
         {

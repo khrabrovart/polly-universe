@@ -10,7 +10,7 @@ public interface IVotingProfileRepository
 
     Task<VotingProfile> Get(string id);
 
-    Task Put(VotingProfile votingProfile);
+    Task Update(VotingProfile votingProfile);
 }
 
 public class VotingProfileRepository : IVotingProfileRepository
@@ -43,7 +43,7 @@ public class VotingProfileRepository : IVotingProfileRepository
         return item == null ? null : ToModel(item);
     }
 
-    public async Task Put(VotingProfile votingProfile)
+    public async Task Update(VotingProfile votingProfile)
     {
         var item = new Dictionary<string, AttributeValue>
         {
