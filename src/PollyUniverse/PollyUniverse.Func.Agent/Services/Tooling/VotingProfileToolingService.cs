@@ -238,6 +238,12 @@ public class VotingProfileToolingService : IToolingService
 
         var usersData = users.ToDictionary(s => s.Id, s => s);
 
+        var yesNo = new Dictionary<bool, string>
+        {
+            [true] = _t("common.yes"),
+            [false] = _t("common.no")
+        };
+
         var pollStr =
             $"""
              {_t("get_voting_profile.output.poll_from_id")}: {votingProfile.Poll.FromId},
@@ -247,27 +253,30 @@ public class VotingProfileToolingService : IToolingService
              {_t("get_voting_profile.output.poll_timezone")}: {votingProfile.Poll.Timezone},
              """;
 
-        var usersStr = votingProfile.Users.Select(s =>
+        var usersStr = votingProfile.Users.Select((s, i) =>
             $"""
+             {i + 1}.
              {_t("get_voting_profile.output.user_id")}: {s.Id}
              {_t("get_voting_profile.output.user_name")}: {usersData[s.Id].Name}
              {_t("get_voting_profile.output.user_gender")}: {usersData[s.Id].Gender}
-             {_t("get_voting_profile.output.user_enabled")}: {s.Enabled}
+             {_t("get_voting_profile.output.user_enabled")}: {yesNo[s.Enabled]}
              {_t("get_voting_profile.output.user_vote_index")}: {s.VoteIndex}
              {_t("get_voting_profile.output.user_vote_delay_seconds")}: {s.VoteDelaySeconds}
 
              """);
 
-        return
+        var output =
             $"""
+             {votingProfile.Description}
              {_t("get_voting_profile.output.id")}: {votingProfile.Id},
-             {_t("get_voting_profile.output.enabled")}: {votingProfile.Enabled},
-             {_t("get_voting_profile.output.description")}: {votingProfile.Description},
+             {_t("get_voting_profile.output.enabled")}: {yesNo[votingProfile.Enabled]},
              {_t("get_voting_profile.output.poll")}:
              {Indent(pollStr, 1)}
              {_t("get_voting_profile.output.users")}:
              {Indent(string.Join(Environment.NewLine, usersStr), 1)}
              """;
+
+        return output;
     }
 
     private async Task<string> EnableVotingProfile(Dictionary<string, string> parameters)
