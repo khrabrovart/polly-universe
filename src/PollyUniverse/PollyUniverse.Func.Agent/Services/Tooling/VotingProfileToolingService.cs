@@ -11,19 +11,19 @@ public class VotingProfileToolingService : IToolingService
     private const int IndentSize = 2;
 
     private readonly IVotingProfileRepository _votingProfileRepository;
-    private readonly ISessionMetadataRepository _sessionMetadataRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<VotingProfileToolingService> _logger;
     private readonly Func<string, string> _t;
 
     public VotingProfileToolingService(
         IVotingProfileRepository votingProfileRepository,
-        ISessionMetadataRepository sessionMetadataRepository,
+        IUserRepository userRepository,
         IDictionaryService dictionaryService,
         ILogger<VotingProfileToolingService> logger
         )
     {
         _votingProfileRepository = votingProfileRepository;
-        _sessionMetadataRepository = sessionMetadataRepository;
+        _userRepository = userRepository;
         _logger = logger;
         _t = dictionaryService.GetString;
     }
@@ -228,15 +228,15 @@ public class VotingProfileToolingService : IToolingService
             return _t("get_voting_profile.error.not_found");
         }
 
-        var sessionIds = votingProfile.Sessions.Select(s => s.Id).ToArray();
-        var sessions = await _sessionMetadataRepository.Get(sessionIds);
+        var userIds = votingProfile.Users.Select(s => s.Id).ToArray();
+        var users = await _userRepository.Get(userIds);
 
-        if (sessions.Length != sessionIds.Length)
+        if (users.Length != userIds.Length)
         {
             return _t("get_voting_profile.error.users_not_found");
         }
 
-        var sessionsDict = sessions.ToDictionary(s => s.Id, s => s);
+        var usersData = users.ToDictionary(s => s.Id, s => s);
 
         var pollStr =
             $"""
@@ -247,11 +247,11 @@ public class VotingProfileToolingService : IToolingService
              {_t("get_voting_profile.output.poll_timezone")}: {votingProfile.Poll.Timezone},
              """;
 
-        var sessionsStr = votingProfile.Sessions.Select(s =>
+        var usersStr = votingProfile.Users.Select(s =>
             $"""
              {_t("get_voting_profile.output.user_id")}: {s.Id}
-             {_t("get_voting_profile.output.user_name")}: {sessionsDict[s.Id].User.Name}
-             {_t("get_voting_profile.output.user_gender")}: {sessionsDict[s.Id].User.Gender}
+             {_t("get_voting_profile.output.user_name")}: {usersData[s.Id].Name}
+             {_t("get_voting_profile.output.user_gender")}: {usersData[s.Id].Gender}
              {_t("get_voting_profile.output.user_enabled")}: {s.Enabled}
              {_t("get_voting_profile.output.user_vote_index")}: {s.VoteIndex}
              {_t("get_voting_profile.output.user_vote_delay_seconds")}: {s.VoteDelaySeconds}
@@ -266,7 +266,7 @@ public class VotingProfileToolingService : IToolingService
              {_t("get_voting_profile.output.poll")}:
              {Indent(pollStr, 1)}
              {_t("get_voting_profile.output.users")}:
-             {Indent(string.Join(Environment.NewLine, sessionsStr), 1)}
+             {Indent(string.Join(Environment.NewLine, usersStr), 1)}
              """;
     }
 
@@ -345,19 +345,19 @@ public class VotingProfileToolingService : IToolingService
             return _t("enable_voting_profile_user.error.profile_not_found");
         }
 
-        var session = votingProfile.Sessions.FirstOrDefault(s => s.Id == userId);
+        var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
 
-        if (session == null)
+        if (user == null)
         {
             return _t("enable_voting_profile_user.error.user_not_found");
         }
 
-        if (session.Enabled)
+        if (user.Enabled)
         {
             return _t("enable_voting_profile_user.error.already_enabled");
         }
 
-        session.Enabled = true;
+        user.Enabled = true;
         await _votingProfileRepository.Update(votingProfile);
 
         return _t("enable_voting_profile_user.output.success");
@@ -384,25 +384,25 @@ public class VotingProfileToolingService : IToolingService
             return _t("disable_voting_profile_user.error.profile_not_found");
         }
 
-        var session = votingProfile.Sessions.FirstOrDefault(s => s.Id == userId);
+        var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
 
-        if (session == null)
+        if (user == null)
         {
             return _t("disable_voting_profile_user.error.user_not_found");
         }
 
-        if (!session.Enabled)
+        if (!user.Enabled)
         {
             return _t("disable_voting_profile_user.error.already_disabled");
         }
 
-        session.Enabled = false;
+        user.Enabled = false;
         await _votingProfileRepository.Update(votingProfile);
 
         return _t("disable_voting_profile_user.output.success");
     }
 
-    public async Task<string> AddVotingProfileUser(Dictionary<string, string> parameters)
+    private async Task<string> AddVotingProfileUser(Dictionary<string, string> parameters)
     {
         _logger.LogInformation("AI Tools: add_voting_profile_user called with parameters: {Parameters}", parameters);
 
@@ -427,29 +427,29 @@ public class VotingProfileToolingService : IToolingService
         }
 
         var votingProfileTask = _votingProfileRepository.Get(profileId);
-        var sessionTask = _sessionMetadataRepository.Get(userId);
+        var userTask = _userRepository.Get(userId);
 
-        await Task.WhenAll(votingProfileTask, sessionTask);
+        await Task.WhenAll(votingProfileTask, userTask);
 
         var votingProfile = votingProfileTask.Result;
-        var session = sessionTask.Result;
+        var user = userTask.Result;
 
         if (votingProfile == null)
         {
             return _t("add_voting_profile_user.error.profile_not_found");
         }
 
-        if (session == null)
+        if (user == null)
         {
             return _t("add_voting_profile_user.error.user_not_found");
         }
 
-        if (votingProfile.Sessions.Any(s => s.Id == userId))
+        if (votingProfile.Users.Any(s => s.Id == userId))
         {
             return _t("add_voting_profile_user.error.user_already_exists");
         }
 
-        votingProfile.Sessions.Add(new VotingProfileSession
+        votingProfile.Users.Add(new VotingProfileUser
         {
             Id = userId,
             Enabled = true,
@@ -462,7 +462,7 @@ public class VotingProfileToolingService : IToolingService
         return _t("add_voting_profile_user.output.success");
     }
 
-    public async Task<string> RemoveVotingProfileUser(Dictionary<string, string> parameters)
+    private async Task<string> RemoveVotingProfileUser(Dictionary<string, string> parameters)
     {
         _logger.LogInformation("AI Tools: remove_voting_profile_user called with parameters: {Parameters}", parameters);
 
@@ -483,14 +483,14 @@ public class VotingProfileToolingService : IToolingService
             return _t("remove_voting_profile_user.error.profile_not_found");
         }
 
-        var session = votingProfile.Sessions.FirstOrDefault(s => s.Id == userId);
+        var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
 
-        if (session == null)
+        if (user == null)
         {
             return _t("remove_voting_profile_user.error.user_not_found");
         }
 
-        votingProfile.Sessions.Remove(session);
+        votingProfile.Users.Remove(user);
         await _votingProfileRepository.Update(votingProfile);
 
         return _t("remove_voting_profile_user.output.success");

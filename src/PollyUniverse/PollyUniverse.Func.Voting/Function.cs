@@ -25,7 +25,6 @@ public class Function
 
                 .AddSingleton<INotificationService, NotificationService>()
                 .AddSingleton<IPollService, PollService>()
-                .AddSingleton<ISessionService, SessionService>()
                 .AddSingleton<IUserService, UserService>()
                 .AddSingleton<IVotingProfileService, VotingProfileService>()
                 .AddSingleton<IVotingService, VotingService>()

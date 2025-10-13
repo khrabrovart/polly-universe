@@ -12,7 +12,7 @@ public class VotingProfile
 
     public required VotingProfilePoll Poll { get; set; }
 
-    public required List<VotingProfileSession> Sessions { get; set; }
+    public required List<VotingProfileUser> Users { get; set; }
 }
 
 public class VotingProfilePoll
@@ -28,7 +28,7 @@ public class VotingProfilePoll
     public required string Timezone { get; set; }
 }
 
-public class VotingProfileSession
+public class VotingProfileUser
 {
     public required string Id { get; set; }
 

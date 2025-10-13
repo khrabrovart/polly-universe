@@ -76,13 +76,13 @@ public class EventHandler : IEventHandler
                 Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
                 Timezone = item["Poll"].M["Timezone"].S
             },
-            Sessions = item["Sessions"].L
-                .Select(session => new VotingProfileSession
+            Users = item["Users"].L
+                .Select(user => new VotingProfileUser
                 {
-                    Id = session.M["Id"].S,
-                    Enabled = session.M["Enabled"].BOOL ?? false,
-                    VoteIndex = int.Parse(session.M["VoteIndex"].N),
-                    VoteDelaySeconds = int.Parse(session.M["VoteDelaySeconds"].N)
+                    Id = user.M["Id"].S,
+                    Enabled = user.M["Enabled"].BOOL ?? false,
+                    VoteIndex = int.Parse(user.M["VoteIndex"].N),
+                    VoteDelaySeconds = int.Parse(user.M["VoteDelaySeconds"].N)
                 })
                 .ToList()
         };

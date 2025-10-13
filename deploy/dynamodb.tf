@@ -11,17 +11,6 @@ resource "aws_dynamodb_table" "voting_profiles" {
   }
 }
 
-resource "aws_dynamodb_table" "session_metadata" {
-  name         = "${local.app_name}-session-metadata"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "Id"
-
-  attribute {
-    name = "Id"
-    type = "S"
-  }
-}
-
 resource "aws_dynamodb_table" "users" {
   name         = "${local.app_name}-users"
   billing_mode = "PAY_PER_REQUEST"

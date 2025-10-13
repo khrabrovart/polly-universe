@@ -14,20 +14,20 @@ public interface IEventHandler
 public class EventHandler : IEventHandler
 {
     private readonly INotificationService _notificationService;
-    private readonly ISessionService _sessionService;
+    private readonly IUserService _userService;
     private readonly IVotingProfileService _votingProfileService;
     private readonly IVotingService _votingService;
     private readonly ILogger<EventHandler> _logger;
 
     public EventHandler(
         INotificationService notificationService,
-        ISessionService sessionService,
+        IUserService userService,
         IVotingProfileService votingProfileService,
         IVotingService votingService,
         ILogger<EventHandler> logger)
     {
         _notificationService = notificationService;
-        _sessionService = sessionService;
+        _userService = userService;
         _votingProfileService = votingProfileService;
         _votingService = votingService;
         _logger = logger;
@@ -39,18 +39,18 @@ public class EventHandler : IEventHandler
 
         var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
 
-        if (HasDuplicateSessions(votingProfile))
+        if (HasDuplicateUsers(votingProfile))
         {
-            _logger.LogError("Duplicate sessions found in voting profile \"{VotingProfileId}\"", request.VotingProfileId);
+            _logger.LogError("Duplicate users found in voting profile \"{VotingProfileId}\"", request.VotingProfileId);
             return;
         }
 
-        var telegramClientTasks = votingProfile.Sessions
+        var telegramClientTasks = votingProfile.Users
             .Where(s => s.Enabled)
-            .Select(async session =>
+            .Select(async user =>
             {
-                var client = await _sessionService.InitializeTelegramClientWithSession(session.Id);
-                return (Session: session, Client: client);
+                var client = await _userService.InitializeTelegramClientForUser(user.Id);
+                return (User: user, Client: client);
             })
             .ToArray();
 
@@ -60,40 +60,40 @@ public class EventHandler : IEventHandler
             .Select(task => task.Result)
             .ToArray();
 
-        var sessionTasks = telegramClients
-            .Select(x => ProcessSession(x.Client, votingProfile.Poll, x.Session));
+        var userTasks = telegramClients
+            .Select(x => ProcessUser(x.Client, votingProfile.Poll, x.User));
 
-        await Task.WhenAll(sessionTasks);
+        await Task.WhenAll(userTasks);
 
         _logger.LogInformation("Voting request complete for voting profile \"{VotingProfileId}\"", request.VotingProfileId);
     }
 
-    private async Task ProcessSession(
+    private async Task ProcessUser(
         Client telegramClient,
         VotingProfilePoll pollDescriptor,
-        VotingProfileSession sessionDescriptor)
+        VotingProfileUser userDescriptor)
     {
         try
         {
-            _logger.LogInformation("Voting starting for session \"{SessionId}\", waiting for poll to appear...", sessionDescriptor.Id);
+            _logger.LogInformation("Voting starting for user \"{UserId}\", waiting for poll to appear...", userDescriptor.Id);
 
-            var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, sessionDescriptor);
+            var votingResult = await _votingService.WaitForPollAndVote(telegramClient, pollDescriptor, userDescriptor);
             await _notificationService.SendNotification(telegramClient, votingResult);
 
-            _logger.LogInformation("Voting complete for session \"{SessionId}\" with result \"{VotingResult}\"", sessionDescriptor.Id, votingResult);
+            _logger.LogInformation("Voting complete for user \"{UserId}\" with result \"{VotingResult}\"", userDescriptor.Id, votingResult);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing session \"{SessionId}\": {ErrorMessage}", sessionDescriptor.Id, ex.Message);
+            _logger.LogError(ex, "Error processing user \"{UserId}\": {ErrorMessage}", userDescriptor.Id, ex.Message);
         }
     }
 
-    private static bool HasDuplicateSessions(VotingProfile votingProfile)
+    private static bool HasDuplicateUsers(VotingProfile votingProfile)
     {
-        var duplicateSessions = votingProfile.Sessions
+        var duplicateUsers = votingProfile.Users
             .GroupBy(s => s.Id)
             .Count(g => g.Count() > 1);
 
-        return duplicateSessions > 0;
+        return duplicateUsers > 0;
     }
 }

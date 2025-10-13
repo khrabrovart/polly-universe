@@ -64,17 +64,17 @@ public class VotingProfileRepository : IVotingProfileRepository
                 }
             },
             {
-                "Sessions", new AttributeValue
+                "Users", new AttributeValue
                 {
-                    L = votingProfile.Sessions
-                        .Select(session => new AttributeValue
+                    L = votingProfile.Users
+                        .Select(user => new AttributeValue
                         {
                             M = new Dictionary<string, AttributeValue>
                             {
-                                { "Id", new AttributeValue { S = session.Id } },
-                                { "Enabled", new AttributeValue { BOOL = session.Enabled } },
-                                { "VoteIndex", new AttributeValue { N = session.VoteIndex.ToString() } },
-                                { "VoteDelaySeconds", new AttributeValue { N = session.VoteDelaySeconds.ToString() } }
+                                { "Id", new AttributeValue { S = user.Id } },
+                                { "Enabled", new AttributeValue { BOOL = user.Enabled } },
+                                { "VoteIndex", new AttributeValue { N = user.VoteIndex.ToString() } },
+                                { "VoteDelaySeconds", new AttributeValue { N = user.VoteDelaySeconds.ToString() } }
                             }
                         })
                         .ToList()
@@ -100,13 +100,13 @@ public class VotingProfileRepository : IVotingProfileRepository
                 Time = TimeSpan.Parse(item["Poll"].M["Time"].S),
                 Timezone = item["Poll"].M["Timezone"].S,
             },
-            Sessions = item["Sessions"].L
-                .Select(session => new VotingProfileSession
+            Users = item["Users"].L
+                .Select(user => new VotingProfileUser
                 {
-                    Id = session.M["Id"].S,
-                    Enabled = session.M["Enabled"].BOOL ?? false,
-                    VoteIndex = int.Parse(session.M["VoteIndex"].N),
-                    VoteDelaySeconds = int.Parse(session.M["VoteDelaySeconds"].N)
+                    Id = user.M["Id"].S,
+                    Enabled = user.M["Enabled"].BOOL ?? false,
+                    VoteIndex = int.Parse(user.M["VoteIndex"].N),
+                    VoteDelaySeconds = int.Parse(user.M["VoteDelaySeconds"].N)
                 })
                 .ToList()
         };

@@ -37,7 +37,6 @@ public static class SharedBootstrapper
             .AddTelegramServices();
 
         services
-            .AddSingleton<ISessionMetadataRepository, SessionMetadataRepository>()
             .AddSingleton<IUserRepository, UserRepository>()
             .AddSingleton<IVotingProfileRepository, VotingProfileRepository>()
 
