@@ -17,15 +17,12 @@ resource "aws_lambda_function" "agent_lambda" {
   source_code_hash = data.archive_file.agent_lambda_zip.output_base64sha256
 
   environment {
-    variables = {
-      S3_BUCKET                = aws_s3_bucket.polly_universe.bucket
-      USERS_TABLE              = aws_dynamodb_table.users.name
-      VOTING_PROFILES_TABLE    = aws_dynamodb_table.voting_profiles.name
+    variables = merge(local.shared_lambda_environment_vars, {
       BOT_TOKEN_PARAMETER      = aws_ssm_parameter.bot_token.name
       OPENAI_API_KEY_PARAMETER = aws_ssm_parameter.openai_api_key.name
       OPENAI_MODEL             = var.openai_model
       HISTORY_LENGTH           = var.agent_history_length
-    }
+    })
   }
 
   depends_on = [

@@ -17,16 +17,13 @@ resource "aws_lambda_function" "voting_lambda" {
   source_code_hash = data.archive_file.voting_lambda_zip.output_base64sha256
 
   environment {
-    variables = {
-      S3_BUCKET                       = aws_s3_bucket.polly_universe.bucket
-      USERS_TABLE                     = aws_dynamodb_table.users.name
-      VOTING_PROFILES_TABLE           = aws_dynamodb_table.voting_profiles.name
+    variables = merge(local.shared_lambda_environment_vars, {
       POLL_WAITING_MINUTES            = var.poll_waiting_minutes
       BOT_TOKEN_PARAMETER             = aws_ssm_parameter.bot_token.name
       NOTIFICATIONS_PEER_ID_PARAMETER = aws_ssm_parameter.notifications_peer_id.name
       OPENAI_API_KEY_PARAMETER        = aws_ssm_parameter.openai_api_key.name
       OPENAI_MODEL                    = var.openai_model
-    }
+    })
   }
 
   depends_on = [

@@ -17,12 +17,12 @@ resource "aws_lambda_function" "scheduling_lambda" {
   source_code_hash = data.archive_file.scheduling_lambda_zip.output_base64sha256
 
   environment {
-    variables = {
+    variables = merge(local.shared_lambda_environment_vars, {
       SCHEDULE_NAME_PREFIX        = "${local.app_name}-voting"
       SCHEDULER_GROUP_NAME        = aws_scheduler_schedule_group.scheduler_group.name
       TARGET_LAMBDA_ARN           = aws_lambda_function.voting_lambda.arn
       SCHEDULE_EXECUTION_ROLE_ARN = aws_iam_role.scheduler_role.arn
-    }
+    })
   }
 
   depends_on = [
