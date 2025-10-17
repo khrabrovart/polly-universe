@@ -33,6 +33,11 @@ public record TelegramLongPeerId
 
         return -value;
     }
+
+    public override string ToString()
+    {
+        return _value.ToString();
+    }
 }
 
 public record TelegramShortPeerId
@@ -47,5 +52,10 @@ public record TelegramShortPeerId
         {
             _value = value
         };
+    }
+
+    public override string ToString()
+    {
+        return _value.ToString();
     }
 }
