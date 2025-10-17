@@ -13,7 +13,7 @@ public class VotingProfileToolingService : IToolingService
     private readonly IVotingProfileRepository _votingProfileRepository;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<VotingProfileToolingService> _logger;
-    private readonly Func<string, string> _t;
+    private readonly Func<string, string> _s;
 
     public VotingProfileToolingService(
         IVotingProfileRepository votingProfileRepository,
@@ -25,7 +25,7 @@ public class VotingProfileToolingService : IToolingService
         _votingProfileRepository = votingProfileRepository;
         _userRepository = userRepository;
         _logger = logger;
-        _t = dictionaryService.GetString;
+        _s = dictionaryService.GetString;
     }
 
     public IEnumerable<OpenAITool> GetTools()
@@ -35,21 +35,21 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "list_voting_profiles",
-                Description = _t("list_voting_profiles.description"),
-                Returns = _t("list_voting_profiles.returns"),
+                Description = _s("list_voting_profiles.description"),
+                Returns = _s("list_voting_profiles.returns"),
                 Action = _ => GetVotingProfiles()
             },
             new OpenAITool
             {
                 Name = "get_voting_profile",
-                Description = _t("get_voting_profile.description"),
-                Returns = _t("get_voting_profile.returns"),
+                Description = _s("get_voting_profile.description"),
+                Returns = _s("get_voting_profile.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("get_voting_profile.params.profile_id"),
+                        Description = _s("get_voting_profile.params.profile_id"),
                         Type = "string",
                         Required = true
                     }
@@ -59,14 +59,14 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "enable_voting_profile",
-                Description = _t("enable_voting_profile.description"),
-                Returns = _t("enable_voting_profile.returns"),
+                Description = _s("enable_voting_profile.description"),
+                Returns = _s("enable_voting_profile.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("enable_voting_profile.params.profile_id"),
+                        Description = _s("enable_voting_profile.params.profile_id"),
                         Type = "string",
                         Required = true
                     }
@@ -76,14 +76,14 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "disable_voting_profile",
-                Description = _t("disable_voting_profile.description"),
-                Returns = _t("disable_voting_profile.returns"),
+                Description = _s("disable_voting_profile.description"),
+                Returns = _s("disable_voting_profile.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("disable_voting_profile.params.profile_id"),
+                        Description = _s("disable_voting_profile.params.profile_id"),
                         Type = "string",
                         Required = true
                     }
@@ -93,21 +93,21 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "enable_voting_profile_user",
-                Description = _t("enable_voting_profile_user.description"),
-                Returns = _t("enable_voting_profile_user.returns"),
+                Description = _s("enable_voting_profile_user.description"),
+                Returns = _s("enable_voting_profile_user.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("enable_voting_profile_user.params.profile_id"),
+                        Description = _s("enable_voting_profile_user.params.profile_id"),
                         Type = "string",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "user_id",
-                        Description = _t("enable_voting_profile_user.params.user_id"),
+                        Description = _s("enable_voting_profile_user.params.user_id"),
                         Type = "string",
                         Required = true
                     }
@@ -117,21 +117,21 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "disable_voting_profile_user",
-                Description = _t("disable_voting_profile_user.description"),
-                Returns = _t("disable_voting_profile_user.returns"),
+                Description = _s("disable_voting_profile_user.description"),
+                Returns = _s("disable_voting_profile_user.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("disable_voting_profile_user.params.profile_id"),
+                        Description = _s("disable_voting_profile_user.params.profile_id"),
                         Type = "string",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "user_id",
-                        Description = _t("disable_voting_profile_user.params.user_id"),
+                        Description = _s("disable_voting_profile_user.params.user_id"),
                         Type = "string",
                         Required = true
                     }
@@ -141,35 +141,35 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "add_voting_profile_user",
-                Description = _t("add_voting_profile_user.description"),
-                Returns = _t("add_voting_profile_user.returns"),
+                Description = _s("add_voting_profile_user.description"),
+                Returns = _s("add_voting_profile_user.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("add_voting_profile_user.params.profile_id"),
+                        Description = _s("add_voting_profile_user.params.profile_id"),
                         Type = "string",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "user_id",
-                        Description = _t("add_voting_profile_user.params.user_id"),
+                        Description = _s("add_voting_profile_user.params.user_id"),
                         Type = "string",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "vote_index",
-                        Description = _t("add_voting_profile_user.params.vote_index"),
+                        Description = _s("add_voting_profile_user.params.vote_index"),
                         Type = "integer",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "vote_delay_seconds",
-                        Description = _t("add_voting_profile_user.params.vote_delay_seconds"),
+                        Description = _s("add_voting_profile_user.params.vote_delay_seconds"),
                         Type = "integer",
                         Required = true
                     }
@@ -179,21 +179,21 @@ public class VotingProfileToolingService : IToolingService
             new OpenAITool
             {
                 Name = "remove_voting_profile_user",
-                Description = _t("remove_voting_profile_user.description"),
-                Returns = _t("remove_voting_profile_user.returns"),
+                Description = _s("remove_voting_profile_user.description"),
+                Returns = _s("remove_voting_profile_user.returns"),
                 Parameters =
                 [
                     new OpenAIToolParameter
                     {
                         Name = "profile_id",
-                        Description = _t("remove_voting_profile_user.params.profile_id"),
+                        Description = _s("remove_voting_profile_user.params.profile_id"),
                         Type = "string",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "user_id",
-                        Description = _t("remove_voting_profile_user.params.user_id"),
+                        Description = _s("remove_voting_profile_user.params.user_id"),
                         Type = "string",
                         Required = true
                     }
@@ -218,14 +218,14 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("get_voting_profile.error.missing_profile_id");
+            return _s("get_voting_profile.error.missing_profile_id");
         }
 
         var votingProfile = await _votingProfileRepository.Get(profileId);
 
         if (votingProfile == null)
         {
-            return _t("get_voting_profile.error.not_found");
+            return _s("get_voting_profile.error.not_found");
         }
 
         var userIds = votingProfile.Users.Select(s => s.Id).ToArray();
@@ -233,46 +233,46 @@ public class VotingProfileToolingService : IToolingService
 
         if (users.Length != userIds.Length)
         {
-            return _t("get_voting_profile.error.users_not_found");
+            return _s("get_voting_profile.error.users_not_found");
         }
 
         var usersData = users.ToDictionary(s => s.Id, s => s);
 
         var yesNo = new Dictionary<bool, string>
         {
-            [true] = _t("common.yes"),
-            [false] = _t("common.no")
+            [true] = _s("common.yes"),
+            [false] = _s("common.no")
         };
 
         var pollStr =
             $"""
-             {_t("get_voting_profile.output.poll_from_id")}: {votingProfile.Poll.FromId},
-             {_t("get_voting_profile.output.poll_peer_id")}: {(long)votingProfile.Poll.PeerId},
-             {_t("get_voting_profile.output.poll_day_of_week")}: {votingProfile.Poll.DayOfWeek},
-             {_t("get_voting_profile.output.poll_time")}: {votingProfile.Poll.Time},
-             {_t("get_voting_profile.output.poll_timezone")}: {votingProfile.Poll.Timezone},
+             {_s("get_voting_profile.output.poll_from_id")}: {votingProfile.Poll.FromId},
+             {_s("get_voting_profile.output.poll_peer_id")}: {(long)votingProfile.Poll.PeerId},
+             {_s("get_voting_profile.output.poll_day_of_week")}: {votingProfile.Poll.DayOfWeek},
+             {_s("get_voting_profile.output.poll_time")}: {votingProfile.Poll.Time},
+             {_s("get_voting_profile.output.poll_timezone")}: {votingProfile.Poll.Timezone},
              """;
 
         var usersStr = votingProfile.Users.Select((s, i) =>
             $"""
              {i + 1}.
-             {_t("get_voting_profile.output.user_id")}: {s.Id}
-             {_t("get_voting_profile.output.user_name")}: {usersData[s.Id].Name}
-             {_t("get_voting_profile.output.user_gender")}: {usersData[s.Id].Gender}
-             {_t("get_voting_profile.output.user_enabled")}: {yesNo[s.Enabled]}
-             {_t("get_voting_profile.output.user_vote_index")}: {s.VoteIndex}
-             {_t("get_voting_profile.output.user_vote_delay_seconds")}: {s.VoteDelaySeconds}
+             {_s("get_voting_profile.output.user_id")}: {s.Id}
+             {_s("get_voting_profile.output.user_name")}: {usersData[s.Id].Name}
+             {_s("get_voting_profile.output.user_gender")}: {usersData[s.Id].Gender}
+             {_s("get_voting_profile.output.user_enabled")}: {yesNo[s.Enabled]}
+             {_s("get_voting_profile.output.user_vote_index")}: {s.VoteIndex}
+             {_s("get_voting_profile.output.user_vote_delay_seconds")}: {s.VoteDelaySeconds}
 
              """);
 
         var output =
             $"""
              {votingProfile.Description}
-             {_t("get_voting_profile.output.id")}: {votingProfile.Id},
-             {_t("get_voting_profile.output.enabled")}: {yesNo[votingProfile.Enabled]},
-             {_t("get_voting_profile.output.poll")}:
+             {_s("get_voting_profile.output.id")}: {votingProfile.Id},
+             {_s("get_voting_profile.output.enabled")}: {yesNo[votingProfile.Enabled]},
+             {_s("get_voting_profile.output.poll")}:
              {Indent(pollStr, 1)}
-             {_t("get_voting_profile.output.users")}:
+             {_s("get_voting_profile.output.users")}:
              {Indent(string.Join(Environment.NewLine, usersStr), 1)}
              """;
 
@@ -285,25 +285,25 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("enable_voting_profile.error.missing_profile_id");
+            return _s("enable_voting_profile.error.missing_profile_id");
         }
 
         var votingProfile = await _votingProfileRepository.Get(profileId);
 
         if (votingProfile == null)
         {
-            return _t("enable_voting_profile.error.not_found");
+            return _s("enable_voting_profile.error.not_found");
         }
 
         if (votingProfile.Enabled)
         {
-            return _t("enable_voting_profile.error.already_enabled");
+            return _s("enable_voting_profile.error.already_enabled");
         }
 
         votingProfile.Enabled = true;
         await _votingProfileRepository.Update(votingProfile);
 
-        return _t("enable_voting_profile.output.success");
+        return _s("enable_voting_profile.output.success");
     }
 
     private async Task<string> DisableVotingProfile(Dictionary<string, string> parameters)
@@ -312,25 +312,25 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("disable_voting_profile.error.missing_profile_id");
+            return _s("disable_voting_profile.error.missing_profile_id");
         }
 
         var votingProfile = await _votingProfileRepository.Get(profileId);
 
         if (votingProfile == null)
         {
-            return _t("disable_voting_profile.error.not_found");
+            return _s("disable_voting_profile.error.not_found");
         }
 
         if (!votingProfile.Enabled)
         {
-            return _t("disable_voting_profile.error.already_disabled");
+            return _s("disable_voting_profile.error.already_disabled");
         }
 
         votingProfile.Enabled = false;
         await _votingProfileRepository.Update(votingProfile);
 
-        return _t("disable_voting_profile.output.success");
+        return _s("disable_voting_profile.output.success");
     }
 
     private async Task<string> EnableVotingProfileUser(Dictionary<string, string> parameters)
@@ -339,37 +339,37 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("enable_voting_profile_user.error.missing_profile_id");
+            return _s("enable_voting_profile_user.error.missing_profile_id");
         }
 
         if (!parameters.TryGetValue("user_id", out var userId))
         {
-            return _t("enable_voting_profile_user.error.missing_user_id");
+            return _s("enable_voting_profile_user.error.missing_user_id");
         }
 
         var votingProfile = await _votingProfileRepository.Get(profileId);
 
         if (votingProfile == null)
         {
-            return _t("enable_voting_profile_user.error.profile_not_found");
+            return _s("enable_voting_profile_user.error.profile_not_found");
         }
 
         var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
 
         if (user == null)
         {
-            return _t("enable_voting_profile_user.error.user_not_found");
+            return _s("enable_voting_profile_user.error.user_not_found");
         }
 
         if (user.Enabled)
         {
-            return _t("enable_voting_profile_user.error.already_enabled");
+            return _s("enable_voting_profile_user.error.already_enabled");
         }
 
         user.Enabled = true;
         await _votingProfileRepository.Update(votingProfile);
 
-        return _t("enable_voting_profile_user.output.success");
+        return _s("enable_voting_profile_user.output.success");
     }
 
     private async Task<string> DisableVotingProfileUser(Dictionary<string, string> parameters)
@@ -378,37 +378,37 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("disable_voting_profile_user.error.missing_profile_id");
+            return _s("disable_voting_profile_user.error.missing_profile_id");
         }
 
         if (!parameters.TryGetValue("user_id", out var userId))
         {
-            return _t("disable_voting_profile_user.error.missing_user_id");
+            return _s("disable_voting_profile_user.error.missing_user_id");
         }
 
         var votingProfile = await _votingProfileRepository.Get(profileId);
 
         if (votingProfile == null)
         {
-            return _t("disable_voting_profile_user.error.profile_not_found");
+            return _s("disable_voting_profile_user.error.profile_not_found");
         }
 
         var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
 
         if (user == null)
         {
-            return _t("disable_voting_profile_user.error.user_not_found");
+            return _s("disable_voting_profile_user.error.user_not_found");
         }
 
         if (!user.Enabled)
         {
-            return _t("disable_voting_profile_user.error.already_disabled");
+            return _s("disable_voting_profile_user.error.already_disabled");
         }
 
         user.Enabled = false;
         await _votingProfileRepository.Update(votingProfile);
 
-        return _t("disable_voting_profile_user.output.success");
+        return _s("disable_voting_profile_user.output.success");
     }
 
     private async Task<string> AddVotingProfileUser(Dictionary<string, string> parameters)
@@ -417,22 +417,22 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("add_voting_profile_user.error.missing_profile_id");
+            return _s("add_voting_profile_user.error.missing_profile_id");
         }
 
         if (!parameters.TryGetValue("user_id", out var userId))
         {
-            return _t("add_voting_profile_user.error.missing_user_id");
+            return _s("add_voting_profile_user.error.missing_user_id");
         }
 
         if (!parameters.TryGetValue("vote_index", out var voteIndexStr) || !int.TryParse(voteIndexStr, out var voteIndex))
         {
-            return _t("add_voting_profile_user.error.invalid_vote_index");
+            return _s("add_voting_profile_user.error.invalid_vote_index");
         }
 
         if (!parameters.TryGetValue("vote_delay_seconds", out var voteDelaySecondsStr) || !int.TryParse(voteDelaySecondsStr, out var voteDelaySeconds))
         {
-            return _t("add_voting_profile_user.error.invalid_vote_delay_seconds");
+            return _s("add_voting_profile_user.error.invalid_vote_delay_seconds");
         }
 
         var votingProfileTask = _votingProfileRepository.Get(profileId);
@@ -445,17 +445,17 @@ public class VotingProfileToolingService : IToolingService
 
         if (votingProfile == null)
         {
-            return _t("add_voting_profile_user.error.profile_not_found");
+            return _s("add_voting_profile_user.error.profile_not_found");
         }
 
         if (user == null)
         {
-            return _t("add_voting_profile_user.error.user_not_found");
+            return _s("add_voting_profile_user.error.user_not_found");
         }
 
         if (votingProfile.Users.Any(s => s.Id == userId))
         {
-            return _t("add_voting_profile_user.error.user_already_exists");
+            return _s("add_voting_profile_user.error.user_already_exists");
         }
 
         votingProfile.Users.Add(new VotingProfileUser
@@ -468,7 +468,7 @@ public class VotingProfileToolingService : IToolingService
 
         await _votingProfileRepository.Update(votingProfile);
 
-        return _t("add_voting_profile_user.output.success");
+        return _s("add_voting_profile_user.output.success");
     }
 
     private async Task<string> RemoveVotingProfileUser(Dictionary<string, string> parameters)
@@ -477,32 +477,32 @@ public class VotingProfileToolingService : IToolingService
 
         if (!parameters.TryGetValue("profile_id", out var profileId))
         {
-            return _t("remove_voting_profile_user.error.missing_profile_id");
+            return _s("remove_voting_profile_user.error.missing_profile_id");
         }
 
         if (!parameters.TryGetValue("user_id", out var userId))
         {
-            return _t("remove_voting_profile_user.error.missing_user_id");
+            return _s("remove_voting_profile_user.error.missing_user_id");
         }
 
         var votingProfile = await _votingProfileRepository.Get(profileId);
 
         if (votingProfile == null)
         {
-            return _t("remove_voting_profile_user.error.profile_not_found");
+            return _s("remove_voting_profile_user.error.profile_not_found");
         }
 
         var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
 
         if (user == null)
         {
-            return _t("remove_voting_profile_user.error.user_not_found");
+            return _s("remove_voting_profile_user.error.user_not_found");
         }
 
         votingProfile.Users.Remove(user);
         await _votingProfileRepository.Update(votingProfile);
 
-        return _t("remove_voting_profile_user.output.success");
+        return _s("remove_voting_profile_user.output.success");
     }
 
     private static string Indent(string text, int level)

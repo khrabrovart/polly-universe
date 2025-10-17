@@ -39,6 +39,12 @@ public class EventHandler : IEventHandler
 
         var votingProfile = await _votingProfileService.GetVotingProfile(request.VotingProfileId);
 
+        if (!votingProfile.Enabled)
+        {
+            _logger.LogWarning("Voting profile \"{VotingProfileId}\" is disabled", request.VotingProfileId);
+            return;
+        }
+
         if (HasDuplicateUsers(votingProfile))
         {
             _logger.LogError("Duplicate users found in voting profile \"{VotingProfileId}\"", request.VotingProfileId);
