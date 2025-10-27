@@ -163,14 +163,14 @@ public class VotingProfileToolingService : IToolingService
                     {
                         Name = "vote_index",
                         Description = _s("add_voting_profile_user.params.vote_index"),
-                        Type = "integer",
+                        Type = "string",
                         Required = true
                     },
                     new OpenAIToolParameter
                     {
                         Name = "vote_delay_seconds",
                         Description = _s("add_voting_profile_user.params.vote_delay_seconds"),
-                        Type = "integer",
+                        Type = "string",
                         Required = true
                     }
                 ],
@@ -225,7 +225,7 @@ public class VotingProfileToolingService : IToolingService
                     {
                         Name = "vote_index",
                         Description = _s("update_voting_profile_user_vote_index.params.vote_index"),
-                        Type = "integer",
+                        Type = "string",
                         Required = true
                     }
                 ],
@@ -256,7 +256,7 @@ public class VotingProfileToolingService : IToolingService
                     {
                         Name = "vote_delay_seconds",
                         Description = _s("update_voting_profile_user_vote_delay.params.vote_delay_seconds"),
-                        Type = "integer",
+                        Type = "string",
                         Required = true
                     }
                 ],
