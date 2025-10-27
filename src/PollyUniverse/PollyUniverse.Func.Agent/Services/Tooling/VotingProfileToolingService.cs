@@ -199,6 +199,68 @@ public class VotingProfileToolingService : IToolingService
                     }
                 ],
                 Action = RemoveVotingProfileUser
+            },
+            new OpenAITool
+            {
+                Name = "update_voting_profile_user_vote_index",
+                Description = _s("update_voting_profile_user_vote_index.description"),
+                Returns = _s("update_voting_profile_user_vote_index.returns"),
+                Parameters =
+                [
+                    new OpenAIToolParameter
+                    {
+                        Name = "profile_id",
+                        Description = _s("update_voting_profile_user_vote_index.params.profile_id"),
+                        Type = "string",
+                        Required = true
+                    },
+                    new OpenAIToolParameter
+                    {
+                        Name = "user_id",
+                        Description = _s("update_voting_profile_user_vote_index.params.user_id"),
+                        Type = "string",
+                        Required = true
+                    },
+                    new OpenAIToolParameter
+                    {
+                        Name = "vote_index",
+                        Description = _s("update_voting_profile_user_vote_index.params.vote_index"),
+                        Type = "integer",
+                        Required = true
+                    }
+                ],
+                Action = UpdateVotingProfileUserVoteIndex
+            },
+            new OpenAITool
+            {
+                Name = "update_voting_profile_user_vote_delay",
+                Description = _s("update_voting_profile_user_vote_delay.description"),
+                Returns = _s("update_voting_profile_user_vote_delay.returns"),
+                Parameters =
+                [
+                    new OpenAIToolParameter
+                    {
+                        Name = "profile_id",
+                        Description = _s("update_voting_profile_user_vote_delay.params.profile_id"),
+                        Type = "string",
+                        Required = true
+                    },
+                    new OpenAIToolParameter
+                    {
+                        Name = "user_id",
+                        Description = _s("update_voting_profile_user_vote_delay.params.user_id"),
+                        Type = "string",
+                        Required = true
+                    },
+                    new OpenAIToolParameter
+                    {
+                        Name = "vote_delay_seconds",
+                        Description = _s("update_voting_profile_user_vote_delay.params.vote_delay_seconds"),
+                        Type = "integer",
+                        Required = true
+                    }
+                ],
+                Action = UpdateVotingProfileUserVoteDelay
             }
         ];
     }
@@ -503,6 +565,94 @@ public class VotingProfileToolingService : IToolingService
         await _votingProfileRepository.Update(votingProfile);
 
         return _s("remove_voting_profile_user.output.success");
+    }
+
+    private async Task<string> UpdateVotingProfileUserVoteIndex(Dictionary<string, string> parameters)
+    {
+        _logger.LogInformation("AI Tools: update_voting_profile_user_vote_index called with parameters: {Parameters}", parameters);
+
+        if (!parameters.TryGetValue("profile_id", out var profileId))
+        {
+            return _s("update_voting_profile_user_vote_index.error.missing_profile_id");
+        }
+
+        if (!parameters.TryGetValue("user_id", out var userId))
+        {
+            return _s("update_voting_profile_user_vote_index.error.missing_user_id");
+        }
+
+        if (!parameters.TryGetValue("vote_index", out var voteIndexStr) || !int.TryParse(voteIndexStr, out var voteIndex))
+        {
+            return _s("update_voting_profile_user_vote_index.error.invalid_vote_index");
+        }
+
+        var votingProfile = await _votingProfileRepository.Get(profileId);
+
+        if (votingProfile == null)
+        {
+            return _s("update_voting_profile_user_vote_index.error.profile_not_found");
+        }
+
+        var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
+
+        if (user == null)
+        {
+            return _s("update_voting_profile_user_vote_index.error.user_not_found");
+        }
+
+        if (user.VoteIndex == voteIndex)
+        {
+            return _s("update_voting_profile_user_vote_index.error.already_set");
+        }
+
+        user.VoteIndex = voteIndex;
+        await _votingProfileRepository.Update(votingProfile);
+
+        return _s("update_voting_profile_user_vote_index.output.success");
+    }
+
+    private async Task<string> UpdateVotingProfileUserVoteDelay(Dictionary<string, string> parameters)
+    {
+        _logger.LogInformation("AI Tools: update_voting_profile_user_vote_delay called with parameters: {Parameters}", parameters);
+
+        if (!parameters.TryGetValue("profile_id", out var profileId))
+        {
+            return _s("update_voting_profile_user_vote_delay.error.missing_profile_id");
+        }
+
+        if (!parameters.TryGetValue("user_id", out var userId))
+        {
+            return _s("update_voting_profile_user_vote_delay.error.missing_user_id");
+        }
+
+        if (!parameters.TryGetValue("vote_delay_seconds", out var voteDelaySecondsStr) || !int.TryParse(voteDelaySecondsStr, out var voteDelaySeconds))
+        {
+            return _s("update_voting_profile_user_vote_delay.error.invalid_vote_delay_seconds");
+        }
+
+        var votingProfile = await _votingProfileRepository.Get(profileId);
+
+        if (votingProfile == null)
+        {
+            return _s("update_voting_profile_user_vote_delay.error.profile_not_found");
+        }
+
+        var user = votingProfile.Users.FirstOrDefault(s => s.Id == userId);
+
+        if (user == null)
+        {
+            return _s("update_voting_profile_user_vote_delay.error.user_not_found");
+        }
+
+        if (user.VoteDelaySeconds == voteDelaySeconds)
+        {
+            return _s("update_voting_profile_user_vote_delay.error.already_set");
+        }
+
+        user.VoteDelaySeconds = voteDelaySeconds;
+        await _votingProfileRepository.Update(votingProfile);
+
+        return _s("update_voting_profile_user_vote_delay.output.success");
     }
 
     private static string Indent(string text, int level)
