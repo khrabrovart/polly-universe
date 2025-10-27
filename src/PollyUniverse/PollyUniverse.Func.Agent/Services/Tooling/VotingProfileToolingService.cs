@@ -37,7 +37,7 @@ public class VotingProfileToolingService : IToolingService
                 Name = "list_voting_profiles",
                 Description = _s("list_voting_profiles.description"),
                 Returns = _s("list_voting_profiles.returns"),
-                Action = _ => GetVotingProfiles()
+                Action = _ => ListVotingProfiles()
             },
             new OpenAITool
             {
@@ -265,7 +265,7 @@ public class VotingProfileToolingService : IToolingService
         ];
     }
 
-    private async Task<string> GetVotingProfiles()
+    private async Task<string> ListVotingProfiles()
     {
         _logger.LogInformation("AI Tools: list_voting_profiles called");
 

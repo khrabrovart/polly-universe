@@ -6,6 +6,8 @@ namespace PollyUniverse.Shared.Repositories;
 
 public interface IUserRepository
 {
+    Task<User[]> GetAll();
+
     Task<User> Get(string userId);
 
     Task<User[]> Get(string[] userIds);
@@ -22,6 +24,13 @@ public class UserRepository : IUserRepository
     {
         _dynamoDbService = dynamoDbService;
         _tableName = config.UsersTable;
+    }
+
+    public async Task<User[]> GetAll()
+    {
+        var items = await _dynamoDbService.Scan(_tableName);
+
+        return items.Select(ToModel).ToArray();
     }
 
     public async Task<User> Get(string userId)
